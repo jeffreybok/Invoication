@@ -6,16 +6,21 @@ public class VoiceSpellCaster : MonoBehaviour
 {
     private AppVoiceExperience appVoiceExperience;
     private bool isListening = false;
-    private FireballCaster fireballCaster;
+    private SpellCaster spellCaster;
 
     void Start()
     {
         appVoiceExperience = GetComponent<AppVoiceExperience>();
-        fireballCaster = GetComponent<FireballCaster>();
+        spellCaster = GetComponent<SpellCaster>();
         
         if (appVoiceExperience != null)
         {
             appVoiceExperience.TranscriptionEvents.OnFullTranscription.AddListener(OnFullTranscription);
+            
+            // Subscribe to more events to see what's happening
+            appVoiceExperience.VoiceEvents.OnStartListening.AddListener(OnStartListening);
+            appVoiceExperience.VoiceEvents.OnStoppedListening.AddListener(OnStoppedListening);
+            
             Debug.Log("Voice spell casting ready! Press V to toggle microphone.");
         }
         else
@@ -31,31 +36,41 @@ public class VoiceSpellCaster : MonoBehaviour
             ToggleMicrophone();
         }
     }
+    
+    void OnStartListening()
+    {
+        Debug.Log("🎤 Wit.ai started listening!");
+    }
+    
+    void OnStoppedListening()
+    {
+        Debug.Log("🛑 Wit.ai stopped listening!");
+    }
 
     void ToggleMicrophone()
     {
         if (appVoiceExperience == null) return;
         
-        // Check if actually active
-        if (appVoiceExperience.Active)
+        if (isListening)
         {
-            // Turn off
+            // Turn OFF
             appVoiceExperience.Deactivate();
             isListening = false;
-            Debug.Log("Microphone OFF");
+            Debug.Log("========== 🔴 MICROPHONE OFF ==========");
         }
         else
         {
-            // Turn on
+            // Turn ON
             appVoiceExperience.Activate();
             isListening = true;
-            Debug.Log("Microphone ON - Listening...");
+            Debug.Log("========== 🟢 MICROPHONE ON - LISTENING ==========");
         }
     }
 
     void OnFullTranscription(string transcription)
     {
-        Debug.Log("You said: " + transcription);
+        Debug.Log("========== You said: " + transcription + " ==========");
+        Debug.Log("isListening flag: " + isListening);
     
         string spellSaid = transcription.ToLower().Trim();
         
@@ -80,39 +95,59 @@ public class VoiceSpellCaster : MonoBehaviour
             Debug.Log("Unknown spell: " + transcription);
         }
 
-        // Resume listening after spell if it was on
+        // ALWAYS reactivate if we were listening
         if (isListening)
         {
+            Debug.Log("Starting reactivation coroutine...");
             StartCoroutine(ReactivateAfterDelay());
+        }
+        else
+        {
+            Debug.LogWarning("NOT reactivating because isListening is FALSE!");
         }
     }
 
     System.Collections.IEnumerator ReactivateAfterDelay()
     {
-        yield return new WaitForSeconds(0.5f);
+        Debug.Log("Waiting 1 second before reactivating...");
+        yield return new WaitForSeconds(1f);
         
-        if (isListening && !appVoiceExperience.Active)
+        Debug.Log("1 second passed. isListening: " + isListening);
+        
+        if (isListening)
         {
+            Debug.Log("Calling appVoiceExperience.Activate()...");
             appVoiceExperience.Activate();
-            Debug.Log("Resuming listening...");
+            Debug.Log("========== 🟢 MICROPHONE REACTIVATED ==========");
+        }
+        else
+        {
+            Debug.LogWarning("Did NOT reactivate because isListening became false!");
         }
     }
 
     void CastFireball()
     {
-        if (fireballCaster != null)
+        if (spellCaster != null)
         {
-            fireballCaster.CastFireball();
+            spellCaster.CastFireball();
         }
         else
         {
-            Debug.LogError("FireballCaster not found!");
+            Debug.LogError("SpellCaster not found!");
         }
     }
 
     void CastIce()
     {
-        Debug.Log("ICE SPELL CAST!");
+        if (spellCaster != null)
+        {
+            spellCaster.CastIceball();
+        }
+        else
+        {
+            Debug.LogError("SpellCaster not found!");
+        }
     }
 
     void CastLightning()
@@ -130,6 +165,8 @@ public class VoiceSpellCaster : MonoBehaviour
         if (appVoiceExperience != null)
         {
             appVoiceExperience.TranscriptionEvents.OnFullTranscription.RemoveListener(OnFullTranscription);
+            appVoiceExperience.VoiceEvents.OnStartListening.RemoveListener(OnStartListening);
+            appVoiceExperience.VoiceEvents.OnStoppedListening.RemoveListener(OnStoppedListening);
         }
     }
 }

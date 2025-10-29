@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1588179484441013218}
   - component: {fileID: 6475628225021605213}
   - component: {fileID: 8498274297861205590}
-  - component: {fileID: -8744866988181543475}
+  - component: {fileID: -1176400121685232776}
   m_Layer: 0
-  m_Name: GlowingFireball
+  m_Name: GlowingIceball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 71c4c1a2a5adb4315a6eccbd68cdb572, type: 2}
+  - {fileID: 2100000, guid: 6f3be6a72246641a8b11f7cda43322e2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -140,7 +140,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-8744866988181543475
+--- !u!114 &-1176400121685232776
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,9 +149,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 9120452587942675995}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32671ec0d9bfc4abf87c4d8a27ec7357, type: 3}
+  m_Script: {fileID: 11500000, guid: 679ca1640d1e74357b8467266700a716, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Fireball
-  explosionRadius: 5
-  explosionDamage: 50
-  explosionEffect: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::Iceball
+  freezeRadius: 2
+  freezeDuration: 3
+  freezeEffect: {fileID: 4924508274929071776, guid: 0edef91621bb6b34384ccc9dbb98729c, type: 3}

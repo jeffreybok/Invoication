@@ -171,4 +171,7 @@ public class RaycastPickup : MonoBehaviour
             Gizmos.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * pickupRange);
         }
     }
+
+
+
 }
