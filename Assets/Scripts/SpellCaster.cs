@@ -27,7 +27,8 @@ public class SpellCaster : MonoBehaviour
         // Only cast if holding the staff and pressing the button
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
         {
-            CastFireball();
+            //CastFireball();
+            CastIceball();
         }
     }
     

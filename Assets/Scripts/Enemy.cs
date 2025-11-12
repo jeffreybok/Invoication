@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI; // Add this for NavMeshAgent
 
 public class Enemy : MonoBehaviour
 {
@@ -8,6 +9,12 @@ public class Enemy : MonoBehaviour
     
     [Header("References")]
     public Transform player;
+    
+    [Header("AI Settings")]
+    public float detectionRadius = 10f;
+    public float fieldOfViewAngle = 110f; // How wide their vision is
+    public float moveSpeed = 3.5f;
+    public LayerMask obstacleMask; // Set this to walls/obstacles in Inspector
     
     [Header("Freeze Settings")]
     private bool isFrozen = false;
@@ -20,12 +27,23 @@ public class Enemy : MonoBehaviour
     private bool isRagdolled = false;
     private Transform hipsBone;
     
+    private NavMeshAgent navAgent; // For pathfinding
+    private bool playerInSight = false;
+    
     void Start()
     {
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
         ragdollOnOff = GetComponent<RagdollOnOff>();
         hipsBone = animator.GetBoneTransform(HumanBodyBones.Hips);
+        navAgent = GetComponent<NavMeshAgent>();
+        
+        // Set up NavMeshAgent
+        if (navAgent != null)
+        {
+            navAgent.speed = moveSpeed;
+            navAgent.stoppingDistance = 2f; // Stop 2 units away from player
+        }
         
         // Store renderers and original colors
         renderers = GetComponentsInChildren<Renderer>();
@@ -44,44 +62,123 @@ public class Enemy : MonoBehaviour
         {
             animator.Play("Armature|Idle");
         }
+        
+        // Find player if not assigned
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                player = playerObj.transform;
+            }
+        }
     }
     
     void Update()
     {
-        if (isFrozen || isDead) return; // Don't do anything while frozen
+        if (isFrozen || isDead || isRagdolled) return;
+        
+        // Check if player is in detection range and field of view
+        if (player != null)
+        {
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            
+            if (distanceToPlayer <= detectionRadius)
+            {
+                // Check if player is in field of view
+                Vector3 directionToPlayer = (player.position - transform.position).normalized;
+                float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+                
+                if (angleToPlayer <= fieldOfViewAngle / 2f)
+                {
+                    // Check line of sight with raycast
+                    if (HasLineOfSight())
+                    {
+                        playerInSight = true;
+                        ChasePlayer();
+                    }
+                    else
+                    {
+                        playerInSight = false;
+                        StopChasing();
+                    }
+                }
+                else
+                {
+                    playerInSight = false;
+                    StopChasing();
+                }
+            }
+            else
+            {
+                playerInSight = false;
+                StopChasing();
+            }
+        }
+        
+        // Update animator based on movement
+        if (animator != null && navAgent != null)
+        {
+            bool isMoving = navAgent.velocity.magnitude > 0.1f;
+            animator.SetBool("isWalking", isMoving);
+        }
     }
     
-    // void OnCollisionEnter(Collision collision)
-    // {
-    //     if (collision.gameObject.CompareTag("Pickup"))
-    //     {
-    //         // Always take damage, even when frozen
-    //         TakeDamage(30f);
-            
-    //         // Only ragdoll if NOT frozen and NOT dead
-    //         if (!isFrozen && !isDead)
-    //         {
-    //             isRagdolled = true;
-    //             StartCoroutine(WaitForRagdollToSettle());
-    //         }
-    //     }
-    // }
+    bool HasLineOfSight()
+    {
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        
+        // Raycast from enemy's eye level to player's center
+        Vector3 rayStart = transform.position + Vector3.up * 1.5f; // Adjust height as needed
+        Vector3 rayEnd = player.position + Vector3.up * 1f;
+        
+        // Draw debug ray in scene view
+        Debug.DrawRay(rayStart, (rayEnd - rayStart), playerInSight ? Color.green : Color.red);
+        
+        if (Physics.Raycast(rayStart, (rayEnd - rayStart).normalized, out RaycastHit hit, distanceToPlayer, obstacleMask))
+        {
+            // Something is blocking the view
+            return false;
+        }
+        
+        return true;
+    }
+    
+    void ChasePlayer()
+    {
+        if (navAgent != null && navAgent.enabled)
+        {
+            navAgent.SetDestination(player.position);
+        }
+    }
+    
+    void StopChasing()
+    {
+        if (navAgent != null && navAgent.enabled)
+        {
+            navAgent.ResetPath();
+        }
+    }
 
     public void OnHitByPickup()
     {
-        // Always take damage
         TakeDamage(30f);
         
-        // If frozen, don't start recovery (will recover when unfrozen)
-        // If not frozen and not dead, ragdoll normally
         if (!isFrozen && !isDead)
         {
             isRagdolled = true;
+            
+            // Disable NavMeshAgent during ragdoll
+            if (navAgent != null)
+            {
+                navAgent.enabled = false;
+            }
+            
             StartCoroutine(WaitForRagdollToSettle());
         }
         else if (isFrozen && !isDead)
         {
-            // Mark as ragdolled so we know to recover after unfreeze
             isRagdolled = true;
         }
     }
@@ -126,9 +223,14 @@ public class Enemy : MonoBehaviour
         
         AlignPositionToHips();
         
-        // Keep Y rotation, reset X and Z to stand upright
         Vector3 currentRotation = transform.rotation.eulerAngles;
         transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
+        
+        // Re-enable NavMeshAgent
+        if (navAgent != null)
+        {
+            navAgent.enabled = true;
+        }
         
         if (animator != null)
         {
@@ -154,19 +256,22 @@ public class Enemy : MonoBehaviour
         isDead = true;
         isRagdolled = true;
         
-        // Cancel freeze and restore animator if frozen
+        // Disable NavMeshAgent
+        if (navAgent != null)
+        {
+            navAgent.enabled = false;
+        }
+        
         if (isFrozen)
         {
             CancelInvoke(nameof(Unfreeze));
             isFrozen = false;
             
-            // Re-enable animator before ragdolling
             if (animator != null)
             {
                 animator.enabled = true;
             }
             
-            // Restore original colors (optional - or keep blue to show it died while frozen)
             for (int i = 0; i < renderers.Length; i++)
             {
                 Material[] mats = renderers[i].materials;
@@ -178,7 +283,6 @@ public class Enemy : MonoBehaviour
             }
         }
         
-        // Activate ragdoll
         if (ragdollOnOff != null)
         {
             ragdollOnOff.RagdollModeOn();
@@ -189,16 +293,30 @@ public class Enemy : MonoBehaviour
     
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 2f);
+        // Detection radius
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        
+        // Field of view
+        Gizmos.color = Color.blue;
+        Vector3 fovLine1 = Quaternion.AngleAxis(fieldOfViewAngle / 2f, Vector3.up) * transform.forward * detectionRadius;
+        Vector3 fovLine2 = Quaternion.AngleAxis(-fieldOfViewAngle / 2f, Vector3.up) * transform.forward * detectionRadius;
+        
+        Gizmos.DrawLine(transform.position, transform.position + fovLine1);
+        Gizmos.DrawLine(transform.position, transform.position + fovLine2);
     }
     
     public void HitByExplosion()
     {
-        // Don't ragdoll from explosion while frozen
         if (isDead || isRagdolled || isFrozen) return;
         
         isRagdolled = true;
+        
+        // Disable NavMeshAgent
+        if (navAgent != null)
+        {
+            navAgent.enabled = false;
+        }
         
         RagdollOnOff ragdoll = GetComponent<RagdollOnOff>();
         if (ragdoll != null)
@@ -230,13 +348,18 @@ public class Enemy : MonoBehaviour
         
         isFrozen = true;
         
-        // Disable animator
+        // Stop NavMeshAgent
+        if (navAgent != null)
+        {
+            navAgent.ResetPath();
+            navAgent.enabled = false;
+        }
+        
         if (animator != null)
         {
             animator.enabled = false;
         }
         
-        // Change to blue frozen color
         foreach (Renderer rend in renderers)
         {
             foreach (Material mat in rend.materials)
@@ -255,20 +378,23 @@ public class Enemy : MonoBehaviour
     
         isFrozen = false;
         
-        // If ragdolled while frozen, recover now
+        // Re-enable NavMeshAgent
+        if (navAgent != null)
+        {
+            navAgent.enabled = true;
+        }
+        
         if (isRagdolled)
         {
             StartCoroutine(WaitForRagdollToSettle());
         }
         
-        // Re-enable animator
         if (animator != null)
         {
             animator.enabled = true;
             animator.Play("Armature|Idle");
         }
         
-        // Restore original colors
         for (int i = 0; i < renderers.Length; i++)
         {
             Material[] mats = renderers[i].materials;
@@ -279,6 +405,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    
     public bool IsFrozen()
     {
         return isFrozen;

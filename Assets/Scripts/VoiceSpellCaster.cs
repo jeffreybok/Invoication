@@ -74,11 +74,11 @@ public class VoiceSpellCaster : MonoBehaviour
     
         string spellSaid = transcription.ToLower().Trim();
         
-        if (spellSaid.Contains("fireball") || spellSaid.Contains("fire ball"))
+        if (spellSaid.Contains("fire") || spellSaid.Contains("fireball") || spellSaid.Contains("fire ball"))
         {
             CastFireball();
         }
-        else if (spellSaid.Contains("ice"))
+        else if (spellSaid.Contains("ice") || spellSaid.Contains("iceball") || spellSaid.Contains("ice ball") || spellSaid.Contains("ace"))
         {
             CastIce();
         }

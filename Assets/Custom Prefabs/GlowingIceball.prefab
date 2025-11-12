@@ -152,6 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679ca1640d1e74357b8467266700a716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Iceball
-  freezeRadius: 2
+  freezeRadius: 3
   freezeDuration: 3
   freezeEffect: {fileID: 4924508274929071776, guid: 0edef91621bb6b34384ccc9dbb98729c, type: 3}
