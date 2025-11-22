@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 5706780206982513222}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.98, y: 1, z: -3.13}
+  m_LocalPosition: {x: 4.995, y: 0.975, z: 1.341}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 982f0ea74a9363c47997c497530b98cb, type: 2}
+  - {fileID: 2100000, guid: 75744d020e8030a48967c5fd46237307, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -154,5 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52943ba0e1b754e59ad60929262423bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PotionShatter
-  freezeCirclePrefab: {fileID: 4932088507883938021, guid: 0e5709a7ddb77924090c112cf73bb98a, type: 3}
+  effectPrefab: {fileID: 4932088507883938021, guid: 0e5709a7ddb77924090c112cf73bb98a, type: 3}
   shatterVelocity: 2
+  effectDuration: 3
+  potionType: 0

@@ -102,5 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52943ba0e1b754e59ad60929262423bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PotionShatter
-  freezeCirclePrefab: {fileID: 0}
+  effectPrefab: {fileID: 7986504087968017091, guid: 12a56ee4630040c4eb17ae9707ed4cef, type: 3}
   shatterVelocity: 2
+  effectDuration: 3
+  potionType: 0

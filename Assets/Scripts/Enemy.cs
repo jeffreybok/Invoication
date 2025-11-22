@@ -15,11 +15,14 @@ public class Enemy : MonoBehaviour
     public float fieldOfViewAngle = 110f; // How wide their vision is
     public float moveSpeed = 3.5f;
     public LayerMask obstacleMask; // Set this to walls/obstacles in Inspector
+    public float chaseMemoryTime = 3f; // How long to keep chasing after losing sight
+
     
     [Header("Freeze Settings")]
     private bool isFrozen = false;
     private Renderer[] renderers;
     private Color[][] originalColors;
+
     
     private Animator animator;
     private RagdollOnOff ragdollOnOff;
@@ -29,6 +32,8 @@ public class Enemy : MonoBehaviour
     
     private NavMeshAgent navAgent; // For pathfinding
     private bool playerInSight = false;
+    private bool isChasing = false;
+    private float timeSinceLastSeen = 0f;
     
     void Start()
     {
@@ -77,46 +82,54 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         if (isFrozen || isDead || isRagdolled) return;
-        
-        // Check if player is in detection range and field of view
+    
         if (player != null)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
             
+            bool canSeePlayer = false;
+            
             if (distanceToPlayer <= detectionRadius)
             {
-                // Check if player is in field of view
                 Vector3 directionToPlayer = (player.position - transform.position).normalized;
                 float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
                 
-                if (angleToPlayer <= fieldOfViewAngle / 2f)
+                if (angleToPlayer <= fieldOfViewAngle / 2f && HasLineOfSight())
                 {
-                    // Check line of sight with raycast
-                    if (HasLineOfSight())
-                    {
-                        playerInSight = true;
-                        ChasePlayer();
-                    }
-                    else
-                    {
-                        playerInSight = false;
-                        StopChasing();
-                    }
+                    canSeePlayer = true;
                 }
-                else
-                {
-                    playerInSight = false;
-                    StopChasing();
-                }
+            }
+            
+            if (canSeePlayer)
+            {
+                playerInSight = true;
+                isChasing = true;
+                timeSinceLastSeen = 0f;
+                ChasePlayer();
             }
             else
             {
                 playerInSight = false;
-                StopChasing();
+                
+                if (isChasing)
+                {
+                    timeSinceLastSeen += Time.deltaTime;
+                    
+                    if (timeSinceLastSeen < chaseMemoryTime)
+                    {
+                        // Keep chasing last known position
+                        ChasePlayer();
+                    }
+                    else
+                    {
+                        // Give up
+                        isChasing = false;
+                        StopChasing();
+                    }
+                }
             }
         }
         
-        // Update animator based on movement
         if (animator != null && navAgent != null)
         {
             bool isMoving = navAgent.velocity.magnitude > 0.1f;

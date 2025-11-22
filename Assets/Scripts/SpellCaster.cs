@@ -10,6 +10,11 @@ public class SpellCaster : MonoBehaviour
     public KeyCode castKey = KeyCode.Mouse0;
     public LayerMask aimLayers = ~0;
     
+    [Header("Spell Text Popup")]
+    public GameObject textPopupPrefab;
+    public float textFloatSpeed = 1f;
+    public float textFadeDuration = 2f;
+    
     private RaycastPickup pickupScript;
     
     void Start()
@@ -24,10 +29,8 @@ public class SpellCaster : MonoBehaviour
     
     void Update()
     {
-        // Only cast if holding the staff and pressing the button
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
         {
-            //CastFireball();
             CastIceball();
         }
     }
@@ -37,7 +40,6 @@ public class SpellCaster : MonoBehaviour
         if (pickupScript != null && pickupScript.heldItem != null)
         {
             string itemName = pickupScript.heldItem.name.ToLower();
-            // REMOVED the Debug.Log from here - it was spamming!
             return itemName.Contains("staff") || itemName.Contains("wand") || itemName.Contains("magic");
         }
         return false;
@@ -64,6 +66,7 @@ public class SpellCaster : MonoBehaviour
         {
             spawnPos = Camera.main.transform.position + Camera.main.transform.forward * 0.5f;
         }
+        
         
         Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         Vector3 targetPoint;
@@ -114,6 +117,7 @@ public class SpellCaster : MonoBehaviour
             spawnPos = Camera.main.transform.position + Camera.main.transform.forward * 0.5f;
         }
         
+
         Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         Vector3 targetPoint;
         

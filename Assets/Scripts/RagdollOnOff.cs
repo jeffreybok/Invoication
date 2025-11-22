@@ -24,6 +24,13 @@ public class RagdollOnOff : MonoBehaviour
     {
         if(collision.gameObject.tag == "Pickup")
         {
+            // Check if the pickup was moving fast enough (i.e., was thrown)
+            Rigidbody pickupRb = collision.gameObject.GetComponent<Rigidbody>();
+            float impactVelocity = pickupRb != null ? pickupRb.linearVelocity.magnitude : 0f;
+            
+            // Only ragdoll if the item was thrown with enough force
+            if (impactVelocity < 3f) return; // Adjust threshold as needed
+            
             // Tell enemy it was hit
             if (enemyScript != null)
             {
