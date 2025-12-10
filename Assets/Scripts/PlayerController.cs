@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     [Header("Mouse Look")]
     public float mouseSensitivity = 2f;
     public float upDownRange = 60f;
+    public float mouseSmoothTime = 0.03f; // Add smoothing
+
+    private Vector2 currentMouseDelta = Vector2.zero;
+    private Vector2 currentMouseDeltaVelocity = Vector2.zero;
     
     [Header("Jump Settings")]
     public float jumpBufferTime = 0.2f; // Time window to buffer jump input
@@ -27,6 +31,9 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
+        Application.targetFrameRate = 60; // Force 60 FPS
+
+
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
         
@@ -95,8 +102,14 @@ public class PlayerController : MonoBehaviour
     
     void HandleMouseLook()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        // Get target mouse delta
+        Vector2 targetMouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        
+        // Smooth the mouse movement
+        currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, targetMouseDelta, ref currentMouseDeltaVelocity, mouseSmoothTime);
+        
+        float mouseX = currentMouseDelta.x * mouseSensitivity;
+        float mouseY = currentMouseDelta.y * mouseSensitivity;
         
         transform.Rotate(0, mouseX, 0);
         
