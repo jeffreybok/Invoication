@@ -1,41 +1,47 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
     public float maxHealth = 100f;
-    public float currentHealth;
+    public float currentHealth = 100f;
 
     [Header("UI References")]
-    public Image healthBarFill;
-    public Text healthText; // Optional: to display numbers
+    public Text healthText;
 
-    [Header("Color Settings")]
-    public Color fullHealthColor = Color.green;
-    public Color halfHealthColor = Color.yellow;
-    public Color lowHealthColor = Color.red;
+    [Header("Game Over")]
+    public GameObject gameOverScreen;
+    public string mainMenuSceneName = "StartScreenScene";
+
+    public bool isDead = false;
 
     void Start()
     {
         currentHealth = maxHealth;
         UpdateHealthBar();
+
+        if (gameOverScreen != null)
+            gameOverScreen.SetActive(false);
     }
 
     public void TakeDamage(float damage)
     {
+        if (isDead) return;
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthBar();
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     public void Heal(float amount)
     {
+        if (isDead) return;
+
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthBar();
@@ -43,42 +49,35 @@ public class PlayerHealth : MonoBehaviour
 
     void UpdateHealthBar()
     {
-        if (healthBarFill != null)
-        {
-            float fillAmount = currentHealth / maxHealth;
-            healthBarFill.fillAmount = fillAmount;
-
-            // Change color based on health percentage
-            if (fillAmount > 0.5f)
-            {
-                healthBarFill.color = Color.Lerp(halfHealthColor, fullHealthColor, (fillAmount - 0.5f) * 2);
-            }
-            else
-            {
-                healthBarFill.color = Color.Lerp(lowHealthColor, halfHealthColor, fillAmount * 2);
-            }
-        }
-
-        // Optional: Update text display
         if (healthText != null)
-        {
-            healthText.text = currentHealth.ToString("0") + " / " + maxHealth.ToString("0");
-        }
+            healthText.text = "HP: " + currentHealth.ToString("0") + " / " + maxHealth.ToString("0");
     }
 
     void Die()
     {
+        isDead = true;
         Debug.Log("Player Died!");
-        // Add your death logic here
+
+        if (gameOverScreen != null)
+            gameOverScreen.SetActive(true);
+
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
-    // Example: Test with keyboard
+    public void GoToMainMenu()
+    {  
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("StartScreenScene");
+    }
+
     void Update()
     {
-        
         if (Input.GetKeyDown(KeyCode.H))
-        {
             Heal(10f);
-        }
+        if (Input.GetKeyDown(KeyCode.J))
+            TakeDamage(10f);
     }
 }
