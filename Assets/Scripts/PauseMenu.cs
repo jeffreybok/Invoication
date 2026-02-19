@@ -6,7 +6,8 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenuUI;
     public GameObject player; // Reference to your player
     
-    private bool isPaused = false;
+    public static bool IsPaused { get; private set; } = false;
+    
     private PlayerController playerController;
     private RaycastPickup raycastPickup;
 
@@ -26,7 +27,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused)
+            Debug.Log($"Escape pressed, IsPaused = {IsPaused}");
+            if (IsPaused)
             {
                 Resume();
             }
@@ -41,7 +43,7 @@ public class PauseMenu : MonoBehaviour
     {
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
-        isPaused = false;
+        IsPaused = false;
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -55,7 +57,7 @@ public class PauseMenu : MonoBehaviour
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
-        isPaused = true;
+        IsPaused = true;
         
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

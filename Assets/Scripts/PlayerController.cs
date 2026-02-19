@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
     {
         Application.targetFrameRate = 60; // Force 60 FPS
 
-
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
         
@@ -48,6 +47,8 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
+        if (PauseMenu.IsPaused) return;
+        
         HandleMovement();
         HandleMouseLook();
     }
@@ -120,7 +121,7 @@ public class PlayerController : MonoBehaviour
     
     void OnApplicationFocus(bool hasFocus)
     {
-        if (hasFocus)
+        if (hasFocus && !PauseMenu.IsPaused)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

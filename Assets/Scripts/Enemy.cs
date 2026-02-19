@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.AI; // Add this for NavMeshAgent
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
@@ -12,25 +12,31 @@ public class Enemy : MonoBehaviour
     
     [Header("AI Settings")]
     public float detectionRadius = 10f;
-    public float fieldOfViewAngle = 110f; // How wide their vision is
+    public float fieldOfViewAngle = 110f;
     public float moveSpeed = 3.5f;
-    public LayerMask obstacleMask; // Set this to walls/obstacles in Inspector
-    public float chaseMemoryTime = 3f; // How long to keep chasing after losing sight
+    public LayerMask obstacleMask;
+    public float chaseMemoryTime = 3f;
 
-    
+    [Header("Attack Settings")]
+    public float attackDamage = 10f;
+    public float attackCooldown = 1.5f;
+    public float attackRange = 2f;
+
+    private float lastAttackTime;
+    private PlayerHealth playerHealth;
+
     [Header("Freeze Settings")]
     private bool isFrozen = false;
     private Renderer[] renderers;
     private Color[][] originalColors;
 
-    
     private Animator animator;
     private RagdollOnOff ragdollOnOff;
     private bool isDead = false;
     private bool isRagdolled = false;
     private Transform hipsBone;
     
-    private NavMeshAgent navAgent; // For pathfinding
+    private NavMeshAgent navAgent;
     private bool playerInSight = false;
     private bool isChasing = false;
     private float timeSinceLastSeen = 0f;
@@ -43,14 +49,12 @@ public class Enemy : MonoBehaviour
         hipsBone = animator.GetBoneTransform(HumanBodyBones.Hips);
         navAgent = GetComponent<NavMeshAgent>();
         
-        // Set up NavMeshAgent
         if (navAgent != null)
         {
             navAgent.speed = moveSpeed;
-            navAgent.stoppingDistance = 2f; // Stop 2 units away from player
+            navAgent.stoppingDistance = 2f;
         }
         
-        // Store renderers and original colors
         renderers = GetComponentsInChildren<Renderer>();
         originalColors = new Color[renderers.Length][];
         
@@ -64,19 +68,19 @@ public class Enemy : MonoBehaviour
         }
         
         if (animator != null)
-        {
             animator.Play("Armature|Idle");
-        }
         
-        // Find player if not assigned
+        // Always find playerHealth regardless of how player was assigned
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj != null)
-            {
                 player = playerObj.transform;
-            }
         }
+
+        // This now always runs
+        if (player != null)
+            playerHealth = player.GetComponent<PlayerHealth>();
     }
     
     void Update()
@@ -106,6 +110,7 @@ public class Enemy : MonoBehaviour
                 isChasing = true;
                 timeSinceLastSeen = 0f;
                 ChasePlayer();
+                TryAttackPlayer(distanceToPlayer);
             }
             else
             {
@@ -117,12 +122,10 @@ public class Enemy : MonoBehaviour
                     
                     if (timeSinceLastSeen < chaseMemoryTime)
                     {
-                        // Keep chasing last known position
                         ChasePlayer();
                     }
                     else
                     {
-                        // Give up
                         isChasing = false;
                         StopChasing();
                     }
@@ -142,16 +145,13 @@ public class Enemy : MonoBehaviour
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         
-        // Raycast from enemy's eye level to player's center
-        Vector3 rayStart = transform.position + Vector3.up * 1.5f; // Adjust height as needed
+        Vector3 rayStart = transform.position + Vector3.up * 1.5f;
         Vector3 rayEnd = player.position + Vector3.up * 1f;
         
-        // Draw debug ray in scene view
         Debug.DrawRay(rayStart, (rayEnd - rayStart), playerInSight ? Color.green : Color.red);
         
         if (Physics.Raycast(rayStart, (rayEnd - rayStart).normalized, out RaycastHit hit, distanceToPlayer, obstacleMask))
         {
-            // Something is blocking the view
             return false;
         }
         
@@ -174,6 +174,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void TryAttackPlayer(float distanceToPlayer)
+    {
+        if (playerHealth == null || playerHealth.isDead)
+            return;
+
+        if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
+        {
+            lastAttackTime = Time.time;
+            playerHealth.TakeDamage(attackDamage);
+            Debug.Log("Goblin attacked player for " + attackDamage + " damage!");
+        }
+    }
+
     public void OnHitByPickup()
     {
         TakeDamage(30f);
@@ -182,7 +195,6 @@ public class Enemy : MonoBehaviour
         {
             isRagdolled = true;
             
-            // Disable NavMeshAgent during ragdoll
             if (navAgent != null)
             {
                 navAgent.enabled = false;
@@ -239,7 +251,6 @@ public class Enemy : MonoBehaviour
         Vector3 currentRotation = transform.rotation.eulerAngles;
         transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
         
-        // Re-enable NavMeshAgent
         if (navAgent != null)
         {
             navAgent.enabled = true;
@@ -269,7 +280,6 @@ public class Enemy : MonoBehaviour
         isDead = true;
         isRagdolled = true;
         
-        // Disable NavMeshAgent
         if (navAgent != null)
         {
             navAgent.enabled = false;
@@ -306,11 +316,9 @@ public class Enemy : MonoBehaviour
     
     void OnDrawGizmosSelected()
     {
-        // Detection radius
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
         
-        // Field of view
         Gizmos.color = Color.blue;
         Vector3 fovLine1 = Quaternion.AngleAxis(fieldOfViewAngle / 2f, Vector3.up) * transform.forward * detectionRadius;
         Vector3 fovLine2 = Quaternion.AngleAxis(-fieldOfViewAngle / 2f, Vector3.up) * transform.forward * detectionRadius;
@@ -325,7 +333,6 @@ public class Enemy : MonoBehaviour
         
         isRagdolled = true;
         
-        // Disable NavMeshAgent
         if (navAgent != null)
         {
             navAgent.enabled = false;
@@ -347,7 +354,7 @@ public class Enemy : MonoBehaviour
         Vector3 originalHipsPosition = hipsBone.position;
         transform.position = hipsBone.position;
 
-        if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo))
         {
             transform.position = new Vector3(transform.position.x, hitInfo.point.y, transform.position.z);
         }
@@ -361,7 +368,6 @@ public class Enemy : MonoBehaviour
         
         isFrozen = true;
         
-        // Stop NavMeshAgent
         if (navAgent != null)
         {
             navAgent.ResetPath();
@@ -391,7 +397,6 @@ public class Enemy : MonoBehaviour
     
         isFrozen = false;
         
-        // Re-enable NavMeshAgent
         if (navAgent != null)
         {
             navAgent.enabled = true;
