@@ -1623,7 +1623,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 688036264644456354, guid: c61063d231c1a2d4bb1dd06a0a00891a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1222176508028131644, guid: c61063d231c1a2d4bb1dd06a0a00891a, type: 3}
       propertyPath: m_LocalScale.x
@@ -3547,6 +3547,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   chaseMemoryTime: 3
+  attackDamage: 10
+  attackCooldown: 1.5
+  attackRange: 2
 --- !u!95 &230478358 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
@@ -10949,6 +10952,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   chaseMemoryTime: 3
+  attackDamage: 10
+  attackCooldown: 1.5
+  attackRange: 2
 --- !u!95 &793512066 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
@@ -18443,6 +18449,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   chaseMemoryTime: 3
+  attackDamage: 10
+  attackCooldown: 1.5
+  attackRange: 2
 --- !u!95 &1392960333 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
