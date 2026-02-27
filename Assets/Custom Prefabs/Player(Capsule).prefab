@@ -398,7 +398,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2b3ab5603944d8389efc64689e4df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireballCaster
-  fireballPrefab: {fileID: 9120452587942675995, guid: 18f1586b5341742578e6349a5a066100, type: 3}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  fireballPrefab: {fileID: -139211636351918716, guid: 18f1586b5341742578e6349a5a066100, type: 3}
   iceballPrefab: {fileID: 9120452587942675995, guid: 847da23b037004bd7b30cd4671fa7545, type: 3}
   fireballSpawnPoint: {fileID: 0}
   fireballSpeed: 20

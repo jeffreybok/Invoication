@@ -1,9 +1,14 @@
 using UnityEngine;
+using PurrNet;
 
-public class SpellCaster : MonoBehaviour
+public class SpellCaster : NetworkBehaviour
 {
-    public GameObject fireballPrefab;
+    // IMPORTANT: drag the Fireball prefab's NetworkIdentity component here
+    public NetworkIdentity fireballPrefab;
+
+    // Keeping your iceball setup as-is (we can network it next)
     public GameObject iceballPrefab;
+
     public Transform fireballSpawnPoint;
     public float fireballSpeed = 20f;
     public float iceballSpeed = 20f;
@@ -27,6 +32,8 @@ public class SpellCaster : MonoBehaviour
 
     void Update()
     {
+        if (!isOwner) return;
+
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
         {
             CastIceball();
@@ -45,14 +52,15 @@ public class SpellCaster : MonoBehaviour
 
     public void CastFireball()
     {
+        Debug.Log("CASTING FIREBALL!");
+
         if (fireballPrefab == null)
         {
-            Debug.LogError("Fireball prefab not assigned!");
+            Debug.LogError("Fireball NetworkIdentity prefab not assigned!");
             return;
         }
 
-        Vector3 spawnPos = Camera.main.transform.position +
-                           Camera.main.transform.forward * 1.8f; // Spawn further forward
+        Vector3 spawnPos = Camera.main.transform.position + Camera.main.transform.forward * 1.8f;
 
         Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         Vector3 targetPoint;
@@ -65,9 +73,25 @@ public class SpellCaster : MonoBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
 
-        GameObject fireball = Instantiate(fireballPrefab, spawnPos, Quaternion.identity);
+        // Ask host to spawn it so everyone sees it
+        CastFireball_ServerRPC(spawnPos, shootDirection);
+    }
 
-        // Assign owner
+    [ServerRpc]
+    void CastFireball_ServerRPC(Vector3 spawnPos, Vector3 direction)
+    {
+        // Instantiate automatically spawns for all clients
+        NetworkIdentity fireballIdentity = Instantiate(
+            fireballPrefab,
+            spawnPos,
+            Quaternion.LookRotation(direction)
+        );
+
+        // ✅ NO ownership — server owns it, everyone sees it
+        // fireballIdentity.GiveOwnership(...) is NOT called
+
+        GameObject fireball = fireballIdentity.gameObject;
+
         Fireball fb = fireball.GetComponent<Fireball>();
         if (fb != null)
             fb.SetOwner(gameObject);
@@ -75,23 +99,25 @@ public class SpellCaster : MonoBehaviour
         Rigidbody rb = fireball.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.linearVelocity = shootDirection * fireballSpeed;
+            rb.linearVelocity = direction * fireballSpeed;
             rb.useGravity = false;
         }
 
+        // Auto-despawn for everyone after 5 seconds
         Destroy(fireball, 5f);
     }
 
     public void CastIceball()
     {
+        Debug.Log("CASTING ICEBALL!");
+
         if (iceballPrefab == null)
         {
             Debug.LogError("Iceball prefab not assigned!");
             return;
         }
 
-        Vector3 spawnPos = Camera.main.transform.position +
-                           Camera.main.transform.forward * 1.8f; // Spawn further forward
+        Vector3 spawnPos = Camera.main.transform.position + Camera.main.transform.forward * 1.8f;
 
         Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         Vector3 targetPoint;
@@ -104,11 +130,8 @@ public class SpellCaster : MonoBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
 
+        // Still local for now (we'll network this next)
         GameObject iceball = Instantiate(iceballPrefab, spawnPos, Quaternion.identity);
-
-        Fireball fb = iceball.GetComponent<Fireball>();
-        if (fb != null)
-            fb.SetOwner(gameObject);
 
         Rigidbody rb = iceball.GetComponent<Rigidbody>();
         if (rb != null)
