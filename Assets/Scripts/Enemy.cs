@@ -40,6 +40,9 @@ public class Enemy : MonoBehaviour
     private bool playerInSight = false;
     private bool isChasing = false;
     private float timeSinceLastSeen = 0f;
+
+    // Burn state
+    private bool isBurning = false;
     
     void Start()
     {
@@ -70,7 +73,6 @@ public class Enemy : MonoBehaviour
         if (animator != null)
             animator.Play("Armature|Idle");
         
-        // Always find playerHealth regardless of how player was assigned
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -78,7 +80,6 @@ public class Enemy : MonoBehaviour
                 player = playerObj.transform;
         }
 
-        // This now always runs
         if (player != null)
             playerHealth = player.GetComponent<PlayerHealth>();
     }
@@ -161,23 +162,18 @@ public class Enemy : MonoBehaviour
     void ChasePlayer()
     {
         if (navAgent != null && navAgent.enabled)
-        {
             navAgent.SetDestination(player.position);
-        }
     }
     
     void StopChasing()
     {
         if (navAgent != null && navAgent.enabled)
-        {
             navAgent.ResetPath();
-        }
     }
 
     void TryAttackPlayer(float distanceToPlayer)
     {
-        if (playerHealth == null || playerHealth.isDead)
-            return;
+        if (playerHealth == null || playerHealth.isDead) return;
 
         if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
         {
@@ -196,9 +192,7 @@ public class Enemy : MonoBehaviour
             isRagdolled = true;
             
             if (navAgent != null)
-            {
                 navAgent.enabled = false;
-            }
             
             StartCoroutine(WaitForRagdollToSettle());
         }
@@ -232,17 +226,13 @@ public class Enemy : MonoBehaviour
         }
         
         if (!isDead && !isFrozen)
-        {
             RecoverFromRagdoll();
-        }
     }
     
     void RecoverFromRagdoll()
     {
         if (ragdollOnOff != null)
-        {
             ragdollOnOff.RagdollModeOff();
-        }
         
         isRagdolled = false;
         
@@ -252,14 +242,10 @@ public class Enemy : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
         
         if (navAgent != null)
-        {
             navAgent.enabled = true;
-        }
         
         if (animator != null)
-        {
             animator.Play("Armature|Idle");
-        }
     }
     
     public void TakeDamage(float damage)
@@ -270,9 +256,7 @@ public class Enemy : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth, 0);
         
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
     
     void Die()
@@ -281,9 +265,7 @@ public class Enemy : MonoBehaviour
         isRagdolled = true;
         
         if (navAgent != null)
-        {
             navAgent.enabled = false;
-        }
         
         if (isFrozen)
         {
@@ -291,9 +273,7 @@ public class Enemy : MonoBehaviour
             isFrozen = false;
             
             if (animator != null)
-            {
                 animator.enabled = true;
-            }
             
             for (int i = 0; i < renderers.Length; i++)
             {
@@ -305,11 +285,17 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
+
+        // Stop burn if active
+        if (isBurning)
+        {
+            StopAllCoroutines();
+            isBurning = false;
+            RestoreOriginalColors();
+        }
         
         if (ragdollOnOff != null)
-        {
             ragdollOnOff.RagdollModeOn();
-        }
         
         Destroy(gameObject, 5f);
     }
@@ -334,15 +320,11 @@ public class Enemy : MonoBehaviour
         isRagdolled = true;
         
         if (navAgent != null)
-        {
             navAgent.enabled = false;
-        }
         
         RagdollOnOff ragdoll = GetComponent<RagdollOnOff>();
         if (ragdoll != null)
-        {
             ragdoll.RagdollModeOn();
-        }
         
         StartCoroutine(WaitForRagdollToSettle());
     }
@@ -355,9 +337,7 @@ public class Enemy : MonoBehaviour
         transform.position = hipsBone.position;
 
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo))
-        {
             transform.position = new Vector3(transform.position.x, hitInfo.point.y, transform.position.z);
-        }
 
         hipsBone.position = originalHipsPosition;
     }
@@ -375,9 +355,7 @@ public class Enemy : MonoBehaviour
         }
         
         if (animator != null)
-        {
             animator.enabled = false;
-        }
         
         foreach (Renderer rend in renderers)
         {
@@ -398,14 +376,10 @@ public class Enemy : MonoBehaviour
         isFrozen = false;
         
         if (navAgent != null)
-        {
             navAgent.enabled = true;
-        }
         
         if (isRagdolled)
-        {
             StartCoroutine(WaitForRagdollToSettle());
-        }
         
         if (animator != null)
         {
@@ -413,6 +387,11 @@ public class Enemy : MonoBehaviour
             animator.Play("Armature|Idle");
         }
         
+        RestoreOriginalColors();
+    }
+
+    void RestoreOriginalColors()
+    {
         for (int i = 0; i < renderers.Length; i++)
         {
             Material[] mats = renderers[i].materials;
@@ -427,5 +406,36 @@ public class Enemy : MonoBehaviour
     public bool IsFrozen()
     {
         return isFrozen;
+    }
+
+    public void ApplyBurn(float damagePerTick, float duration, float tickInterval = 0.5f)
+    {
+        if (isDead) return;
+        if (isBurning) StopCoroutine(nameof(BurnCoroutine));
+        StartCoroutine(BurnCoroutine(damagePerTick, duration, tickInterval));
+    }
+
+    System.Collections.IEnumerator BurnCoroutine(float damagePerTick, float duration, float tickInterval)
+    {
+        isBurning = true;
+
+        // Tint enemy orange while burning
+        foreach (Renderer rend in renderers)
+            foreach (Material mat in rend.materials)
+                mat.color = new Color(1f, 0.4f, 0f, 1f);
+
+        float elapsed = 0f;
+        while (elapsed < duration && !isDead)
+        {
+            TakeDamage(damagePerTick);
+            elapsed += tickInterval;
+            yield return new WaitForSeconds(tickInterval);
+        }
+
+        isBurning = false;
+
+        // Restore colors only if not frozen (freeze has its own color)
+        if (!isFrozen && !isDead)
+            RestoreOriginalColors();
     }
 }
