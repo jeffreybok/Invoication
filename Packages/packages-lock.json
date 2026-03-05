@@ -106,7 +106,11 @@
     },
     "com.unity.burst": {
       "version": "1.8.25",
+<<<<<<< HEAD
+      "depth": 1,
+=======
       "depth": 0,
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
@@ -204,14 +208,23 @@
       }
     },
     "com.unity.nuget.mono-cecil": {
+<<<<<<< HEAD
+      "version": "1.11.6",
+      "depth": 0,
+=======
       "version": "1.11.5",
       "depth": 1,
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.newtonsoft-json": {
+<<<<<<< HEAD
+      "version": "3.2.2",
+=======
       "version": "3.2.1",
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -316,7 +329,11 @@
     },
     "com.unity.test-framework.performance": {
       "version": "3.2.0",
+<<<<<<< HEAD
+      "depth": 2,
+=======
       "depth": 1,
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.33",

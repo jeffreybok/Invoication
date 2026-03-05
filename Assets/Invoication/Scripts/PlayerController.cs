@@ -1,6 +1,7 @@
 using UnityEngine;
+using PurrNet;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     [Header("Movement")]
     public float walkSpeed = 5f;
@@ -11,14 +12,14 @@ public class PlayerController : MonoBehaviour
     [Header("Mouse Look")]
     public float mouseSensitivity = 2f;
     public float upDownRange = 60f;
-    public float mouseSmoothTime = 0.03f; // Add smoothing
+    public float mouseSmoothTime = 0.03f;
 
     private Vector2 currentMouseDelta = Vector2.zero;
     private Vector2 currentMouseDeltaVelocity = Vector2.zero;
     
     [Header("Jump Settings")]
-    public float jumpBufferTime = 0.2f; // Time window to buffer jump input
-    public float coyoteTime = 0.15f; // Extra time to jump after leaving ground
+    public float jumpBufferTime = 0.2f;
+    public float coyoteTime = 0.15f;
     
     private Camera playerCamera;
     private CharacterController characterController;
@@ -31,15 +32,10 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
-        Application.targetFrameRate = 60; // Force 60 FPS
+        Application.targetFrameRate = 60;
 
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
-        
-        if (characterController == null)
-            Debug.LogError("CharacterController not found!");
-        if (playerCamera == null)
-            Debug.LogError("Camera not found!");
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -47,6 +43,7 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
+        if (!isOwner) return;
         if (PauseMenu.IsPaused) return;
         
         HandleMovement();
@@ -62,40 +59,29 @@ public class PlayerController : MonoBehaviour
         float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
         moveDirection *= speed;
         
-        // Jump input buffering
         if (Input.GetButtonDown("Jump"))
-        {
             jumpBufferCounter = jumpBufferTime;
-        }
         else
-        {
             jumpBufferCounter -= Time.deltaTime;
-        }
         
-        // Coyote time (grace period after leaving ground)
         if (characterController.isGrounded)
         {
             coyoteTimeCounter = coyoteTime;
-            verticalVelocity = -2f; // Small downward force to keep grounded
+            verticalVelocity = -2f;
         }
         else
         {
             coyoteTimeCounter -= Time.deltaTime;
         }
         
-        // Check for jump (with buffer and coyote time)
         if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
         {
             verticalVelocity = jumpForce;
-            jumpBufferCounter = 0; // Consume the jump
-            Debug.Log("Jump executed!");
+            jumpBufferCounter = 0;
         }
         
-        // Apply gravity
         if (!characterController.isGrounded)
-        {
             verticalVelocity -= gravity * Time.deltaTime;
-        }
         
         moveDirection.y = verticalVelocity;
         characterController.Move(moveDirection * Time.deltaTime);
@@ -103,11 +89,17 @@ public class PlayerController : MonoBehaviour
     
     void HandleMouseLook()
     {
-        // Get target mouse delta
-        Vector2 targetMouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 targetMouseDelta = new Vector2(
+            Input.GetAxis("Mouse X"),
+            Input.GetAxis("Mouse Y")
+        );
         
-        // Smooth the mouse movement
-        currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, targetMouseDelta, ref currentMouseDeltaVelocity, mouseSmoothTime);
+        currentMouseDelta = Vector2.SmoothDamp(
+            currentMouseDelta,
+            targetMouseDelta,
+            ref currentMouseDeltaVelocity,
+            mouseSmoothTime
+        );
         
         float mouseX = currentMouseDelta.x * mouseSensitivity;
         float mouseY = currentMouseDelta.y * mouseSensitivity;

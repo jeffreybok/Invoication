@@ -8,15 +8,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/StartScreenScene.unity
     guid: 0d3f05a4c2ba34e009255d4f055fbaf5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TutorialLevel.unity
     guid: 3ad3fca1a32aa45ddb5fc404b83ac54f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EndScreenScene.unity
     guid: 8ae71b95bfd18449c86e8e3fe011a72a
+  - enabled: 1
+    path: Assets/Scenes/Multiplayer-Test.unity
+    guid: 82efb844332b54101a1bb9e7adf407ec
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
