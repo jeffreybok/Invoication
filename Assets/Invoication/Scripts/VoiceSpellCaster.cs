@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using Meta.WitAi;
 using Oculus.Voice;
 
@@ -13,6 +14,11 @@ public class VoiceSpellCaster : MonoBehaviour
     public Transform textSpawnPoint;
     public float textFloatSpeed = 1f;
     public float textFadeDuration = 2f;
+
+    [Header("Mic Indicator")]
+    public UnityEngine.UI.Image micIndicatorImage;
+    public Color micOnColor = Color.green;
+    public Color micOffColor = Color.red;
 
     void Start()
     {
@@ -31,6 +37,7 @@ public class VoiceSpellCaster : MonoBehaviour
         {
             Debug.LogError("AppVoiceExperience not found!");
         }
+        UpdateMicIndicator();
     }
 
     void Update()
@@ -59,14 +66,13 @@ public class VoiceSpellCaster : MonoBehaviour
         {
             appVoiceExperience.Deactivate();
             isListening = false;
-            Debug.Log("========== 🔴 MICROPHONE OFF ==========");
         }
         else
         {
             appVoiceExperience.Activate();
             isListening = true;
-            Debug.Log("========== 🟢 MICROPHONE ON - LISTENING ==========");
         }
+        UpdateMicIndicator();
     }
 
     void OnFullTranscription(string transcription)
@@ -74,7 +80,6 @@ public class VoiceSpellCaster : MonoBehaviour
         Debug.Log("========== You said: " + transcription + " ==========");
         Debug.Log("isListening flag: " + isListening);
         
-        // Show whatever was said as floating text
         ShowSpellText(transcription);
     
         string spellSaid = transcription.ToLower().Trim();
@@ -82,6 +87,10 @@ public class VoiceSpellCaster : MonoBehaviour
         if (spellSaid.Contains("fire") || spellSaid.Contains("fireball") || spellSaid.Contains("fire ball") || spellSaid.Contains("fire bowl"))
         {
             CastFireball();
+        }
+        else if (spellSaid.Contains("blazing") || spellSaid.Contains("blazing impact"))
+        {
+            CastBlazingImpact();
         }
         else if (spellSaid.Contains("ice") || spellSaid.Contains("iceball") || spellSaid.Contains("ice ball") || spellSaid.Contains("ace") || spellSaid.Contains("nice"))
         {
@@ -114,26 +123,44 @@ public class VoiceSpellCaster : MonoBehaviour
     void ShowSpellText(string text)
     {
         if (textPopupPrefab == null) return;
-        
-        Vector3 spawnPos;
-        if (textSpawnPoint != null)
-        {
-            spawnPos = textSpawnPoint.position;
-        }
-        else
-        {
-            spawnPos = Camera.main.transform.position + 
-                       Camera.main.transform.forward * 2f + 
-                       Vector3.up * 1f;
-        }
-        
+
+        Vector3 spawnPos = textSpawnPoint != null
+            ? textSpawnPoint.position
+            : Camera.main.transform.position + Camera.main.transform.forward * 5f + Vector3.up * 1f;
+
         GameObject popup = Instantiate(textPopupPrefab, spawnPos, Quaternion.identity);
-        SpellTextAnimation anim = popup.GetComponent<SpellTextAnimation>();
-        
-        if (anim != null)
+        TextMeshPro textMesh = popup.GetComponent<TextMeshPro>();
+
+        if (textMesh != null)
+            textMesh.text = text.ToUpper();
+
+        StartCoroutine(AnimateText(popup, textMesh));
+    }
+
+    private System.Collections.IEnumerator AnimateText(GameObject popup, TextMeshPro textMesh)
+    {
+        float timer = 0f;
+        Color startColor = textMesh != null ? textMesh.color : Color.white;
+        Camera mainCamera = Camera.main;
+
+        while (timer < textFadeDuration)
         {
-            anim.Initialize(text, textFloatSpeed, textFadeDuration);
+            popup.transform.position += Vector3.up * textFloatSpeed * Time.deltaTime;
+
+            if (mainCamera != null)
+                popup.transform.LookAt(popup.transform.position + mainCamera.transform.forward);
+
+            if (textMesh != null)
+            {
+                float alpha = Mathf.Lerp(1f, 0f, timer / textFadeDuration);
+                textMesh.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
         }
+
+        Destroy(popup);
     }
 
     System.Collections.IEnumerator ReactivateAfterDelay()
@@ -158,25 +185,24 @@ public class VoiceSpellCaster : MonoBehaviour
     void CastFireball()
     {
         if (spellCaster != null)
-        {
             spellCaster.CastFireball();
-        }
         else
-        {
             Debug.LogError("SpellCaster not found!");
-        }
+    }
+
+    void CastBlazingImpact(){
+        if(spellCaster != null)
+            spellCaster.CastBlazingImpact();
+        else
+            Debug.LogError("SpellCaster not found!");
     }
 
     void CastIce()
     {
         if (spellCaster != null)
-        {
             spellCaster.CastIceball();
-        }
         else
-        {
             Debug.LogError("SpellCaster not found!");
-        }
     }
 
     void CastLightning()
@@ -197,5 +223,11 @@ public class VoiceSpellCaster : MonoBehaviour
             appVoiceExperience.VoiceEvents.OnStartListening.RemoveListener(OnStartListening);
             appVoiceExperience.VoiceEvents.OnStoppedListening.RemoveListener(OnStoppedListening);
         }
+    }
+
+    void UpdateMicIndicator()
+    {
+        if (micIndicatorImage != null)
+            micIndicatorImage.color = isListening ? micOnColor : micOffColor;
     }
 }

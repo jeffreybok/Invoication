@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66869b09091574e4c972f42f5ae2268e, type: 3}
+  m_Name: NetworkPrefabs
+  m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkPrefabs
+  autoGenerate: 1
+  networkOnly: 1
+  poolByDefault: 0
+  folder: {fileID: 102900000, guid: 00000000000000001000000000000000, type: 3}
+  linkedNetworkPrefabs:
+  - {fileID: 0}
+  prefabs:
+  - guid: 9dd983900befd492fba9b3fbe581677c
+    prefab: {fileID: 1149732754908716945, guid: 9dd983900befd492fba9b3fbe581677c, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: ff0571096caa349799aeb43f40c919c5
+    prefab: {fileID: 1149732754908716945, guid: ff0571096caa349799aeb43f40c919c5, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 18f1586b5341742578e6349a5a066100
+    prefab: {fileID: 9120452587942675995, guid: 18f1586b5341742578e6349a5a066100, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 847da23b037004bd7b30cd4671fa7545
+    prefab: {fileID: 9120452587942675995, guid: 847da23b037004bd7b30cd4671fa7545, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 052d9c46cb3dd40dc86787e1e641acd5
+    prefab: {fileID: 1992337373087132618, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 1f1bcebd4ecd148d7b1833367fd508fd
+    prefab: {fileID: 1251840346750836035, guid: 1f1bcebd4ecd148d7b1833367fd508fd, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 4db1e18f18fd24b8fbce1c4a6657a5bd
+    prefab: {fileID: 6725845544889816395, guid: 4db1e18f18fd24b8fbce1c4a6657a5bd, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 6d9336f62087646a2b64f65b15bcbd5b
+    prefab: {fileID: 5706780206982513222, guid: 6d9336f62087646a2b64f65b15bcbd5b, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: e0f9ecdbab1654c1491803a22586adea
+    prefab: {fileID: 7505545618399885610, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: f9011a72844034c17b37e6b06d529af6
+    prefab: {fileID: 1981911422838230816, guid: f9011a72844034c17b37e6b06d529af6, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: b3fe3a8b417d54f9fb4be076977f24ec
+    prefab: {fileID: 9120452587942675995, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+    pooled: 0
+    warmupCount: 5
+  - guid: 6cc8f78fd14a9451f8b85f89269c4043
+    prefab: {fileID: 4587101013541356480, guid: 6cc8f78fd14a9451f8b85f89269c4043, type: 3}
+    pooled: 0
+    warmupCount: 5
