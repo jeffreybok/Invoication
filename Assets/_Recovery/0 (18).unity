@@ -1966,6 +1966,66 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92daf0a8c08653f4f8e79a0318a99c88, type: 3}
+--- !u!1001 &149716504
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.0365634
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.616798
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 344578185164584831, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9120452587942675995, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      propertyPath: m_Name
+      value: GlowingBlazingImpact
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9120452587942675995, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1645875945}
+  m_SourcePrefab: {fileID: 100100000, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
 --- !u!1 &160338744 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3064236997816693542, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
@@ -18966,7 +19026,7 @@ Transform:
   m_GameObject: {fileID: 1414956193}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.07, y: 0.24, z: -13.94}
+  m_LocalPosition: {x: -5.64, y: 5.35, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22294,6 +22354,32 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db7a499461d527d4e96086adb6cad60d, type: 3}
+--- !u!1 &1645875944 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9120452587942675995, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
+  m_PrefabInstance: {fileID: 149716504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1645875945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645875944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ff47d053ef74419280387d0b3028a55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectile
+  spellType: 1
+  directDamage: 20
+  splashRadius: 5
+  splashDamageMult: 1
+  burnDamagePerTick: 5
+  burnDuration: 3
+  freezeDuration: 3
+  impactVFX: {fileID: 0}
+  vfxDuration: 2
 --- !u!4 &1648246981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1091693221749020353, guid: db7a499461d527d4e96086adb6cad60d, type: 3}
@@ -24048,6 +24134,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1091693221749020353, guid: db7a499461d527d4e96086adb6cad60d, type: 3}
   m_PrefabInstance: {fileID: 2116605186}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1835202410
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.451973
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.0447721
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7161529718180062096, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505545618399885610, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_Name
+      value: FirstGoblin
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
 --- !u!4 &1835242239 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1091693221749020353, guid: db7a499461d527d4e96086adb6cad60d, type: 3}
@@ -27467,14 +27610,7 @@ MonoBehaviour:
 
     Press V to toggle voice
 
-    Possible Spells:
-
-    "fireball"
-
-    "iceball"
-
-    "blazing
-    impact"'
+    Say ''fireball'''
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -28783,11 +28919,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2610131854456392755, guid: ff0571096caa349799aeb43f40c919c5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.044
+      value: 5.35
       objectReference: {fileID: 0}
     - target: {fileID: 2610131854456392755, guid: ff0571096caa349799aeb43f40c919c5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.156
+      value: -10.71
       objectReference: {fileID: 0}
     - target: {fileID: 2610131854456392755, guid: ff0571096caa349799aeb43f40c919c5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -28841,6 +28977,10 @@ PrefabInstance:
       propertyPath: fireballSpawnPoint
       value: 
       objectReference: {fileID: 1414956195}
+    - target: {fileID: 5848171867547395363, guid: ff0571096caa349799aeb43f40c919c5, type: 3}
+      propertyPath: blazingImpactPrefab
+      value: 
+      objectReference: {fileID: 1645875944}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8278079396449311764, guid: ff0571096caa349799aeb43f40c919c5, type: 3}
@@ -28956,3 +29096,5 @@ SceneRoots:
   - {fileID: 785729454}
   - {fileID: 1470388822}
   - {fileID: 1103893045}
+  - {fileID: 149716504}
+  - {fileID: 1835202410}
