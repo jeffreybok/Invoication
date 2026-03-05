@@ -6,35 +6,36 @@ public class Iceball : MonoBehaviour
     public float freezeRadius = 2f;
     public float freezeDuration = 3f;
     public GameObject freezeEffect;
-    
+
     void OnCollisionEnter(Collision collision)
     {
         Freeze();
     }
-    
+
     void Freeze()
     {
         Debug.Log("Iceball shattered at: " + transform.position);
-    
-        // Spawn freeze effect
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, freezeRadius);
+        foreach (Collider hit in hitColliders)
+        {
+            Enemy enemy = hit.GetComponent<Enemy>();
+            if (enemy != null && !enemy.IsFrozen())
+                enemy.Freeze(freezeDuration);
+        }
+
         if (freezeEffect != null)
         {
-            GameObject effect = Instantiate(freezeEffect, transform.position, Quaternion.identity);
-            
-            // Add FreezeZone component to handle the freezing
-            FreezeZone freezeZone = effect.AddComponent<FreezeZone>();
-            freezeZone.freezeRadius = freezeRadius;
-            freezeZone.freezeDuration = freezeDuration;
-            
-            ParticleSystem ps = effect.GetComponent<ParticleSystem>();
+            ParticleSystem ps = freezeEffect.GetComponent<ParticleSystem>();
             float duration = ps != null ? ps.main.duration : 2f;
-            
+
+            GameObject effect = Instantiate(freezeEffect, transform.position, Quaternion.identity);
             Destroy(effect, duration);
         }
-        
+
         Destroy(gameObject);
     }
-    
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
