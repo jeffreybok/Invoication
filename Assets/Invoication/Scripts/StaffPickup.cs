@@ -1,19 +1,22 @@
 using UnityEngine;
+using PurrNet;
 
-public class StaffPickup : MonoBehaviour
+public class StaffPickup : NetworkBehaviour
 {
-    public GameObject wandPrefab; // The wand model that appears in player's hand
-    public Transform playerHand; // Where the wand should appear (child of camera)
-    
+    public NetworkIdentity wandPrefab; // Networked wand prefab
+    public Transform playerHand; // Where the wand appears
+
     private bool playerNearby = false;
     private GameObject player;
 
     void Update()
     {
+        if (!isOwner) return;
+
         // Check if player presses E while nearby
         if (playerNearby && Input.GetKeyDown(KeyCode.E))
         {
-            PickupWand();
+            PickupWand_ServerRPC();
         }
     }
 
@@ -23,7 +26,6 @@ public class StaffPickup : MonoBehaviour
         {
             playerNearby = true;
             player = other.gameObject;
-            // Optional: Show UI prompt "Press E to pick up"
         }
     }
 
@@ -33,28 +35,37 @@ public class StaffPickup : MonoBehaviour
         {
             playerNearby = false;
             player = null;
-            // Optional: Hide UI prompt
         }
     }
 
-    void PickupWand()
+    [ServerRpc]
+    void PickupWand_ServerRPC()
     {
+        if (wandPrefab == null || playerHand == null) return;
+
         // Spawn wand in player's hand
-        if (playerHand != null && wandPrefab != null)
-        {
-            Instantiate(wandPrefab, playerHand.position, playerHand.rotation, playerHand);
-        }
-        
-        // Destroy the floor wand
+        NetworkIdentity wand = Instantiate(
+            wandPrefab,
+            playerHand.position,
+            playerHand.rotation
+        );
+
+        wand.transform.SetParent(playerHand);
+
+        // Destroy floor wand
         Destroy(gameObject);
     }
-    // Add this function here, in the same script
+
     void OnGUI()
     {
+        if (!isOwner) return;
+
         if (playerNearby)
         {
-            GUI.Label(new Rect(Screen.width/2 - 75, Screen.height/2 + 50, 150, 30), 
-                      "Press E to pick up wand");
+            GUI.Label(
+                new Rect(Screen.width / 2 - 75, Screen.height / 2 + 50, 150, 30),
+                "Press E to pick up wand"
+            );
         }
     }
 }

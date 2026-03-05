@@ -106,11 +106,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   currentHealth: 0
-  healthBarFill: {fileID: 885173728714915117}
   healthText: {fileID: 0}
-  fullHealthColor: {r: 0, g: 1, b: 0, a: 1}
-  halfHealthColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
+  gameOverScreen: {fileID: 0}
+  mainMenuSceneName: StartScreenScene
+  isDead: 0
 --- !u!114 &4226670159678329203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +278,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95bc15bfb5a84d8a8b08cb51a032193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RaycastPickup
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   pickupRange: 10
   playerHand: {fileID: 7675639232698081281}
   pickupLayer:
@@ -307,8 +315,9 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  fireballPrefab: {fileID: -139211636351918716, guid: 18f1586b5341742578e6349a5a066100, type: 3}
-  iceballPrefab: {fileID: 9120452587942675995, guid: 847da23b037004bd7b30cd4671fa7545, type: 3}
+  fireballPrefab: {fileID: 0}
+  blazingImpactPrefab: {fileID: 0}
+  iceballPrefab: {fileID: 0}
   fireballSpawnPoint: {fileID: 0}
   fireballSpeed: 20
   iceballSpeed: 20
@@ -461,6 +470,9 @@ MonoBehaviour:
   textSpawnPoint: {fileID: 0}
   textFloatSpeed: 1
   textFadeDuration: 2
+  micIndicatorImage: {fileID: 0}
+  micOnColor: {r: 0, g: 1, b: 0, a: 1}
+  micOffColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &3278409273492737232
 GameObject:
   m_ObjectHideFlags: 0
