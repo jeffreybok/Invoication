@@ -1,15 +1,16 @@
 using UnityEngine;
 using UnityEngine.AI;
+using PurrNet;
 
-public class Enemy : MonoBehaviour
+public class Enemy : NetworkBehaviour
 {
     [Header("Stats")]
     public float maxHealth = 100f;
     public float currentHealth;
-    
+
     [Header("References")]
     public Transform player;
-    
+
     [Header("AI Settings")]
     public float detectionRadius = 10f;
     public float fieldOfViewAngle = 110f;
@@ -35,165 +36,175 @@ public class Enemy : MonoBehaviour
     private bool isDead = false;
     private bool isRagdolled = false;
     private Transform hipsBone;
-    
+
     private NavMeshAgent navAgent;
     private bool playerInSight = false;
     private bool isChasing = false;
     private float timeSinceLastSeen = 0f;
 
-    // Burn state
     private bool isBurning = false;
-    
+
     void Start()
     {
         currentHealth = maxHealth;
+
         animator = GetComponent<Animator>();
         ragdollOnOff = GetComponent<RagdollOnOff>();
-        hipsBone = animator.GetBoneTransform(HumanBodyBones.Hips);
         navAgent = GetComponent<NavMeshAgent>();
-        
+
+        if (animator != null)
+            hipsBone = animator.GetBoneTransform(HumanBodyBones.Hips);
+
         if (navAgent != null)
         {
             navAgent.speed = moveSpeed;
             navAgent.stoppingDistance = 2f;
         }
-        
+
         renderers = GetComponentsInChildren<Renderer>();
         originalColors = new Color[renderers.Length][];
-        
+
         for (int i = 0; i < renderers.Length; i++)
         {
             originalColors[i] = new Color[renderers[i].materials.Length];
+
             for (int j = 0; j < renderers[i].materials.Length; j++)
-            {
                 originalColors[i][j] = renderers[i].materials[j].color;
-            }
-        }
-        
-        if (animator != null)
-            animator.Play("Armature|Idle");
-        
-        if (player == null)
-        {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-                player = playerObj.transform;
         }
 
-        if (player != null)
-            playerHealth = player.GetComponent<PlayerHealth>();
+        if (animator != null)
+            animator.Play("Armature|Idle");
     }
-    
+
     void Update()
     {
+        if (!isServer) return;
         if (isFrozen || isDead || isRagdolled) return;
-    
-        if (player != null)
+
+        FindClosestPlayer();
+        if (player == null) return;
+
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        bool canSeePlayer = false;
+
+        if (distanceToPlayer <= detectionRadius)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-            
-            bool canSeePlayer = false;
-            
-            if (distanceToPlayer <= detectionRadius)
+            Vector3 directionToPlayer = (player.position - transform.position).normalized;
+            float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+
+            if (angleToPlayer <= fieldOfViewAngle / 2f && HasLineOfSight())
+                canSeePlayer = true;
+        }
+
+        if (canSeePlayer)
+        {
+            playerInSight = true;
+            isChasing = true;
+            timeSinceLastSeen = 0f;
+
+            ChasePlayer();
+            TryAttackPlayer(distanceToPlayer);
+        }
+        else
+        {
+            playerInSight = false;
+
+            if (isChasing)
             {
-                Vector3 directionToPlayer = (player.position - transform.position).normalized;
-                float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
-                
-                if (angleToPlayer <= fieldOfViewAngle / 2f && HasLineOfSight())
+                timeSinceLastSeen += Time.deltaTime;
+
+                if (timeSinceLastSeen < chaseMemoryTime)
+                    ChasePlayer();
+                else
                 {
-                    canSeePlayer = true;
-                }
-            }
-            
-            if (canSeePlayer)
-            {
-                playerInSight = true;
-                isChasing = true;
-                timeSinceLastSeen = 0f;
-                ChasePlayer();
-                TryAttackPlayer(distanceToPlayer);
-            }
-            else
-            {
-                playerInSight = false;
-                
-                if (isChasing)
-                {
-                    timeSinceLastSeen += Time.deltaTime;
-                    
-                    if (timeSinceLastSeen < chaseMemoryTime)
-                    {
-                        ChasePlayer();
-                    }
-                    else
-                    {
-                        isChasing = false;
-                        StopChasing();
-                    }
+                    isChasing = false;
+                    StopChasing();
                 }
             }
         }
-        
+
         if (animator != null && navAgent != null)
         {
-            bool isMoving = navAgent.velocity.magnitude > 0.1f;
-            animator.SetBool("isWalking", isMoving);
+            bool moving = navAgent.velocity.magnitude > 0.1f;
+            animator.SetBool("isWalking", moving);
         }
     }
-    
+
+    void FindClosestPlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        float closestDist = Mathf.Infinity;
+        Transform closest = null;
+
+        foreach (GameObject p in players)
+        {
+            float dist = Vector3.Distance(transform.position, p.transform.position);
+
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closest = p.transform;
+            }
+        }
+
+        if (closest != null)
+        {
+            player = closest;
+            playerHealth = player.GetComponent<PlayerHealth>();
+        }
+    }
+
     bool HasLineOfSight()
     {
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        
-        Vector3 rayStart = transform.position + Vector3.up * 1.5f;
-        Vector3 rayEnd = player.position + Vector3.up * 1f;
-        
-        Debug.DrawRay(rayStart, (rayEnd - rayStart), playerInSight ? Color.green : Color.red);
-        
-        if (Physics.Raycast(rayStart, (rayEnd - rayStart).normalized, out RaycastHit hit, distanceToPlayer, obstacleMask))
-        {
+        Vector3 start = transform.position + Vector3.up * 1.5f;
+        Vector3 end = player.position + Vector3.up;
+
+        float distance = Vector3.Distance(start, end);
+
+        if (Physics.Raycast(start, (end - start).normalized, out RaycastHit hit, distance, obstacleMask))
             return false;
-        }
-        
+
         return true;
     }
-    
+
     void ChasePlayer()
     {
         if (navAgent != null && navAgent.enabled)
             navAgent.SetDestination(player.position);
     }
-    
+
     void StopChasing()
     {
         if (navAgent != null && navAgent.enabled)
             navAgent.ResetPath();
     }
 
-    void TryAttackPlayer(float distanceToPlayer)
+    void TryAttackPlayer(float distance)
     {
         if (playerHealth == null || playerHealth.isDead) return;
 
-        if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
+        if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time;
             playerHealth.TakeDamage(attackDamage);
-            Debug.Log("Goblin attacked player for " + attackDamage + " damage!");
         }
     }
 
     public void OnHitByPickup()
     {
         TakeDamage(30f);
-        
+
         if (!isFrozen && !isDead)
         {
             isRagdolled = true;
-            
+
             if (navAgent != null)
                 navAgent.enabled = false;
-            
+
+            if (ragdollOnOff != null)
+                ragdollOnOff.RagdollModeOn();
+
             StartCoroutine(WaitForRagdollToSettle());
         }
         else if (isFrozen && !isDead)
@@ -201,208 +212,96 @@ public class Enemy : MonoBehaviour
             isRagdolled = true;
         }
     }
-    
+
+    public void HitByExplosion()
+    {
+        if (isDead || isRagdolled || isFrozen) return;
+
+        isRagdolled = true;
+
+        if (navAgent != null)
+            navAgent.enabled = false;
+
+        if (ragdollOnOff != null)
+            ragdollOnOff.RagdollModeOn();
+
+        StartCoroutine(WaitForRagdollToSettle());
+    }
+
     System.Collections.IEnumerator WaitForRagdollToSettle()
     {
         yield return new WaitForSeconds(1f);
-        
-        Rigidbody[] ragdollRbs = GetComponentsInChildren<Rigidbody>();
-        
-        bool isMoving = true;
-        while (isMoving)
+
+        Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+        bool moving = true;
+
+        while (moving)
         {
-            isMoving = false;
-            
-            foreach (Rigidbody rb in ragdollRbs)
+            moving = false;
+
+            foreach (Rigidbody rb in rbs)
             {
                 if (rb.linearVelocity.magnitude > 0.1f || rb.angularVelocity.magnitude > 0.1f)
                 {
-                    isMoving = true;
+                    moving = true;
                     break;
                 }
             }
-            
+
             yield return new WaitForSeconds(0.1f);
         }
-        
+
         if (!isDead && !isFrozen)
             RecoverFromRagdoll();
     }
-    
+
     void RecoverFromRagdoll()
     {
         if (ragdollOnOff != null)
             ragdollOnOff.RagdollModeOff();
-        
+
         isRagdolled = false;
-        
-        AlignPositionToHips();
-        
-        Vector3 currentRotation = transform.rotation.eulerAngles;
-        transform.rotation = Quaternion.Euler(0, currentRotation.y, 0);
-        
+
         if (navAgent != null)
             navAgent.enabled = true;
-        
+
         if (animator != null)
             animator.Play("Armature|Idle");
     }
-    
-    public void TakeDamage(float damage)
-    {
-        if (isDead) return;
-        
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0);
-        
-        if (currentHealth <= 0)
-            Die();
-    }
-    
-    void Die()
-    {
-        isDead = true;
-        isRagdolled = true;
-        
-        if (navAgent != null)
-            navAgent.enabled = false;
-        
-        if (isFrozen)
-        {
-            CancelInvoke(nameof(Unfreeze));
-            isFrozen = false;
-            
-            if (animator != null)
-                animator.enabled = true;
-            
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                Material[] mats = renderers[i].materials;
-                for (int j = 0; j < mats.Length; j++)
-                {
-                    mats[j].color = originalColors[i][j];
-                    mats[j].SetFloat("_Metallic", 0f);
-                }
-            }
-        }
 
-        // Stop burn if active
-        if (isBurning)
-        {
-            StopAllCoroutines();
-            isBurning = false;
-            RestoreOriginalColors();
-        }
-        
-        if (ragdollOnOff != null)
-            ragdollOnOff.RagdollModeOn();
-        
-        Destroy(gameObject, 5f);
-    }
-    
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-        
-        Gizmos.color = Color.blue;
-        Vector3 fovLine1 = Quaternion.AngleAxis(fieldOfViewAngle / 2f, Vector3.up) * transform.forward * detectionRadius;
-        Vector3 fovLine2 = Quaternion.AngleAxis(-fieldOfViewAngle / 2f, Vector3.up) * transform.forward * detectionRadius;
-        
-        Gizmos.DrawLine(transform.position, transform.position + fovLine1);
-        Gizmos.DrawLine(transform.position, transform.position + fovLine2);
-    }
-    
-    public void HitByExplosion()
-    {
-        if (isDead || isRagdolled || isFrozen) return;
-        
-        isRagdolled = true;
-        
-        if (navAgent != null)
-            navAgent.enabled = false;
-        
-        RagdollOnOff ragdoll = GetComponent<RagdollOnOff>();
-        if (ragdoll != null)
-            ragdoll.RagdollModeOn();
-        
-        StartCoroutine(WaitForRagdollToSettle());
-    }
-
-    private void AlignPositionToHips()
-    {
-        if (hipsBone == null) return;
-    
-        Vector3 originalHipsPosition = hipsBone.position;
-        transform.position = hipsBone.position;
-
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo))
-            transform.position = new Vector3(transform.position.x, hitInfo.point.y, transform.position.z);
-
-        hipsBone.position = originalHipsPosition;
-    }
-    
     public void Freeze(float duration)
     {
         if (isDead || isFrozen) return;
-        
+
         isFrozen = true;
-        
+
+        foreach (Renderer r in renderers)
+            foreach (Material m in r.materials)
+                m.color = Color.cyan;
+
         if (navAgent != null)
         {
             navAgent.ResetPath();
             navAgent.enabled = false;
         }
-        
-        if (animator != null)
-            animator.enabled = false;
-        
-        foreach (Renderer rend in renderers)
-        {
-            foreach (Material mat in rend.materials)
-            {
-                mat.color = new Color(0.5f, 0.7f, 1f, 1f);
-                mat.SetFloat("_Metallic", 0.8f);
-            }
-        }
-        
+
         Invoke(nameof(Unfreeze), duration);
     }
 
     void Unfreeze()
     {
         if (isDead) return;
-    
+
         isFrozen = false;
-        
+
+        for (int i = 0; i < renderers.Length; i++)
+            for (int j = 0; j < renderers[i].materials.Length; j++)
+                renderers[i].materials[j].color = originalColors[i][j];
+
         if (navAgent != null)
             navAgent.enabled = true;
-        
-        if (isRagdolled)
-            StartCoroutine(WaitForRagdollToSettle());
-        
-        if (animator != null)
-        {
-            animator.enabled = true;
-            animator.Play("Armature|Idle");
-        }
-        
-        RestoreOriginalColors();
     }
 
-    void RestoreOriginalColors()
-    {
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            Material[] mats = renderers[i].materials;
-            for (int j = 0; j < mats.Length; j++)
-            {
-                mats[j].color = originalColors[i][j];
-                mats[j].SetFloat("_Metallic", 0f);
-            }
-        }
-    }
-    
     public bool IsFrozen()
     {
         return isFrozen;
@@ -411,7 +310,10 @@ public class Enemy : MonoBehaviour
     public void ApplyBurn(float damagePerTick, float duration, float tickInterval = 0.5f)
     {
         if (isDead) return;
-        if (isBurning) StopCoroutine(nameof(BurnCoroutine));
+
+        if (isBurning)
+            StopCoroutine(nameof(BurnCoroutine));
+
         StartCoroutine(BurnCoroutine(damagePerTick, duration, tickInterval));
     }
 
@@ -419,23 +321,49 @@ public class Enemy : MonoBehaviour
     {
         isBurning = true;
 
-        // Tint enemy orange while burning
-        foreach (Renderer rend in renderers)
-            foreach (Material mat in rend.materials)
-                mat.color = new Color(1f, 0.4f, 0f, 1f);
+        foreach (Renderer r in renderers)
+            foreach (Material m in r.materials)
+                m.color = new Color(1f, 0.4f, 0f);
 
         float elapsed = 0f;
+
         while (elapsed < duration && !isDead)
         {
             TakeDamage(damagePerTick);
             elapsed += tickInterval;
+
             yield return new WaitForSeconds(tickInterval);
         }
 
-        isBurning = false;
+        for (int i = 0; i < renderers.Length; i++)
+            for (int j = 0; j < renderers[i].materials.Length; j++)
+                renderers[i].materials[j].color = originalColors[i][j];
 
-        // Restore colors only if not frozen (freeze has its own color)
-        if (!isFrozen && !isDead)
-            RestoreOriginalColors();
+        isBurning = false;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (isDead) return;
+
+        currentHealth -= damage;
+        currentHealth = Mathf.Max(currentHealth, 0);
+
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    void Die()
+    {
+        isDead = true;
+        isRagdolled = true;
+
+        if (navAgent != null)
+            navAgent.enabled = false;
+
+        if (ragdollOnOff != null)
+            ragdollOnOff.RagdollModeOn();
+
+        Destroy(gameObject, 5f);
     }
 }

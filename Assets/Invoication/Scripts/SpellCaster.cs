@@ -1,6 +1,7 @@
 using UnityEngine;
+using PurrNet;
 
-public class SpellCaster : MonoBehaviour
+public class SpellCaster : NetworkBehaviour
 {
     public GameObject fireballPrefab;
     public GameObject blazingImpactPrefab;
@@ -27,6 +28,8 @@ public class SpellCaster : MonoBehaviour
 
     void Update()
     {
+        if (!isOwner) return;
+
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
             CastBlazingImpact();
     }
@@ -41,20 +44,68 @@ public class SpellCaster : MonoBehaviour
         return false;
     }
 
-    // Shared helper — all projectile spells use this
-    void LaunchProjectile(GameObject prefab, float speed)
+    void LaunchProjectile_Server(GameObject prefab, float speed, Vector3 spawnPos, Vector3 direction, GameObject player)
     {
+        NetworkIdentity projectileIdentity = Instantiate(prefab, spawnPos, Quaternion.identity)
+            .GetComponent<NetworkIdentity>();
+
+        Rigidbody rb = projectileIdentity.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = direction * speed;
+            rb.useGravity = false;
+        }
+
+        // Ignore collision with the caster
+        Collider projectileCollider = projectileIdentity.GetComponent<Collider>();
+        Collider playerCollider = player.GetComponent<Collider>();
+
+        if (projectileCollider != null && playerCollider != null)
+        {
+            Physics.IgnoreCollision(projectileCollider, playerCollider);
+        }
+
+        Destroy(projectileIdentity.gameObject, 5f);
+    }
+
+    [ServerRpc]
+    void LaunchProjectile_ServerRpc(NetworkIdentity playerIdentity, int spellType, Vector3 clientForward)
+    {
+        GameObject prefab = null;
+        float speed = fireballSpeed;
+
+        if (spellType == 0)
+        {
+            prefab = fireballPrefab;
+            speed = fireballSpeed;
+        }
+        else if (spellType == 1)
+        {
+            prefab = blazingImpactPrefab;
+            speed = fireballSpeed;
+        }
+        else if (spellType == 2)
+        {
+            prefab = iceballPrefab;
+            speed = iceballSpeed;
+        }
+
         if (prefab == null)
         {
             Debug.LogError("Prefab not assigned!");
             return;
         }
 
-        Vector3 spawnPos = fireballSpawnPoint != null
-            ? fireballSpawnPoint.position + Vector3.up * 1.2f + Camera.main.transform.forward * 0.8f
-            : Camera.main.transform.position + Camera.main.transform.forward * 0.5f;
+        GameObject player = playerIdentity.gameObject;
 
-        Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Camera cam = player.GetComponentInChildren<Camera>();
+        Transform spawnPoint = player.GetComponent<SpellCaster>().fireballSpawnPoint;
+
+        Vector3 spawnPos = spawnPoint != null
+            ? spawnPoint.position + clientForward * 2f
+            : cam.transform.position + clientForward * 2f;
+
+        Ray aimRay = new Ray(cam.transform.position, clientForward);
         Vector3 targetPoint;
 
         if (Physics.Raycast(aimRay, out RaycastHit hit, 100f, aimLayers) && hit.distance > 3f)
@@ -64,33 +115,24 @@ public class SpellCaster : MonoBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
 
-        GameObject projectile = Instantiate(prefab, spawnPos, Quaternion.identity);
-
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = shootDirection * speed;
-            rb.useGravity = false;
-        }
-
-        Destroy(projectile, 5f);
+        LaunchProjectile_Server(prefab, speed, spawnPos, shootDirection, player);
     }
 
     public void CastFireball()
     {
         Debug.Log("CASTING FIREBALL!");
-        LaunchProjectile(fireballPrefab, fireballSpeed);
+        LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 0, GetComponentInChildren<Camera>().transform.forward);
     }
 
     public void CastBlazingImpact()
     {
         Debug.Log("CASTING BLAZING IMPACT!");
-        LaunchProjectile(blazingImpactPrefab, fireballSpeed);
+        LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 1, GetComponentInChildren<Camera>().transform.forward);
     }
 
     public void CastIceball()
     {
         Debug.Log("CASTING ICEBALL!");
-        LaunchProjectile(iceballPrefab, iceballSpeed);
+        LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 2, GetComponentInChildren<Camera>().transform.forward);
     }
 }

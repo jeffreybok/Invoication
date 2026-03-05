@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1588179484441013218}
   - component: {fileID: 6475628225021605213}
   - component: {fileID: 8498274297861205590}
-  - component: {fileID: -8744866988181543475}
   - component: {fileID: -139211636351918716}
   - component: {fileID: 4895591493667425567}
+  - component: {fileID: 6241101693873750519}
   m_Layer: 0
   m_Name: GlowingFireball
   m_TagString: Untagged
@@ -142,21 +142,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-8744866988181543475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9120452587942675995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32671ec0d9bfc4abf87c4d8a27ec7357, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Fireball
-  explosionRadius: 5
-  explosionDamage: 50
-  explosionEffect: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
 --- !u!114 &-139211636351918716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,3 +194,33 @@ MonoBehaviour:
   _characterControllerPatch: 0
   _ownerAuth: 1
   _interpolationTiming: 0
+--- !u!114 &6241101693873750519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9120452587942675995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ff47d053ef74419280387d0b3028a55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellProjectile
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  spellType: 0
+  directDamage: 50
+  splashRadius: 5
+  splashDamageMult: 0.5
+  burnDamagePerTick: 5
+  burnDuration: 3
+  freezeDuration: 3
+  impactVFX: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
+  vfxDuration: 2
