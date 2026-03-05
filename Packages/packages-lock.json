@@ -7,6 +7,19 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.2d.animation": {
+      "version": "12.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.2d.common": "11.0.1",
+        "com.unity.2d.sprite": "1.0.0",
+        "com.unity.collections": "1.2.4",
+        "com.unity.modules.animation": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.2d.common": {
       "version": "11.0.1",
       "depth": 1,
@@ -74,7 +87,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ai.navigation": {
-      "version": "2.0.9",
+      "version": "2.0.10",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -93,11 +106,24 @@
     },
     "com.unity.burst": {
       "version": "1.8.25",
+<<<<<<< HEAD
       "depth": 1,
+=======
+      "depth": 0,
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
         "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.cinemachine": {
+      "version": "3.1.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.splines": "2.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -110,7 +136,7 @@
     },
     "com.unity.collections": {
       "version": "2.5.7",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.19",
@@ -182,14 +208,23 @@
       }
     },
     "com.unity.nuget.mono-cecil": {
+<<<<<<< HEAD
       "version": "1.11.6",
       "depth": 0,
+=======
+      "version": "1.11.5",
+      "depth": 1,
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.newtonsoft-json": {
+<<<<<<< HEAD
       "version": "3.2.2",
+=======
+      "version": "3.2.1",
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -271,6 +306,17 @@
         "com.unity.searcher": "4.9.3"
       }
     },
+    "com.unity.splines": {
+      "version": "2.8.2",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.settings-manager": "1.0.3"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.test-framework": {
       "version": "1.6.0",
       "depth": 0,
@@ -283,7 +329,11 @@
     },
     "com.unity.test-framework.performance": {
       "version": "3.2.0",
+<<<<<<< HEAD
       "depth": 2,
+=======
+      "depth": 1,
+>>>>>>> e0e51683069a3ada08be5913b0bd4a1124cc470d
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.33",
