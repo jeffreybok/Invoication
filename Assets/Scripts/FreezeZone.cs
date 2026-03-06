@@ -4,7 +4,10 @@ public class FreezeZone : MonoBehaviour
 {
     public float freezeRadius = 2f;
     public float freezeDuration = 3f;
-    
+
+    // 🔥 Add this
+    public GameObject owner;
+
     void Start()
     {
         Debug.Log("Checking freeze radius at position: " + transform.position + " with radius: " + freezeRadius);
@@ -15,6 +18,13 @@ public class FreezeZone : MonoBehaviour
         
         foreach (Collider hit in hitColliders)
         {
+            // 🔥 Ignore the shooter (and anything under them)
+            if (owner != null && hit.transform.root.gameObject == owner)
+            {
+                Debug.Log("Skipping owner: " + hit.gameObject.name);
+                continue;
+            }
+
             Debug.Log("Found collider: " + hit.gameObject.name + " - checking for Enemy component");
             
             Enemy enemy = hit.GetComponent<Enemy>();
