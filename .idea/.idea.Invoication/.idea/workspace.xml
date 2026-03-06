@@ -5,25 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Custom Prefabs/GlowingBlazingImpact.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Custom Prefabs/GlowingBlazingImpact.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Custom Prefabs/Player(Capsule).prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Custom Prefabs/Player(Capsule).prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/BundleOfBoxes.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/BundleOfBoxes.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/ExplosiveBox.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/ExplosiveBox.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/FirstGoblin.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/FirstGoblin.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/FreezePotion.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/FreezePotion.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/GlowingFireball.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/GlowingFireball.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/GlowingIceball.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/GlowingIceball.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/HealPotion.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/HealPotion.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/_Box.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/_Box.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/Enemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/Enemy.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/RaycastPickup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/RaycastPickup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellCaster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellCaster.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellProjectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellProjectile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/StaffPickup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/StaffPickup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/NetworkPrefabs.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/NetworkPrefabs.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/TutorialLevel.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/TutorialLevel.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkillTree.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkillTree.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,10 +18,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="3AWBCWh53ByKXzh4YhBigvBgybf" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -46,6 +31,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Pablo’s-SkillTree",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -68,6 +54,10 @@
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/LaptopBuild.app/Contents/MacOS" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
@@ -76,6 +66,10 @@
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
     <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
@@ -84,6 +78,10 @@
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
     <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
@@ -91,9 +89,13 @@
       <option name="listenPortForConnections" value="false" />
       <option name="pid" />
       <option name="projectPathOnTarget" />
+      <option name="runtimes">
+        <list />
+      </option>
       <option name="selectedOptions">
         <list />
       </option>
+      <option name="useMixedMode" value="false" />
       <method v="2" />
     </configuration>
     <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
@@ -101,9 +103,13 @@
       <option name="listenPortForConnections" value="false" />
       <option name="pid" />
       <option name="projectPathOnTarget" />
+      <option name="runtimes">
+        <list />
+      </option>
       <option name="selectedOptions">
         <list />
       </option>
+      <option name="useMixedMode" value="false" />
       <method v="2" />
     </configuration>
   </component>

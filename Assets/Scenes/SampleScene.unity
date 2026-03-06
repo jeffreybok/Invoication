@@ -574,6 +574,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c67eb945290431ab5e499423c90405, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   walkSpeed: 5
   runSpeed: 10
   jumpForce: 8
@@ -3315,6 +3324,8 @@ MonoBehaviour:
   effectPrefab: {fileID: 0}
   shatterVelocity: 2
   effectDuration: 3
+  effectRadius: 2
+  healAmount: 50
   potionType: 0
 --- !u!54 &485729071
 Rigidbody:
@@ -5654,6 +5665,9 @@ MonoBehaviour:
   textSpawnPoint: {fileID: 0}
   textFloatSpeed: 1
   textFadeDuration: 2
+  micIndicatorImage: {fileID: 0}
+  micOnColor: {r: 0, g: 1, b: 0, a: 1}
+  micOffColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &844752977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6345,6 +6359,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95bc15bfb5a84d8a8b08cb51a032193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RaycastPickup
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   pickupRange: 10
   playerHand: {fileID: 1480171841}
   pickupLayer:
@@ -6364,7 +6387,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2b3ab5603944d8389efc64689e4df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireballCaster
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   fireballPrefab: {fileID: 9120452587942675995, guid: 18f1586b5341742578e6349a5a066100, type: 3}
+  blazingImpactPrefab: {fileID: 0}
   iceballPrefab: {fileID: 0}
   fireballSpawnPoint: {fileID: 1480171841}
   fireballSpeed: 20
@@ -13339,6 +13372,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 824a949f2ff4a46e8b1df119d4a5ba67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   maxHealth: 100000
   currentHealth: 100000
   player: {fileID: 123688389}
