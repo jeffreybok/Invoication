@@ -18,6 +18,8 @@ public class SkillTreeManager : MonoBehaviour
     public SkillTreeData[] allTrees;
     private int currentTreeIndex = 0;
     
+    private PlayerController playerController;
+    private RaycastPickup raycastPickup;
     private bool isOpen = false;
 
     private void Awake()
@@ -40,6 +42,7 @@ public class SkillTreeManager : MonoBehaviour
             }
         }
         
+        Cursor.visible = false;
         skillTreePanel.SetActive(false);
         LoadCurrentTree();
     }
@@ -60,12 +63,30 @@ public class SkillTreeManager : MonoBehaviour
         isOpen = true;
         skillTreePanel.SetActive(true);
         RefreshSkillPointsDisplay();
+        
+        Time.timeScale = 0f;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        // Disable player scripts (but NOT camera components)
+        if (playerController != null) playerController.enabled = false;
+        if (raycastPickup != null) raycastPickup.enabled = false;
     }
 
     private void CloseMenu()
     {
         isOpen = false;
         skillTreePanel.SetActive(false);
+        
+        Time.timeScale = 1f;
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
+        // Re-enable player scripts (but NOT camera components)
+        if (playerController != null) playerController.enabled = true;
+        if (raycastPickup != null) raycastPickup.enabled = true;
     }
 
     private void LoadCurrentTree()
