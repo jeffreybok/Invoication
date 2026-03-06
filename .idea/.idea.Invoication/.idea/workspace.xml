@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Custom Prefabs/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkillTree.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkillTree.unity" afterDir="false" />
-    </list>
+    <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
