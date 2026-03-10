@@ -1017,13 +1017,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3517718734897788402}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1502609473424193346}
-  m_Father: {fileID: 3230489868823595872}
+  m_Father: {fileID: 2653448368183249735}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1486,7 +1486,6 @@ RectTransform:
   - {fileID: 2653448368183249735}
   - {fileID: 7090704437026899600}
   - {fileID: 5260208913606869141}
-  - {fileID: 7138772476363474312}
   m_Father: {fileID: 7231416498286730192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1515,7 +1514,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &7380897395311264053
 MonoBehaviour:
@@ -2203,9 +2202,7 @@ MonoBehaviour:
   skillTreeUI: {fileID: 694910837429877652}
   skillPointText: {fileID: 3745404621639964669}
   elementNameText: {fileID: 8752013933734288502}
-  allTrees:
-  - {fileID: 11400000, guid: e811f96a02ab54f45a47a338629dfc18, type: 2}
-  - {fileID: 11400000, guid: f6ce59be6623d4fc2a3f120184615b56, type: 2}
+  allTrees: []
 --- !u!1 &7071335605214892634
 GameObject:
   m_ObjectHideFlags: 0
@@ -2438,6 +2435,7 @@ RectTransform:
   - {fileID: 9205466036568930785}
   - {fileID: 1503533181277332844}
   - {fileID: 2587092613974716867}
+  - {fileID: 7138772476363474312}
   m_Father: {fileID: 3230489868823595872}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
