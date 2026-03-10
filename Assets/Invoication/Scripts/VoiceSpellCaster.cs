@@ -184,13 +184,26 @@ public class VoiceSpellCaster : MonoBehaviour
 
     void CastFireball()
     {
+        if (!SkillTreeBridge.IsUnlocked("Fireball_0"))
+        {
+            ShowSpellText("Fireball spell locked");
+            return;
+        }
+        
         if (spellCaster != null)
             spellCaster.CastFireball();
         else
             Debug.LogError("SpellCaster not found!");
     }
 
-    void CastBlazingImpact(){
+    void CastBlazingImpact()
+    {
+        if (!SkillTreeBridge.IsUnlocked("BlazingImpact_0"))
+        {
+            ShowSpellText("Blazing Impact spell locked");
+            return;
+        }
+        
         if(spellCaster != null)
             spellCaster.CastBlazingImpact();
         else
@@ -199,6 +212,12 @@ public class VoiceSpellCaster : MonoBehaviour
 
     void CastIce()
     {
+        if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
+        {
+            ShowSpellText("Ice Spike spell locked");
+            return;
+        }
+        
         if (spellCaster != null)
             spellCaster.CastIceball();
         else

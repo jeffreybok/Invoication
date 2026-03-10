@@ -31,7 +31,15 @@ public class SpellCaster : NetworkBehaviour
         if (!isOwner) return;
 
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
+        {
+            if (!SkillTreeBridge.IsUnlocked("BlazingImpact_0"))
+            {
+                Debug.Log("Blazing Impact is locked!");
+                return;
+            }
+
             CastBlazingImpact();
+        }
     }
 
     bool IsHoldingStaff()

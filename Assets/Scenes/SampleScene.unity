@@ -3282,8 +3282,8 @@ MonoBehaviour:
   skillPointText: {fileID: 1080996050}
   elementNameText: {fileID: 1179442749}
   allTrees:
-  - {fileID: 11400000, guid: e811f96a02ab54f45a47a338629dfc18, type: 2}
-  - {fileID: 11400000, guid: f6ce59be6623d4fc2a3f120184615b56, type: 2}
+  - {fileID: 11400000, guid: 952980e6fde2542d3b5f2c256c2eab6a, type: 2}
+  - {fileID: 11400000, guid: fa8f2f2cf39ac4ea9a53c124690bf8c9, type: 2}
 --- !u!4 &482925316
 Transform:
   m_ObjectHideFlags: 0
