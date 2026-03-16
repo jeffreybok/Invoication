@@ -32,13 +32,13 @@ public class SpellCaster : NetworkBehaviour
 
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
         {
-            if (!SkillTreeBridge.IsUnlocked("BlazingImpact_0"))
+            if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
             {
-                Debug.Log("Blazing Impact is locked!");
+                Debug.Log("Ice Ball is locked!");
                 return;
             }
 
-            CastBlazingImpact();
+            CastIceball();
         }
     }
 

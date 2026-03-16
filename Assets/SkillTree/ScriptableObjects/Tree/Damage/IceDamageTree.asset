@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
   elementName: Ice
   elementIcon: {fileID: 0}
+  playerClass: 1
   nodes:
   - {fileID: 11400000, guid: 15d99fea3c8204ecab6a2231d46a8a4a, type: 2}
   - {fileID: 11400000, guid: 49d859768429a4e059781e282fbbd20e, type: 2}
