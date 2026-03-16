@@ -195,15 +195,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f4c90adf57504fc985d0cab597acf12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  baseMana: 100
+  currentMana: 0
   skillPoints: 14
-  baseDamage: 10
-  baseBurnDuration: 2
-  baseFireRate: 1
-  baseRange: 5
-  currentDamage: 0
-  currentBurnDuration: 0
-  currentFireRate: 0
-  currentRange: 0
+  fireballBaseDamage: 50
+  fireballFlatBonus: 0
+  fireballPercentBonus: 0
+  fireballExplosionRadius: 5
+  blazingBaseDamage: 30
+  blazingFlatBonus: 0
+  blazingPercentBonus: 0
+  blazingBurnDamagePerTick: 5
+  blazingBurnDuration: 3
+  iceSpikeBaseDamage: 30
+  iceSpikeFlatBonus: 0
+  iceSpikePercentBonus: 0
+  iceSpikeSlowDuration: 2
+  iceSpikeFreezeRadius: 2
 --- !u!1 &528326794
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,6 +597,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: allTrees.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: 'allTrees.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 952980e6fde2542d3b5f2c256c2eab6a, type: 2}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: 'allTrees.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: fa8f2f2cf39ac4ea9a53c124690bf8c9, type: 2}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: 'allTrees.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: e811f96a02ab54f45a47a338629dfc18, type: 2}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: 'allTrees.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: f6ce59be6623d4fc2a3f120184615b56, type: 2}
     - target: {fileID: 3976834539419048579, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
       propertyPath: m_Name
       value: ========SKILL TREE========

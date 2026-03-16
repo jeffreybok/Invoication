@@ -5,18 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/projectSettingsUpdater.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/Fireball.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/Fireball.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellCaster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellCaster.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/VoiceSpellCaster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/VoiceSpellCaster.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/TutorialLevel.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/TutorialLevel.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Prefabs/========SKILL TREE========.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Prefabs/========SKILL TREE========.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Tank/Fire.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Tank/Fire/FireTank.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Tank/Fire/FireTank.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Tank/Ice.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Tank/Ice/IceTank.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Tank/Ice/IceTank.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellProjectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/SpellProjectile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SkillTree.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SkillTree.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Damage/FireDamageTree.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Damage/FireDamageTree.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Damage/IceDamageTree.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/ScriptableObjects/Tree/Damage/IceDamageTree.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Scripts/PlayerStats.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Scripts/PlayerStats.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +26,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;PabloJBello&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jeffreybok/Invoication.git&quot;,
+    &quot;accountId&quot;: &quot;fd48195c-2090-4129-bd7b-367e275abe45&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -35,26 +47,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Pablo’s-SkillTree",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "/Users/noahvu/Library/Application Support/JetBrains/Rider2023.3/resharper-host/DecompilerCache",
-      "/Users/noahvu/Library/Application Support/JetBrains/Rider2023.3/resharper-host/SourcesCache",
-      "/Users/noahvu/.local/share/Symbols/src"
-    ]
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Pablo’s-SkillTree&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="$PROJECT_DIR$/LaptopBuild.app/Contents/MacOS/Invoication(GAME330)" />
@@ -120,6 +126,9 @@
       <option name="useMixedMode" value="false" />
       <method v="2" />
     </configuration>
+    <configuration name="Attach to Device" type="UnityDevicePlayer" factoryName="UnityAttachToDevicePlayer">
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -130,6 +139,9 @@
       <option name="presentableId" value="Default" />
       <updated>1772698321380</updated>
       <workItem from="1772698324226" duration="6573000" />
+      <workItem from="1773169459663" duration="1156000" />
+      <workItem from="1773196893831" duration="1567000" />
+      <workItem from="1773444153720" duration="11578000" />
     </task>
     <servers />
   </component>
@@ -137,8 +149,31 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
+  <component name="UnityProjectDiscoverer">
+    <option name="hasUnityReference" value="true" />
+    <option name="unityProject" value="true" />
+    <option name="unityProjectFolder" value="true" />
+  </component>
   <component name="UnityUnitTestConfiguration" currentTestLauncher="Both" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
