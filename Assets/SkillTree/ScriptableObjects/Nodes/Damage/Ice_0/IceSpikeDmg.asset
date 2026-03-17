@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
   m_Name: IceSpikeDmg
   m_EditorClassIdentifier: Assembly-CSharp::SkillNode
-  nodeName: 
-  nodeID: 
-  nodeDescription: 
-  skillPointCost: 0
-  nodeType: 0
-  nodeEffect: 0
-  effectValue: 0
+  nodeName: Damage
+  nodeID: Damage_1
+  nodeDescription: Increase iceball damage.
+  skillPointCost: 2
+  nodeType: 1
+  nodeEffect: 8
+  effectValue: 10
   isUnlocked: 0
