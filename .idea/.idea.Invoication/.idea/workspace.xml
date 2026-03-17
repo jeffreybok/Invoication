@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="" />
+    <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -129,6 +131,7 @@
       <workItem from="1773169459663" duration="1156000" />
       <workItem from="1773196893831" duration="1567000" />
       <workItem from="1773444153720" duration="12151000" />
+      <workItem from="1773785017495" duration="221000" />
     </task>
     <servers />
   </component>

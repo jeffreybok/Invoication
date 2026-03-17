@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 
@@ -33,17 +34,32 @@ public class SkillTreeManager : MonoBehaviour
 
     private void Start()
     {
+        skillTreePanel.SetActive(false);
+        StartCoroutine(InitializeAfterDelay());
+    }
+
+    private System.Collections.IEnumerator InitializeAfterDelay()
+    {
+        // Wait for player to spawn
+        yield return new WaitForSeconds(0.5f);
+        
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                playerController = player.GetComponent<PlayerController>();
+                raycastPickup = player.GetComponentInChildren<RaycastPickup>();
+            }
+            
         FilterTreesByClass();
         
         SkillTreeSaveSystem.LoadAll(allTrees, out int loadedPoints);
         PlayerStats.Instance.skillPoints = loadedPoints;
         
         foreach (SkillTreeData tree in allTrees)
-        foreach (SkillNode node in tree.nodes)
-            if (node.isUnlocked && node.nodeEffect != NodeEffect.None)
-                PlayerStats.Instance.ApplyEffect(node.nodeEffect, node.effectValue);
+            foreach (SkillNode node in tree.nodes)
+                if (node.isUnlocked && node.nodeEffect != NodeEffect.None)
+                    PlayerStats.Instance.ApplyEffect(node.nodeEffect, node.effectValue);
         
-        skillTreePanel.SetActive(false);
         LoadCurrentTree();
     }
 
