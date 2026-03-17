@@ -225,6 +225,7 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   playerUI: {fileID: 6049116333962532282}
+  skillTreePanel: {fileID: 3976834539419048579, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
 --- !u!114 &-7508205112042622592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,15 +238,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f4c90adf57504fc985d0cab597acf12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  baseMana: 100
+  currentMana: 0
   skillPoints: 14
-  baseDamage: 10
-  baseBurnDuration: 2
-  baseFireRate: 1
-  baseRange: 5
-  currentDamage: 0
-  currentBurnDuration: 0
-  currentFireRate: 0
-  currentRange: 0
+  fireballBaseDamage: 50
+  fireballFlatBonus: 0
+  fireballExplosionRadius: 5
+  blazingBaseDamage: 30
+  blazingFlatBonus: 0
+  blazingBurnDamagePerTick: 5
+  blazingBurnDuration: 3
+  iceSpikeBaseDamage: 30
+  iceSpikeFlatBonus: 0
+  iceSpikeSlowDuration: 2
+  iceSpikeFreezeRadius: 2
 --- !u!1 &2242493375028277817
 GameObject:
   m_ObjectHideFlags: 0
