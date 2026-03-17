@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e80f3d74-7b06-435f-8a02-ccc5a93a9d87" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Invoication/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Custom Prefabs/Player(Capsule).prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Custom Prefabs/Player(Capsule).prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Invoication/Scripts/Multiplayer/PlayerUIOwner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Invoication/Scripts/Multiplayer/PlayerUIOwner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,6 +30,10 @@
     &quot;accountId&quot;: &quot;fd48195c-2090-4129-bd7b-367e275abe45&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Invoication/Scripts/Multiplayer/PlayerCameraOwner.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/SkillTree/Scripts/SkillTreeManager.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -132,6 +139,8 @@
       <workItem from="1773196893831" duration="1567000" />
       <workItem from="1773444153720" duration="12151000" />
       <workItem from="1773785017495" duration="221000" />
+      <workItem from="1773785891202" duration="548000" />
+      <workItem from="1773786465431" duration="244000" />
     </task>
     <servers />
   </component>

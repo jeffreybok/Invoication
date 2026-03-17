@@ -43,12 +43,7 @@ public class SkillTreeManager : MonoBehaviour
         // Wait for player to spawn
         yield return new WaitForSeconds(0.5f);
         
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                playerController = player.GetComponent<PlayerController>();
-                raycastPickup = player.GetComponentInChildren<RaycastPickup>();
-            }
+        FindOwnedPlayer();
             
         FilterTreesByClass();
         
@@ -208,5 +203,19 @@ public class SkillTreeManager : MonoBehaviour
         LoadCurrentTree();
         RefreshSkillPointsDisplay();
         Debug.Log("Skill tree reset.");
+    }
+    
+    private void FindOwnedPlayer()
+    {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            PlayerCameraOwner cameraOwner = player.GetComponent<PlayerCameraOwner>();
+            if (cameraOwner != null && cameraOwner.isOwner)
+            {
+                playerController = player.GetComponent<PlayerController>();
+                raycastPickup = player.GetComponentInChildren<RaycastPickup>();
+                break;
+            }
+        }
     }
 }
