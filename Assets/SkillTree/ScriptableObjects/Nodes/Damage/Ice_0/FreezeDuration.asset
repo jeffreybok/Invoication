@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
   m_Name: FreezeDuration
   m_EditorClassIdentifier: Assembly-CSharp::SkillNode
-  nodeName: 
-  nodeID: 
-  nodeDescription: 
-  skillPointCost: 0
-  nodeType: 0
-  nodeEffect: 0
-  effectValue: 0
+  nodeName: Freeze Duration
+  nodeID: FreezeDuration_0
+  nodeDescription: Increase duration of freeze.
+  skillPointCost: 2
+  nodeType: 1
+  nodeEffect: 10
+  effectValue: 5
   isUnlocked: 0
