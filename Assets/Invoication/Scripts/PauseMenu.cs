@@ -21,6 +21,7 @@ public class PauseMenu : MonoBehaviour
             // Also get the RaycastPickup script (it's on the Camera)
             raycastPickup = player.GetComponentInChildren<RaycastPickup>();
         }
+        pauseMenuUI.SetActive(false);
     }
 
     void Update()
