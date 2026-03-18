@@ -7,6 +7,7 @@ public class Enemy : NetworkBehaviour
     [Header("Stats")]
     public float maxHealth = 100f;
     public float currentHealth;
+    public int xpReward = 50;
 
     [Header("References")]
     public Transform player;
@@ -363,6 +364,9 @@ public class Enemy : NetworkBehaviour
 
         if (ragdollOnOff != null)
             ragdollOnOff.RagdollModeOn();
+        
+        if (PlayerXP.Instance != null)
+            PlayerXP.Instance.GainXP(xpReward);
 
         Destroy(gameObject, 5f);
     }
