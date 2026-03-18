@@ -3,11 +3,19 @@ using UnityEngine;
 public static class SkillTreeSaveSystem
 {
     private const string skillPointsKey = "skillPoints";
+    private const string XPKey = "playerXP";
+    private const string LevelKey = "playerLevel";
 
     public static void SaveAll(SkillTreeData[] allTrees, int skillPoints)
     {
         PlayerPrefs.SetInt(skillPointsKey, skillPoints);
 
+        if (PlayerXP.Instance != null)
+        {
+            PlayerPrefs.SetInt(XPKey, PlayerXP.Instance.currentXP);
+            PlayerPrefs.SetInt(LevelKey, PlayerXP.Instance.currentLevel);
+        }
+        
         foreach (SkillTreeData tree in allTrees)
         {
             foreach (SkillNode node in tree.nodes)
@@ -18,13 +26,19 @@ public static class SkillTreeSaveSystem
         }
         
         PlayerPrefs.Save();
-        Debug.Log("Skill Tree Saved.");
+        Debug.Log("Player Stats Saved.");
     }
 
     public static void LoadAll(SkillTreeData[] allTrees, out int skillPoints)
     {
         skillPoints = PlayerPrefs.GetInt(skillPointsKey, 10);
 
+        if (PlayerXP.Instance != null)
+        {
+            PlayerXP.Instance.currentXP = PlayerPrefs.GetInt(XPKey, 0);
+            PlayerXP.Instance.currentLevel = PlayerPrefs.GetInt(LevelKey, 1);
+        }
+        
         foreach (SkillTreeData tree in allTrees)
         {
             foreach (SkillNode node in tree.nodes)
@@ -35,7 +49,7 @@ public static class SkillTreeSaveSystem
             }
         }
         
-        Debug.Log("Skill Tree Loaded.");
+        Debug.Log("Stats Loaded.");
     }
 
     public static void ResetAll(SkillTreeData[] allTrees, int defaultSkillPoints, out int skillPoints)

@@ -31,7 +31,15 @@ public class SpellCaster : NetworkBehaviour
         if (!isOwner) return;
 
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
-            CastBlazingImpact();
+        {
+            if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
+            {
+                Debug.Log("Ice Ball is locked!");
+                return;
+            }
+
+            CastIceball();
+        }
     }
 
     bool IsHoldingStaff()
