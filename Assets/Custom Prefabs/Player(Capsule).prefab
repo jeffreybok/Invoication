@@ -199,7 +199,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1149732754908716945}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5e078d4e902f24b3ba54b036e3f60391, type: 3}
   m_Name: 
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1149732754908716945}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cf892eab28384d53946cdd26f7e7e3d, type: 3}
   m_Name: 
@@ -615,13 +615,19 @@ MonoBehaviour:
   fireballPrefab: {fileID: 9120452587942675995, guid: 18f1586b5341742578e6349a5a066100, type: 3}
   blazingImpactPrefab: {fileID: 9120452587942675995, guid: b3fe3a8b417d54f9fb4be076977f24ec, type: 3}
   iceballPrefab: {fileID: 9120452587942675995, guid: 847da23b037004bd7b30cd4671fa7545, type: 3}
+  fireWallPrefab: {fileID: 3088223699014111392, guid: 07f74643257555d42ae0ebf5c49cffb6, type: 3}
+  emberCirclePrefab: {fileID: 9120452587942675995, guid: 93384f54733ddeb4a8aff7b0187caa0a, type: 3}
   fireballSpawnPoint: {fileID: 0}
   fireballSpeed: 20
   iceballSpeed: 20
+  fireWallSpeed: 12
+  emberCircleSpeed: 15
   castKey: 102
   aimLayers:
     serializedVersion: 2
     m_Bits: 119
+  iceWallPrefab: {fileID: 8336497525705530155, guid: de3ea497563c5104882f8051b176648f, type: 3}
+  iceWallSpeed: 12
   textPopupPrefab: {fileID: 5657472185379806464, guid: 4383bae9c35fe4978a76c908c46166d0, type: 3}
   textFloatSpeed: 1
   textFadeDuration: 2
@@ -806,6 +812,98 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &3362588223953917083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7109854957983906073}
+  - component: {fileID: 6591342275959106200}
+  - component: {fileID: 2280573020598054152}
+  m_Layer: 0
+  m_Name: Spell List
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7109854957983906073
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3362588223953917083}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3678921392594614502}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 374.99994, y: 0}
+  m_SizeDelta: {x: 500, y: 500}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6591342275959106200
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3362588223953917083}
+  m_CullTransparentMesh: 1
+--- !u!114 &2280573020598054152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3362588223953917083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.2901961}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 42
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 228
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'LIST OF SPELLS:
+
+    FIREBALL
+
+    BLAZE
+
+    FIREWALL
+
+    EMBER CIRCLE
+
+
+    ICEBALL
+
+    ICEWALL'
 --- !u!1 &3648311871903313649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,6 +1161,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7109854957983906073}
   - {fileID: 4081453109716999812}
   - {fileID: 8999213246632532307}
   - {fileID: 6737120236275303483}
