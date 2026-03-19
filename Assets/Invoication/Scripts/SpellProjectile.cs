@@ -8,6 +8,8 @@ public class SpellProjectile : MonoBehaviour
         BlazingImpact,
         DragonsBreath,
         Iceball,
+        FireWall,
+        IceWall,
     }
 
     [Header("Spell Settings")]
@@ -23,12 +25,65 @@ public class SpellProjectile : MonoBehaviour
     [Header("Freeze (Ice spells)")]
     public float freezeDuration = 3f;
 
+    [Header("FireWall")]
+    public GameObject fireWallPrefab;
+    public float fireWallTravelDistance = 5f;
+    public float fireWallLifetime = 6f;
+    public float fireWallBurnDamagePerTick = 8f;
+    public float fireWallBurnDuration = 4f;
+    public float fireWallTickRate = 0.5f;
+
+    [Header("IceWall")]
+    public GameObject iceWallPrefab;
+    public float iceWallTravelDistance = 5f;
+    public float iceWallLifetime = 6f;
+    public float iceWallFreezeDuration = 3f;
+    public float iceWallTickRate = 0.5f;
+
     [Header("VFX")]
     public GameObject impactVFX;
     public float vfxDuration = 2f;
 
+    private bool _fireWallDeployed = false;
+    private bool _iceWallDeployed = false;
+
+    private Vector3 _spawnPosition;
+
+    void Start()
+    {
+        if (spellType == SpellType.FireWall || spellType == SpellType.IceWall)
+            _spawnPosition = transform.position;
+    }
+
+    void Update()
+    {
+        if (spellType == SpellType.FireWall && !_fireWallDeployed)
+        {
+            float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
+            if (distanceTraveled >= fireWallTravelDistance)
+                DeployFireWall(transform.position);
+        }
+        if (spellType == SpellType.IceWall && !_iceWallDeployed)
+        {
+            float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
+            if (distanceTraveled >= iceWallTravelDistance)
+                DeployIceWall(transform.position);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
+        if (spellType == SpellType.FireWall)
+        {
+            DeployFireWall(collision.contacts[0].point);
+            return;
+        }
+        if (spellType == SpellType.IceWall)
+        {
+            DeployIceWall(collision.contacts[0].point);
+            return;
+        }
+
         Vector3 point = collision.contacts[0].point;
 
         Enemy directEnemy = collision.gameObject.GetComponent<Enemy>();
@@ -59,6 +114,56 @@ public class SpellProjectile : MonoBehaviour
             float duration = ps != null ? ps.main.duration : vfxDuration;
             GameObject vfx = Instantiate(impactVFX, point, Quaternion.identity);
             Destroy(vfx, duration);
+        }
+
+        Destroy(gameObject);
+    }
+
+    void DeployFireWall(Vector3 position)
+    {
+        if (_fireWallDeployed) return;
+        _fireWallDeployed = true;
+
+        position.y += 4f;
+
+        if (fireWallPrefab != null)
+        {
+            GameObject wall = Instantiate(fireWallPrefab, position, transform.rotation);
+            FireWall fw = wall.GetComponent<FireWall>();
+            if (fw != null)
+            {
+                fw.lifetime          = fireWallLifetime;
+                fw.burnDamagePerTick = fireWallBurnDamagePerTick;
+                fw.burnDuration      = fireWallBurnDuration;
+                fw.tickRate          = fireWallTickRate;
+            }
+            Destroy(wall, fireWallLifetime);
+        }
+
+        Destroy(gameObject);
+    }
+    
+    void DeployIceWall(Vector3 position)
+    {
+        if (_iceWallDeployed) return;
+        _iceWallDeployed = true;
+
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        if (iceWallPrefab != null)
+        {
+            GameObject wall = Instantiate(iceWallPrefab, position, transform.rotation);
+            IceWall iw = wall.GetComponent<IceWall>();
+            if (iw != null)
+            {
+                iw.lifetime        = iceWallLifetime;
+                iw.freezeDuration  = iceWallFreezeDuration;
+                iw.tickRate        = iceWallTickRate;
+            }
+            Destroy(wall, iceWallLifetime);
         }
 
         Destroy(gameObject);

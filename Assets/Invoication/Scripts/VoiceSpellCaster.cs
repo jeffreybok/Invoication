@@ -8,7 +8,7 @@ public class VoiceSpellCaster : MonoBehaviour
     private AppVoiceExperience appVoiceExperience;
     private bool isListening = false;
     private SpellCaster spellCaster;
-    
+
     [Header("Spell Text Popup")]
     public GameObject textPopupPrefab;
     public Transform textSpawnPoint;
@@ -24,13 +24,13 @@ public class VoiceSpellCaster : MonoBehaviour
     {
         appVoiceExperience = GetComponent<AppVoiceExperience>();
         spellCaster = GetComponent<SpellCaster>();
-        
+
         if (appVoiceExperience != null)
         {
             appVoiceExperience.TranscriptionEvents.OnFullTranscription.AddListener(OnFullTranscription);
             appVoiceExperience.VoiceEvents.OnStartListening.AddListener(OnStartListening);
             appVoiceExperience.VoiceEvents.OnStoppedListening.AddListener(OnStoppedListening);
-            
+
             Debug.Log("Voice spell casting ready! Press V to toggle microphone.");
         }
         else
@@ -43,16 +43,14 @@ public class VoiceSpellCaster : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.V))
-        {
             ToggleMicrophone();
-        }
     }
-    
+
     void OnStartListening()
     {
         Debug.Log("🎤 Wit.ai started listening!");
     }
-    
+
     void OnStoppedListening()
     {
         Debug.Log("🛑 Wit.ai stopped listening!");
@@ -61,7 +59,7 @@ public class VoiceSpellCaster : MonoBehaviour
     void ToggleMicrophone()
     {
         if (appVoiceExperience == null) return;
-        
+
         if (isListening)
         {
             appVoiceExperience.Deactivate();
@@ -79,20 +77,20 @@ public class VoiceSpellCaster : MonoBehaviour
     {
         Debug.Log("========== You said: " + transcription + " ==========");
         Debug.Log("isListening flag: " + isListening);
-        
+
         ShowSpellText(transcription);
-    
+
         string spellSaid = transcription.ToLower().Trim();
-        
-        if (spellSaid.Contains("fire") || spellSaid.Contains("fireball") || spellSaid.Contains("fire ball") || spellSaid.Contains("fire bowl"))
+
+        if (spellSaid.Contains("fireball") || spellSaid.Contains("fire ball") || spellSaid.Contains("fire bowl"))
         {
             CastFireball();
         }
-        else if (spellSaid.Contains("blazing") || spellSaid.Contains("blazing impact"))
+        else if (spellSaid.Contains("blazing") || spellSaid.Contains("blazing impact") || spellSaid.Contains("please") || spellSaid.Contains("blaze"))
         {
             CastBlazingImpact();
         }
-        else if (spellSaid.Contains("ice") || spellSaid.Contains("iceball") || spellSaid.Contains("ice ball") || spellSaid.Contains("ace") || spellSaid.Contains("nice"))
+        else if (spellSaid.Contains("iceball") || spellSaid.Contains("ice ball") || spellSaid.Contains("ace") || spellSaid.Contains("nice"))
         {
             CastIce();
         }
@@ -103,6 +101,18 @@ public class VoiceSpellCaster : MonoBehaviour
         else if (spellSaid.Contains("heal"))
         {
             CastHeal();
+        }
+        else if (spellSaid.Contains("ember") || spellSaid.Contains("ember circle") || spellSaid.Contains("amber"))
+        {
+            CastEmberCircle();
+        }
+        else if (spellSaid.Contains("fire wall") || spellSaid.Contains("firewall") || spellSaid.Contains("fire ward"))
+        {
+            CastFireWall();
+        }
+        else if (spellSaid.Contains("ice wall") || spellSaid.Contains("icewall") || spellSaid.Contains("ice ward") || spellSaid.Contains("I swallow"))
+        {
+            CastIceWall();
         }
         else
         {
@@ -119,7 +129,7 @@ public class VoiceSpellCaster : MonoBehaviour
             Debug.LogWarning("NOT reactivating because isListening is FALSE!");
         }
     }
-    
+
     void ShowSpellText(string text)
     {
         if (textPopupPrefab == null) return;
@@ -167,9 +177,9 @@ public class VoiceSpellCaster : MonoBehaviour
     {
         Debug.Log("Waiting 1 second before reactivating...");
         yield return new WaitForSeconds(1f);
-        
+
         Debug.Log("1 second passed. isListening: " + isListening);
-        
+
         if (isListening)
         {
             Debug.Log("Calling appVoiceExperience.Activate()...");
@@ -184,25 +194,20 @@ public class VoiceSpellCaster : MonoBehaviour
 
     void CastFireball()
     {
-        if (spellCaster != null)
-            spellCaster.CastFireball();
-        else
-            Debug.LogError("SpellCaster not found!");
+        if (spellCaster != null) spellCaster.CastFireball();
+        else Debug.LogError("SpellCaster not found!");
     }
 
-    void CastBlazingImpact(){
-        if(spellCaster != null)
-            spellCaster.CastBlazingImpact();
-        else
-            Debug.LogError("SpellCaster not found!");
+    void CastBlazingImpact()
+    {
+        if (spellCaster != null) spellCaster.CastBlazingImpact();
+        else Debug.LogError("SpellCaster not found!");
     }
 
     void CastIce()
     {
-        if (spellCaster != null)
-            spellCaster.CastIceball();
-        else
-            Debug.LogError("SpellCaster not found!");
+        if (spellCaster != null) spellCaster.CastIceball();
+        else Debug.LogError("SpellCaster not found!");
     }
 
     void CastLightning()
@@ -213,6 +218,24 @@ public class VoiceSpellCaster : MonoBehaviour
     void CastHeal()
     {
         Debug.Log("HEAL CAST!");
+    }
+
+    void CastFireWall()
+    {
+        if (spellCaster != null) spellCaster.CastFireWall();
+        else Debug.LogError("SpellCaster not found!");
+    }
+
+    void CastIceWall()
+    {
+        if (spellCaster != null) spellCaster.CastIceWall();
+        else Debug.LogError("SpellCaster not found!");
+    }
+
+    void CastEmberCircle()
+    {
+        if (spellCaster != null) spellCaster.CastEmberCircle();
+        else Debug.LogError("SpellCaster not found!");
     }
 
     void OnDestroy()

@@ -25,7 +25,7 @@ public class PotionShatter : MonoBehaviour
         }
     }
 
-    void Shatter(Vector3 impactPoint, GameObject hitObject)
+    public void Shatter(Vector3 impactPoint, GameObject hitObject)
     {
         Enemy enemy = hitObject.GetComponent<Enemy>();
         if (enemy != null)
