@@ -1,6 +1,7 @@
 using UnityEngine;
+using PurrNet;
 
-public class SpellProjectile : MonoBehaviour
+public class SpellProjectile : NetworkBehaviour
 {
     public enum SpellType
     {
@@ -73,6 +74,7 @@ public class SpellProjectile : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+<<<<<<< HEAD
         if (spellType == SpellType.FireWall)
         {
             DeployFireWall(collision.contacts[0].point);
@@ -83,6 +85,9 @@ public class SpellProjectile : MonoBehaviour
             DeployIceWall(collision.contacts[0].point);
             return;
         }
+=======
+        if (!isServer) return;
+>>>>>>> main
 
         Vector3 point = collision.contacts[0].point;
 
@@ -91,9 +96,11 @@ public class SpellProjectile : MonoBehaviour
             ApplyEffect(directEnemy);
 
         Collider[] hitColliders = Physics.OverlapSphere(point, splashRadius > 0f ? splashRadius : 0.1f);
+
         foreach (Collider hit in hitColliders)
         {
             Enemy enemy = hit.GetComponent<Enemy>();
+
             if (enemy != null && enemy != directEnemy)
                 ApplySplashEffect(enemy);
 
@@ -112,6 +119,7 @@ public class SpellProjectile : MonoBehaviour
         {
             ParticleSystem ps = impactVFX.GetComponent<ParticleSystem>();
             float duration = ps != null ? ps.main.duration : vfxDuration;
+
             GameObject vfx = Instantiate(impactVFX, point, Quaternion.identity);
             Destroy(vfx, duration);
         }
@@ -174,19 +182,42 @@ public class SpellProjectile : MonoBehaviour
         switch (spellType)
         {
             case SpellType.Fireball:
-                enemy.TakeDamage(directDamage);
+                float fireballDmg = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.GetFireballDamage()
+                    : directDamage;
+                enemy.TakeDamage(fireballDmg);
                 break;
+
             case SpellType.BlazingImpact:
-                enemy.TakeDamage(directDamage);
-                enemy.ApplyBurn(burnDamagePerTick, burnDuration);
+                float blazingDmg = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.GetBlazingDamage()
+                    : directDamage;
+                float burnTick = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.blazingBurnDamagePerTick
+                    : burnDamagePerTick;
+                float burnDur = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.blazingBurnDuration
+                    : burnDuration;
+                
+                enemy.TakeDamage(blazingDmg);
+                enemy.ApplyBurn(burnTick, burnDur);
                 break;
+
             case SpellType.DragonsBreath:
                 enemy.TakeDamage(directDamage);
                 enemy.ApplyBurn(burnDamagePerTick, burnDuration * 0.5f);
                 break;
+
             case SpellType.Iceball:
-                enemy.TakeDamage(directDamage);
-                enemy.Freeze(freezeDuration);
+                float iceDmg = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.GetIceSpikeDamage()
+                    : directDamage;
+                float freezeDur = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.iceSpikeSlowDuration
+                    : freezeDuration;
+                
+                enemy.TakeDamage(iceDmg);
+                enemy.Freeze(freezeDur);
                 break;
         }
     }
@@ -196,14 +227,32 @@ public class SpellProjectile : MonoBehaviour
         switch (spellType)
         {
             case SpellType.Fireball:
-                enemy.TakeDamage(directDamage * splashDamageMult);
+                float fireballSplashDmg = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.GetFireballDamage()
+                    : directDamage;
+                enemy.TakeDamage(fireballSplashDmg * splashDamageMult);
                 break;
+
             case SpellType.BlazingImpact:
-                enemy.TakeDamage(directDamage * splashDamageMult);
-                enemy.ApplyBurn(burnDamagePerTick, burnDuration);
+                float blazingSplashDmg = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.GetBlazingDamage()
+                    : directDamage;
+                float splashBurnTick = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.blazingBurnDamagePerTick
+                    : burnDamagePerTick;
+                float splashBurnDur = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.blazingBurnDuration
+                    : burnDuration;
+
+                enemy.TakeDamage(blazingSplashDmg * splashDamageMult);
+                enemy.ApplyBurn(splashBurnTick, splashBurnDur);
                 break;
+
             case SpellType.Iceball:
-                enemy.Freeze(freezeDuration * 0.5f);
+                float splashFreezeDur = PlayerStats.Instance != null
+                    ? PlayerStats.Instance.iceSpikeSlowDuration
+                    : freezeDuration;
+                enemy.Freeze(splashFreezeDur);
                 break;
         }
     }

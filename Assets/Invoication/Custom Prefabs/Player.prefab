@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1556758148943220317}
   - component: {fileID: 4164303672668911330}
   - component: {fileID: 4226670159678329203}
+  - component: {fileID: 3940401405381744544}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -49,6 +50,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c67eb945290431ab5e499423c90405, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   walkSpeed: 5
   runSpeed: 10
   jumpForce: 8
@@ -97,11 +107,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   currentHealth: 0
-  healthBarFill: {fileID: 885173728714915117}
   healthText: {fileID: 0}
-  fullHealthColor: {r: 0, g: 1, b: 0, a: 1}
-  halfHealthColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
+  gameOverScreen: {fileID: 0}
+  mainMenuSceneName: StartScreenScene
+  isDead: 0
 --- !u!114 &4226670159678329203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +125,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
   pauseMenuUI: {fileID: 0}
   player: {fileID: 1149732754908716945}
+--- !u!114 &3940401405381744544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149732754908716945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4c90adf57504fc985d0cab597acf12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  skillPoints: 14
+  baseDamage: 10
+  baseBurnDuration: 2
+  baseFireRate: 1
+  baseRange: 5
+  currentDamage: 0
+  currentBurnDuration: 0
+  currentFireRate: 0
+  currentRange: 0
 --- !u!1 &2871105837321562739
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,6 +300,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95bc15bfb5a84d8a8b08cb51a032193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RaycastPickup
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   pickupRange: 10
   playerHand: {fileID: 7675639232698081281}
   pickupLayer:
@@ -289,8 +328,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2b3ab5603944d8389efc64689e4df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireballCaster
-  fireballPrefab: {fileID: 9120452587942675995, guid: 18f1586b5341742578e6349a5a066100, type: 3}
-  iceballPrefab: {fileID: 9120452587942675995, guid: 847da23b037004bd7b30cd4671fa7545, type: 3}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  fireballPrefab: {fileID: 0}
+  blazingImpactPrefab: {fileID: 0}
+  iceballPrefab: {fileID: 0}
   fireballSpawnPoint: {fileID: 0}
   fireballSpeed: 20
   iceballSpeed: 20
@@ -443,6 +492,9 @@ MonoBehaviour:
   textSpawnPoint: {fileID: 0}
   textFloatSpeed: 1
   textFadeDuration: 2
+  micIndicatorImage: {fileID: 0}
+  micOnColor: {r: 0, g: 1, b: 0, a: 1}
+  micOffColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &3278409273492737232
 GameObject:
   m_ObjectHideFlags: 0

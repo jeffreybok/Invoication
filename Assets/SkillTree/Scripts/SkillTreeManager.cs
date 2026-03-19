@@ -1,12 +1,10 @@
+using System;
 using UnityEngine;
 using TMPro;
 
 public class SkillTreeManager : MonoBehaviour
 {
     public static SkillTreeManager Instance;
-    
-    // Temp
-    private int defaultSkillPoints = 14;
     
     [Header("References")]
     public GameObject skillTreePanel;
@@ -16,8 +14,14 @@ public class SkillTreeManager : MonoBehaviour
     
     [Header("Skill Trees")]
     public SkillTreeData[] allTrees;
+    public SkillTreeData[] filteredTrees;
     private int currentTreeIndex = 0;
     
+    [Header("Class")]
+    public PlayerClass activeClass = PlayerClass.Damage;
+    
+    private PlayerController playerController;
+    private RaycastPickup raycastPickup;
     private bool isOpen = false;
 
     private void Awake()
@@ -30,17 +34,27 @@ public class SkillTreeManager : MonoBehaviour
 
     private void Start()
     {
-        SkillTreeSaveSystem.LoadAll(allTrees, out PlayerStats.Instance.skillPoints);
+        skillTreePanel.SetActive(false);
+        StartCoroutine(InitializeAfterDelay());
+    }
+
+    private System.Collections.IEnumerator InitializeAfterDelay()
+    {
+        // Wait for player to spawn
+        yield return new WaitForSeconds(0.5f);
+        
+        FindOwnedPlayer();
+            
+        FilterTreesByClass();
+        
+        SkillTreeSaveSystem.LoadAll(allTrees, out int loadedPoints);
+        PlayerStats.Instance.skillPoints = loadedPoints;
+        
         foreach (SkillTreeData tree in allTrees)
-        {
             foreach (SkillNode node in tree.nodes)
-            {
                 if (node.isUnlocked && node.nodeEffect != NodeEffect.None)
                     PlayerStats.Instance.ApplyEffect(node.nodeEffect, node.effectValue);
-            }
-        }
         
-        skillTreePanel.SetActive(false);
         LoadCurrentTree();
     }
 
@@ -60,18 +74,52 @@ public class SkillTreeManager : MonoBehaviour
         isOpen = true;
         skillTreePanel.SetActive(true);
         RefreshSkillPointsDisplay();
+        
+        Time.timeScale = 0f;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        // Disable player scripts (but NOT camera components)
+        if (playerController != null) playerController.enabled = false;
+        if (raycastPickup != null) raycastPickup.enabled = false;
     }
 
     private void CloseMenu()
     {
         isOpen = false;
         skillTreePanel.SetActive(false);
+        if (TooltipUI.Instance.tooltipPanel.activeInHierarchy)
+            TooltipUI.Instance.tooltipPanel.SetActive(false);
+        
+        Time.timeScale = 1f;
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
+        // Re-enable player scripts (but NOT camera components)
+        if (playerController != null) playerController.enabled = true;
+        if (raycastPickup != null) raycastPickup.enabled = true;
+    }
+
+    private void FilterTreesByClass()
+    {
+        System.Collections.Generic.List<SkillTreeData> matching = new System.Collections.Generic.List<SkillTreeData>();
+        
+        foreach (SkillTreeData tree in allTrees)
+            if (tree.playerClass == activeClass)
+                matching.Add(tree);
+        
+        filteredTrees = matching.ToArray();
     }
 
     private void LoadCurrentTree()
     {
-        skillTreeUI.LoadTree(allTrees[currentTreeIndex]);
-        elementNameText.text = allTrees[currentTreeIndex].elementName;
+        if (filteredTrees == null || filteredTrees.Length == 0)
+            return;
+        
+        skillTreeUI.LoadTree(filteredTrees[currentTreeIndex]);
+        elementNameText.text = filteredTrees[currentTreeIndex].elementName;
         RefreshSkillPointsDisplay();
     }
 
@@ -82,13 +130,13 @@ public class SkillTreeManager : MonoBehaviour
 
     public void NextTree()
     {
-        currentTreeIndex = (currentTreeIndex + 1) % allTrees.Length;
+        currentTreeIndex = (currentTreeIndex + 1) % filteredTrees.Length;
         LoadCurrentTree();
     }
 
     public void PreviousTree()
     {
-        currentTreeIndex = (currentTreeIndex - 1 + allTrees.Length) % allTrees.Length;
+        currentTreeIndex = (currentTreeIndex - 1 + filteredTrees.Length) % filteredTrees.Length;
         LoadCurrentTree();
     }
     
@@ -140,10 +188,34 @@ public class SkillTreeManager : MonoBehaviour
 
     public void ResetSkillTree()
     {
-        SkillTreeSaveSystem.ResetAll(allTrees, defaultSkillPoints, out PlayerStats.Instance.skillPoints);
+        // Calculate total points spent across all unlocked nodes
+        int pointsToRefund = 0;
+        foreach (SkillTreeData tree in allTrees)
+        foreach (SkillNode node in tree.nodes)
+            if (node.isUnlocked)
+                pointsToRefund += node.skillPointCost;
+        
+        int newTotal = PlayerStats.Instance.skillPoints + pointsToRefund;
+        
+        SkillTreeSaveSystem.ResetAll(allTrees, newTotal, out int resetPoints);
+        PlayerStats.Instance.skillPoints = resetPoints;
         PlayerStats.Instance.ResetToBase();
         LoadCurrentTree();
         RefreshSkillPointsDisplay();
         Debug.Log("Skill tree reset.");
+    }
+    
+    private void FindOwnedPlayer()
+    {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            PlayerCameraOwner cameraOwner = player.GetComponent<PlayerCameraOwner>();
+            if (cameraOwner != null && cameraOwner.isOwner)
+            {
+                playerController = player.GetComponent<PlayerController>();
+                raycastPickup = player.GetComponentInChildren<RaycastPickup>();
+                break;
+            }
+        }
     }
 }

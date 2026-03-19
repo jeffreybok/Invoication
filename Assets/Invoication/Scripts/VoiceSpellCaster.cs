@@ -194,20 +194,59 @@ public class VoiceSpellCaster : MonoBehaviour
 
     void CastFireball()
     {
+<<<<<<< HEAD
         if (spellCaster != null) spellCaster.CastFireball();
         else Debug.LogError("SpellCaster not found!");
+=======
+        if (!SkillTreeBridge.IsUnlocked("Fireball_0"))
+        {
+            ShowSpellText("Fireball spell locked");
+            return;
+        }
+        
+        if (spellCaster != null)
+            spellCaster.CastFireball();
+        else
+            Debug.LogError("SpellCaster not found!");
+>>>>>>> main
     }
 
     void CastBlazingImpact()
     {
+<<<<<<< HEAD
         if (spellCaster != null) spellCaster.CastBlazingImpact();
         else Debug.LogError("SpellCaster not found!");
+=======
+        if (!SkillTreeBridge.IsUnlocked("BlazingImpact_0"))
+        {
+            ShowSpellText("Blazing Impact spell locked");
+            return;
+        }
+        
+        if(spellCaster != null)
+            spellCaster.CastBlazingImpact();
+        else
+            Debug.LogError("SpellCaster not found!");
+>>>>>>> main
     }
 
     void CastIce()
     {
+<<<<<<< HEAD
         if (spellCaster != null) spellCaster.CastIceball();
         else Debug.LogError("SpellCaster not found!");
+=======
+        if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
+        {
+            ShowSpellText("Ice Spike spell locked");
+            return;
+        }
+        
+        if (spellCaster != null)
+            spellCaster.CastIceball();
+        else
+            Debug.LogError("SpellCaster not found!");
+>>>>>>> main
     }
 
     void CastLightning()
