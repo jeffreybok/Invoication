@@ -14,9 +14,12 @@ public class PlayerCameraOwner : NetworkBehaviour
 
     protected override void OnSpawned()
     {
+        Debug.Log($"[PlayerCameraOwner] Spawned | isOwner: {isOwner} | isServer: {isServer}");
+
         if (!isOwner)
         {
-            // Disable camera + audio for non-owners
+            Debug.Log("[PlayerCameraOwner] NOT OWNER → disabling camera");
+
             if (playerCamera != null)
                 playerCamera.gameObject.SetActive(false);
 
@@ -25,7 +28,8 @@ public class PlayerCameraOwner : NetworkBehaviour
         }
         else
         {
-            // Ensure owner camera is enabled
+            Debug.Log("[PlayerCameraOwner] I OWN THIS PLAYER → enabling camera");
+
             if (playerCamera != null)
                 playerCamera.gameObject.SetActive(true);
         }
