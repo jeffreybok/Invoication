@@ -58,11 +58,7 @@ public class SpellCaster : NetworkBehaviour
         return false;
     }
 
-<<<<<<< HEAD
-    void LaunchProjectile(GameObject prefab, float speed)
-=======
     void LaunchProjectile_Server(GameObject prefab, float speed, Vector3 spawnPos, Vector3 direction, GameObject player)
->>>>>>> main
     {
         NetworkIdentity projectileIdentity = Instantiate(prefab, spawnPos, Quaternion.identity)
             .GetComponent<NetworkIdentity>();
@@ -107,6 +103,11 @@ public class SpellCaster : NetworkBehaviour
             prefab = iceballPrefab;
             speed = iceballSpeed;
         }
+        else if (spellType == 3)
+        {
+            prefab = emberCirclePrefab;
+            speed = emberCircleSpeed;
+        }
 
         if (prefab == null)
         {
@@ -133,7 +134,6 @@ public class SpellCaster : NetworkBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
 
-<<<<<<< HEAD
         GameObject projectile = Instantiate(prefab, spawnPos, Quaternion.LookRotation(shootDirection));
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
@@ -144,9 +144,6 @@ public class SpellCaster : NetworkBehaviour
         }
 
         Destroy(projectile, 5f);
-=======
-        LaunchProjectile_Server(prefab, speed, spawnPos, shootDirection, player);
->>>>>>> main
     }
 
     public void CastFireball()
@@ -246,6 +243,6 @@ public class SpellCaster : NetworkBehaviour
     public void CastEmberCircle()
     {
         Debug.Log("CASTING EMBER CIRCLE!");
-        LaunchProjectile(emberCirclePrefab, emberCircleSpeed);
+        LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 3, GetComponentInChildren<Camera>().transform.forward);
     }
 }
