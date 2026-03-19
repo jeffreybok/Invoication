@@ -74,7 +74,6 @@ public class SpellProjectile : NetworkBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-<<<<<<< HEAD
         if (spellType == SpellType.FireWall)
         {
             DeployFireWall(collision.contacts[0].point);
@@ -85,9 +84,6 @@ public class SpellProjectile : NetworkBehaviour
             DeployIceWall(collision.contacts[0].point);
             return;
         }
-=======
-        if (!isServer) return;
->>>>>>> main
 
         Vector3 point = collision.contacts[0].point;
 

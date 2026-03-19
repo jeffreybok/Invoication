@@ -43,11 +43,16 @@ public class PlayerController : NetworkBehaviour
     
     void Update()
     {
-        if (!isOwner) return;
+        #if UNITY_EDITOR
         if (PauseMenu.IsPaused) return;
-        
         HandleMovement();
         HandleMouseLook();
+        #else
+        if (!isOwner) return;
+        if (PauseMenu.IsPaused) return;
+        HandleMovement();
+        HandleMouseLook();
+        #endif
     }
     
     void HandleMovement()
