@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: FireballGradient
   m_Shader: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 2100000, guid: ddf5cd933b7b1432f84d76bbf5915ea1, type: 2}
+  m_Parent: {fileID: 2100000, guid: c275ec55ad8351943977312d1a96063d, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHABLEND_ON
@@ -25,9 +25,14 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 878972c3151f97940b2c53535a0d1ce5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats: []
-    m_Colors: []
+    m_Colors:
+    - _Color: {r: 5.2100854, g: 0.7618521, b: 0.7618521, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
