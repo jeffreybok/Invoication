@@ -11,7 +11,8 @@ public class StaffPickup : NetworkBehaviour
 
     void Update()
     {
-        if (!isOwner) return;
+        // if (!isOwner) return;
+        if (!isServer) return; // FOR SINGLE PLAYER DEMO
 
         // Check if player presses E while nearby
         if (playerNearby && Input.GetKeyDown(KeyCode.E))

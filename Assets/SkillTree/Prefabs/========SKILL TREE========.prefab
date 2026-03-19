@@ -1297,7 +1297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7231416498286730192
 Transform:
   m_ObjectHideFlags: 0
@@ -2203,6 +2203,8 @@ MonoBehaviour:
   skillPointText: {fileID: 3745404621639964669}
   elementNameText: {fileID: 8752013933734288502}
   allTrees: []
+  filteredTrees: []
+  activeClass: 1
 --- !u!1 &7071335605214892634
 GameObject:
   m_ObjectHideFlags: 0
