@@ -2202,7 +2202,9 @@ MonoBehaviour:
   skillTreeUI: {fileID: 694910837429877652}
   skillPointText: {fileID: 3745404621639964669}
   elementNameText: {fileID: 8752013933734288502}
-  allTrees: []
+  allTrees:
+  - {fileID: 11400000, guid: 952980e6fde2542d3b5f2c256c2eab6a, type: 2}
+  - {fileID: 11400000, guid: fa8f2f2cf39ac4ea9a53c124690bf8c9, type: 2}
   filteredTrees: []
   activeClass: 1
 --- !u!1 &7071335605214892634

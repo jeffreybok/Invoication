@@ -365,8 +365,8 @@ public class Enemy : NetworkBehaviour
         if (ragdollOnOff != null)
             ragdollOnOff.RagdollModeOn();
         
-        // if (PlayerXP.Instance != null)
-        //     PlayerXP.Instance.GainXP(xpReward);
+        if (PlayerXP.Instance != null)
+            PlayerXP.Instance.GainXP(xpReward);
 
         Destroy(gameObject, 5f);
     }

@@ -41,7 +41,7 @@ public class SkillTreeManager : MonoBehaviour
     private System.Collections.IEnumerator InitializeAfterDelay()
     {
         // Wait for player to spawn
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         
         FindOwnedPlayer();
             
