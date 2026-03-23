@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
-  m_Name: IceTier2
+  m_Name: BlazingBarrier
   m_EditorClassIdentifier: Assembly-CSharp::SkillNode
-  nodeName: Frozen Barrier
-  nodeID: tank_ice_tier2
-  nodeDescription: Ice wall becomes thicker and temporarily freezes enemies that
-    stay near it too long.
+  nodeName: Blazing Barrier
+  nodeID: BlazingBarrier_0
+  nodeDescription: Upgraded fire wall dealing more damage and inflicts burn effect
+    on enemies that continuously hurts them.
   skillPointCost: 4
   nodeType: 0
+  prerequisiteNodeIDs:
+  - FireWall_0
   nodeEffect: 0
   effectValue: 0
   isUnlocked: 0

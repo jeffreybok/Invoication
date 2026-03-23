@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
-  m_Name: FireTier2
+  m_Name: FireWall
   m_EditorClassIdentifier: Assembly-CSharp::SkillNode
-  nodeName: Blazing Barrier
-  nodeID: tank_fire_tier2
-  nodeDescription: Upgraded fire wall dealing more damage and inflicts burn effect
-    on enemies that continuously hurts them.
+  nodeName: Fire Wall
+  nodeID: FireWall_0
+  nodeDescription: Wall of flames that blocks enemies and inflicts small damage to
+    whoever comes in contact.
   skillPointCost: 4
   nodeType: 0
+  prerequisiteNodeIDs: []
   nodeEffect: 0
-  effectValue: 3
+  effectValue: 0
   isUnlocked: 0

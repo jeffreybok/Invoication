@@ -5,34 +5,15 @@ public class NodeConnector : MonoBehaviour
 {
     public static NodeConnector Instance;
 
-    [Header("References")]
-    public Transform lineContainer;
-    public Sprite lineSprite;
-
     [Header("Style")]
+    public Sprite lineSprite;
     public Color lockedLineColor;
     public Color unlockedLineColor;
     public float lineThickness = 4f;
 
-    void Awake()
-    {
-        Instance = this;
-    }
+    void Awake() { Instance = this; }
 
-    public void DrawLines(System.Collections.Generic.List<RectTransform> nodeRects,
-        System.Collections.Generic.List<SkillNode> nodes)
-    {
-        // Clear previous lines
-        foreach (Transform child in lineContainer)
-            Destroy(child.gameObject);
-
-        for (int i = 0; i < nodeRects.Count - 1; i++)
-        {
-            CreateLine(nodeRects[i], nodeRects[i + 1], nodes[i].isUnlocked);
-        }
-    }
-
-    private void CreateLine(RectTransform from, RectTransform to, bool isUnlocked)
+    public void DrawLine(RectTransform from, RectTransform to, Transform lineContainer, bool isUnlocked)
     {
         GameObject lineObj = new GameObject("Line", typeof(Image));
         lineObj.transform.SetParent(lineContainer, false);
@@ -53,6 +34,6 @@ public class NodeConnector : MonoBehaviour
         rt.sizeDelta = new Vector2(distance, lineThickness);
         rt.anchoredPosition = fromPos + direction * 0.5f;
         rt.localRotation = Quaternion.Euler(0, 0, angle);
-        rt.SetAsFirstSibling(); // lines render behind nodes
+        rt.SetAsFirstSibling();
     }
 }

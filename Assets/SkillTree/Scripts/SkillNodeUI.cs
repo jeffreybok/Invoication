@@ -8,7 +8,7 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [Header("References")]
     public Image nodeImage;
     public TextMeshProUGUI nodeNameText;
-    
+
     [Header("Colors")]
     public Color lockedColor;
     public Color unlockedColor;
@@ -16,15 +16,11 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private SkillNode nodeData;
     private SkillTreeData treeData;
-    private int nodeIndex;
-    private IPointerClickHandler pointerClickHandlerImplementation;
 
-    public void Initialize(SkillNode node, SkillTreeData tree, int index)
+    public void Initialize(SkillNode node, SkillTreeData tree)
     {
         nodeData = node;
         treeData = tree;
-        nodeIndex = index;
-        
         nodeNameText.text = node.nodeName;
         UpdateVisual();
     }
@@ -33,7 +29,7 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (nodeData.isUnlocked)
             nodeImage.color = unlockedColor;
-        else if (SkillTreeManager.Instance.CanUnlock(treeData, nodeIndex))
+        else if (SkillTreeManager.Instance.CanUnlock(treeData, nodeData))
             nodeImage.color = availableColor;
         else
             nodeImage.color = lockedColor;
@@ -51,8 +47,8 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!SkillTreeManager.Instance.CanUnlock(treeData, nodeIndex))
+        if (!SkillTreeManager.Instance.CanUnlock(treeData, nodeData))
             return;
-        ConfirmationUI.Instance.Show(nodeData, treeData, nodeIndex, this);
+        ConfirmationUI.Instance.Show(nodeData, treeData, this);
     }
 }

@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
-  m_Name: FireTier1
+  m_Name: PhoenixCircle
   m_EditorClassIdentifier: Assembly-CSharp::SkillNode
-  nodeName: Fire Wall
-  nodeID: tank_fire_tier1
-  nodeDescription: Wall of flames that blocks enemies and inflicts small damage to
-    whoever comes in contact.
+  nodeName: Phoenix Circle
+  nodeID: PhoenixCircle_0
+  nodeDescription: Removes negative effects inflicted on allies by enemies and increases
+    magic damage.
   skillPointCost: 4
   nodeType: 0
+  prerequisiteNodeIDs:
+  - CircleOfEmber_0
   nodeEffect: 0
-  effectValue: 2
-  isUnlocked: 1
+  effectValue: 0
+  isUnlocked: 0
