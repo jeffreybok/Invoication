@@ -31,6 +31,8 @@ public class SkillTreeManager : MonoBehaviour
 
     private void Start()
     {
+        // Use to reset saved player
+        PlayerPrefs.DeleteAll();
         skillTreePanel.SetActive(false);
         StartCoroutine(InitializeAfterDelay());
     }

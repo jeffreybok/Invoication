@@ -194,18 +194,33 @@ public class VoiceSpellCaster : MonoBehaviour
 
     void CastFireball()
     {
+        if (!SkillTreeBridge.IsUnlocked("Fireball_0"))
+        {
+            ShowSpellText("Fireball Locked");
+            return;
+        }
         if (spellCaster != null) spellCaster.CastFireball();
         else Debug.LogError("SpellCaster not found!");
     }
 
     void CastBlazingImpact()
     {
+        if (!SkillTreeBridge.IsUnlocked("BlazingImpact_0"))
+        {
+            ShowSpellText("Blazing Impact Locked");
+            return;
+        }
         if (spellCaster != null) spellCaster.CastBlazingImpact();
         else Debug.LogError("SpellCaster not found!");
     }
 
     void CastIce()
     {
+        if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
+        {
+            ShowSpellText("Ice Spell Locked");
+            return;
+        }
         if (spellCaster != null) spellCaster.CastIceball();
         else Debug.LogError("SpellCaster not found!");
     }
@@ -222,18 +237,33 @@ public class VoiceSpellCaster : MonoBehaviour
 
     void CastFireWall()
     {
+        if (!SkillTreeBridge.IsUnlocked("FireWall_0"))
+        {
+            ShowSpellText("Fire Wall Locked");
+            return;
+        }
         if (spellCaster != null) spellCaster.CastFireWall();
         else Debug.LogError("SpellCaster not found!");
     }
 
     void CastIceWall()
     {
+        if (!SkillTreeBridge.IsUnlocked("IceWall_0"))
+        {
+            ShowSpellText("Ice Wall Locked");
+            return;
+        }
         if (spellCaster != null) spellCaster.CastIceWall();
         else Debug.LogError("SpellCaster not found!");
     }
 
     void CastEmberCircle()
     {
+        if (!SkillTreeBridge.IsUnlocked("CircleOfEmber_0"))
+        {
+            ShowSpellText("Circle of Ember Locked");
+            return;
+        }
         if (spellCaster != null) spellCaster.CastEmberCircle();
         else Debug.LogError("SpellCaster not found!");
     }
