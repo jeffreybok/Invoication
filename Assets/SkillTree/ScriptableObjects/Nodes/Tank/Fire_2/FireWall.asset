@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
+  m_Name: FireWall
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNode
+  nodeName: Fire Wall
+  nodeID: FireWall_0
+  nodeDescription: Wall of flames that blocks enemies and inflicts small damage to
+    whoever comes in contact.
+  skillPointCost: 4
+  nodeType: 0
+  prerequisiteNodeIDs: []
+  nodeEffect: 0
+  effectValue: 0
+  isUnlocked: 0

@@ -29,10 +29,15 @@ public class PlayerController : NetworkBehaviour
     
     private float jumpBufferCounter = 0;
     private float coyoteTimeCounter = 0;
+
+    protected override void OnSpawned()
+    {
+        Debug.Log($"[PlayerController] Spawned | isOwner: {isOwner} | isServer: {isServer}");
+    }
     
     void Start()
     {
-        Application.targetFrameRate = 60;
+        Debug.Log($"[PlayerController] Start | isOwner: {isOwner}");
 
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
@@ -43,9 +48,12 @@ public class PlayerController : NetworkBehaviour
     
     void Update()
     {
-        if (!isOwner) return;
-        if (PauseMenu.IsPaused) return;
-        
+        if (!isOwner)
+            return;
+
+        if (PauseMenu.IsPaused)
+            return;
+
         HandleMovement();
         HandleMouseLook();
     }
@@ -108,15 +116,8 @@ public class PlayerController : NetworkBehaviour
         
         verticalRotation -= mouseY;
         verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
-        playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
-    }
-    
-    void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus && !PauseMenu.IsPaused)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+
+        if (playerCamera != null)
+            playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
     }
 }

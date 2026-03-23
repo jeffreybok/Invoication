@@ -6,11 +6,17 @@ public class SpellCaster : NetworkBehaviour
     public GameObject fireballPrefab;
     public GameObject blazingImpactPrefab;
     public GameObject iceballPrefab;
+    public GameObject fireWallPrefab;
+    public GameObject emberCirclePrefab;
     public Transform fireballSpawnPoint;
     public float fireballSpeed = 20f;
     public float iceballSpeed = 20f;
+    public float fireWallSpeed = 12f;
+    public float emberCircleSpeed = 15f;
     public KeyCode castKey = KeyCode.Mouse0;
     public LayerMask aimLayers = ~0;
+    public GameObject iceWallPrefab;
+    public float iceWallSpeed = 12f;
 
     [Header("Spell Text Popup")]
     public GameObject textPopupPrefab;
@@ -34,10 +40,9 @@ public class SpellCaster : NetworkBehaviour
         {
             if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
             {
-                Debug.Log("Ice Ball is locked!");
+                Debug.Log("Ice Spell is locked!");
                 return;
             }
-
             CastIceball();
         }
     }
@@ -97,6 +102,11 @@ public class SpellCaster : NetworkBehaviour
             prefab = iceballPrefab;
             speed = iceballSpeed;
         }
+        else if (spellType == 3)
+        {
+            prefab = emberCirclePrefab;
+            speed = emberCircleSpeed;
+        }
 
         if (prefab == null)
         {
@@ -123,7 +133,16 @@ public class SpellCaster : NetworkBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
 
-        LaunchProjectile_Server(prefab, speed, spawnPos, shootDirection, player);
+        GameObject projectile = Instantiate(prefab, spawnPos, Quaternion.LookRotation(shootDirection));
+
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = shootDirection * speed;
+            rb.useGravity = false;
+        }
+
+        Destroy(projectile, 5f);
     }
 
     public void CastFireball()
@@ -142,5 +161,87 @@ public class SpellCaster : NetworkBehaviour
     {
         Debug.Log("CASTING ICEBALL!");
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 2, GetComponentInChildren<Camera>().transform.forward);
+    }
+
+    public void CastFireWall()
+    {
+        Debug.Log("CASTING FIRE WALL!");
+
+        if (fireWallPrefab == null)
+        {
+            Debug.LogError("FireWall prefab not assigned!");
+            return;
+        }
+
+        Vector3 spawnPos = Camera.main.transform.position + Camera.main.transform.forward * 3f;
+
+        if (Physics.Raycast(spawnPos + Vector3.up * 2f, Vector3.down, out RaycastHit floorHit, 10f, aimLayers))
+            spawnPos.y = floorHit.point.y + 1f;
+
+        Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Vector3 targetPoint = Physics.Raycast(aimRay, out RaycastHit hit, 100f, aimLayers) && hit.distance > 3f
+            ? hit.point
+            : aimRay.GetPoint(100f);
+
+        Vector3 shootDirection = (targetPoint - spawnPos).normalized;
+        shootDirection.y = 0f;
+        shootDirection.Normalize();
+
+        Quaternion spawnRotation = Quaternion.LookRotation(shootDirection) * Quaternion.Euler(0f, 0f, -90f);
+
+        GameObject projectile = Instantiate(fireWallPrefab, spawnPos, spawnRotation);
+
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = shootDirection * fireWallSpeed;
+            rb.useGravity = false;
+        }
+
+        Destroy(projectile, 5f);
+    }
+    
+    public void CastIceWall()
+    {
+        Debug.Log("CASTING ICE WALL!");
+
+        if (iceWallPrefab == null)
+        {
+            Debug.LogError("IceWall prefab not assigned!");
+            return;
+        }
+
+        Vector3 spawnPos = Camera.main.transform.position + Camera.main.transform.forward * 3f;
+
+        if (Physics.Raycast(spawnPos + Vector3.up * 2f, Vector3.down, out RaycastHit floorHit, 10f, aimLayers))
+            spawnPos.y = floorHit.point.y + 1f;
+
+        Ray aimRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Vector3 targetPoint = Physics.Raycast(aimRay, out RaycastHit hit, 100f, aimLayers) && hit.distance > 3f
+            ? hit.point
+            : aimRay.GetPoint(100f);
+
+        Vector3 shootDirection = (targetPoint - spawnPos).normalized;
+        shootDirection.y = 0f;
+        shootDirection.Normalize();
+
+        Quaternion spawnRotation = Quaternion.LookRotation(shootDirection) * Quaternion.Euler(0f, 0f, -90f);
+
+        GameObject projectile = Instantiate(iceWallPrefab, spawnPos, spawnRotation);
+
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = shootDirection * iceWallSpeed;
+            rb.useGravity = false;
+        }
+
+        Destroy(projectile, 5f);
+    }
+
+    public void CastEmberCircle()
+    {
+        Debug.Log("CASTING EMBER CIRCLE!");
+        LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 3, GetComponentInChildren<Camera>().transform.forward);
     }
 }

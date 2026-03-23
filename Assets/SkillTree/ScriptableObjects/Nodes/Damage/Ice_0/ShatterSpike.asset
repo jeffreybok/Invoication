@@ -18,6 +18,8 @@ MonoBehaviour:
     duration.
   skillPointCost: 4
   nodeType: 0
+  prerequisiteNodeIDs:
+  - IceSpike_0
   nodeEffect: 0
   effectValue: 0
   isUnlocked: 0

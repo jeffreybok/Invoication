@@ -17,6 +17,8 @@ MonoBehaviour:
   nodeDescription: Increase burn time on enemies.
   skillPointCost: 2
   nodeType: 1
-  nodeEffect: 7
+  prerequisiteNodeIDs:
+  - BlazingImpact_0
+  nodeEffect: 5
   effectValue: 1
   isUnlocked: 0
