@@ -40,10 +40,9 @@ public class SpellCaster : NetworkBehaviour
         {
             if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
             {
-                Debug.Log("Ice Ball is locked!");
+                Debug.Log("Ice Spell is locked!");
                 return;
             }
-
             CastIceball();
         }
     }

@@ -29,7 +29,7 @@ public static class SkillTreeSaveSystem
 
     public static void LoadAll(SkillTreeData[] allTrees, out int skillPoints)
     {
-        skillPoints = PlayerPrefs.GetInt(skillPointsKey, 0);
+        skillPoints = PlayerPrefs.GetInt(skillPointsKey, 100); // Change back to 4 after testings
 
         if (PlayerXP.Instance != null)
         {
