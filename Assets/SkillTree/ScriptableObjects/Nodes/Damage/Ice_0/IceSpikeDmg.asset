@@ -17,6 +17,8 @@ MonoBehaviour:
   nodeDescription: Increase iceball damage.
   skillPointCost: 2
   nodeType: 1
-  nodeEffect: 8
+  prerequisiteNodeIDs:
+  - ShatterSpike_0
+  nodeEffect: 6
   effectValue: 10
   isUnlocked: 0

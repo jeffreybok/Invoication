@@ -17,6 +17,8 @@ MonoBehaviour:
   nodeDescription: Increase fireball damage.
   skillPointCost: 2
   nodeType: 1
+  prerequisiteNodeIDs:
+  - DragonsBreath_0
   nodeEffect: 1
   effectValue: 10
   isUnlocked: 0

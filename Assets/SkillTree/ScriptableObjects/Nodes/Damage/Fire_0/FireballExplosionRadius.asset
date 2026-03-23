@@ -17,6 +17,8 @@ MonoBehaviour:
   nodeDescription: Increase the radius of explosion.
   skillPointCost: 2
   nodeType: 1
-  nodeEffect: 3
+  prerequisiteNodeIDs:
+  - DragonsBreath_0
+  nodeEffect: 2
   effectValue: 1
   isUnlocked: 0

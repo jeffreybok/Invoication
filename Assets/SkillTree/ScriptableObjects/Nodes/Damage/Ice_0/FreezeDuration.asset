@@ -17,6 +17,8 @@ MonoBehaviour:
   nodeDescription: Increase duration of freeze.
   skillPointCost: 2
   nodeType: 1
-  nodeEffect: 10
+  prerequisiteNodeIDs:
+  - WintersWrath_0
+  nodeEffect: 7
   effectValue: 5
   isUnlocked: 0

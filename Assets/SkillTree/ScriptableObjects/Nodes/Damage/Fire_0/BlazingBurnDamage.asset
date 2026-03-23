@@ -17,6 +17,8 @@ MonoBehaviour:
   nodeDescription: Increase burn damage.
   skillPointCost: 2
   nodeType: 1
-  nodeEffect: 6
+  prerequisiteNodeIDs:
+  - BlazingImpact_0
+  nodeEffect: 4
   effectValue: 2
   isUnlocked: 0
