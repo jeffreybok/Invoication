@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c2d0b3671f24669ba80023071078d3, type: 3}
+  m_Name: FireTree
+  m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
+  elementName: Fire
+  elementIcon: {fileID: 0}
+  tankTree:
+    className: Tank
+    classIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    nodes:
+    - {fileID: 11400000, guid: af74fb7516ad74e8eaf4e11a4da5441a, type: 2}
+    - {fileID: 11400000, guid: 32a20df03e809447587832aeab059aad, type: 2}
+    - {fileID: 11400000, guid: fcdaa546ea6ff4594a551fbe75666473, type: 2}
+  damageTree:
+    className: Damage
+    classIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    nodes:
+    - {fileID: 11400000, guid: 4110c006beb8e4666a0fa0ccc1c9a686, type: 2}
+    - {fileID: 11400000, guid: c10b06f032c9043f7963c31720d377c8, type: 2}
+    - {fileID: 11400000, guid: 4d8d8637a0bc041319df73555c1d6fd6, type: 2}
+    - {fileID: 11400000, guid: 5da87b4d4fa7a4091a2c8230a5670419, type: 2}
+    - {fileID: 11400000, guid: be2712b7403f84f9cacd641a3318e706, type: 2}
+    - {fileID: 11400000, guid: 7fbfaab35444d4592aa946d34a1bdf45, type: 2}
+    - {fileID: 11400000, guid: 3c9ad81a691fa4b71a103940497aa786, type: 2}
+  supportTree:
+    className: Support
+    classIcon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    nodes:
+    - {fileID: 11400000, guid: 493b66be8746d4217b0b7709042f618b, type: 2}
+    - {fileID: 11400000, guid: b277bf043a57d41c188e89f2fb773d00, type: 2}
+    - {fileID: 11400000, guid: ee035a131abe6406c8553c9483454078, type: 2}

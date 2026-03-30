@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Multiplayer-Test.unity
     guid: 82efb844332b54101a1bb9e7adf407ec
+  - enabled: 0
+    path: Assets/Scenes/Level1_NOAHTEST.unity
+    guid: f625edf88be294a27b5ed5b12c4a4486
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

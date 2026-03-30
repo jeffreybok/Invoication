@@ -1,6 +1,7 @@
 using UnityEngine;
+using PurrNet;
 
-public class PotionShatter : MonoBehaviour
+public class PotionShatter : NetworkBehaviour
 {
     public GameObject effectPrefab;
     public float shatterVelocity = 2f;
@@ -8,6 +9,8 @@ public class PotionShatter : MonoBehaviour
     public float effectRadius = 2f;
     public float healAmount = 50f;
     public PotionType potionType;
+
+    private GameObject attacker;
 
     public enum PotionType
     {
@@ -17,8 +20,15 @@ public class PotionShatter : MonoBehaviour
         Healing
     }
 
+    public void Initialize(GameObject owner)
+    {
+        attacker = owner;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
+        if (!isServer) return;
+
         if (collision.relativeVelocity.magnitude > shatterVelocity)
         {
             Shatter(collision.contacts[0].point, collision.gameObject);
@@ -27,6 +37,8 @@ public class PotionShatter : MonoBehaviour
 
     public void Shatter(Vector3 impactPoint, GameObject hitObject)
     {
+        if (!isServer) return;
+
         Enemy enemy = hitObject.GetComponent<Enemy>();
         if (enemy != null)
             ApplyDirectEffect(enemy);
@@ -43,6 +55,7 @@ public class PotionShatter : MonoBehaviour
 
         GameObject zone = new GameObject("EffectZone");
         zone.transform.position = spawnPos;
+
         EffectZone effectZone = zone.AddComponent<EffectZone>();
         effectZone.potionType = potionType;
         effectZone.radius = effectRadius;
@@ -50,6 +63,9 @@ public class PotionShatter : MonoBehaviour
         effectZone.healAmount = healAmount;
         effectZone.freezeDuration = effectDuration;
 
+        effectZone.Initialize(attacker);
+
+        Destroy(zone, effectDuration);
         Destroy(gameObject);
     }
 
@@ -58,16 +74,18 @@ public class PotionShatter : MonoBehaviour
         switch (potionType)
         {
             case PotionType.Freeze:
-                enemy.Freeze(effectDuration);
+                enemy.Freeze_Server(effectDuration, attacker);
                 break;
+
             case PotionType.Fire:
-                enemy.TakeDamage(50f);
+                enemy.TakeDamage_Server(50f, attacker);
                 break;
+
             case PotionType.Poison:
-                // enemy.Poison(effectDuration, 5f);
+                // enemy.Poison_Server(...)
                 break;
+
             case PotionType.Healing:
-                // No effect on enemies
                 break;
         }
     }
