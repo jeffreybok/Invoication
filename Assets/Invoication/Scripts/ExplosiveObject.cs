@@ -1,6 +1,7 @@
 using UnityEngine;
+using PurrNet;
 
-public class ExplosiveObject : MonoBehaviour
+public class ExplosiveObject : NetworkBehaviour
 {
     [Header("Explosion Settings")]
     public float explosionRadius = 8f;
@@ -10,99 +11,143 @@ public class ExplosiveObject : MonoBehaviour
     
     [Header("Trigger Settings")]
     public bool explodeOnImpact = true;
-    public float impactThreshold = 5f; // How hard it needs to be hit
+    public float impactThreshold = 5f;
     public bool explodeFromFireball = true;
-    public bool explodeFromPickup = true; // Thrown items
+    public bool explodeFromPickup = true;
     
     private bool hasExploded = false;
-    
+
+    // Track who caused explosion
+    private GameObject attacker;
+
     void OnCollisionEnter(Collision collision)
     {
         if (hasExploded) return;
-        
+
         bool shouldExplode = false;
-        
-        // Check for thrown items
+        GameObject detectedAttacker = null;
+
+        // Pickup hit
         if (explodeFromPickup && collision.gameObject.CompareTag("Pickup"))
         {
             shouldExplode = true;
+            detectedAttacker = collision.gameObject;
         }
-        
-        // Check for fireball
+
+        // Fireball hit
         if (explodeFromFireball && collision.gameObject.GetComponent<Fireball>() != null)
         {
             shouldExplode = true;
+            detectedAttacker = collision.gameObject;
         }
-        
-        // Check impact force
+
+        // Impact force
         if (explodeOnImpact && collision.relativeVelocity.magnitude > impactThreshold)
         {
             shouldExplode = true;
+            detectedAttacker = collision.gameObject;
         }
-        
-        if (shouldExplode)
+
+        if (!shouldExplode) return;
+
+        if (isServer)
         {
-            Explode();
+            ExplodeInternal(detectedAttacker);
+        }
+        else
+        {
+            RequestExplosion_ServerRPC(detectedAttacker);
         }
     }
-    
-    public void TriggerExplosion()
+
+    public void TriggerExplosion(GameObject attackerObj = null)
     {
-        if (!hasExploded)
+        if (hasExploded) return;
+
+        if (isServer)
         {
-            Explode();
+            ExplodeInternal(attackerObj);
+        }
+        else
+        {
+            RequestExplosion_ServerRPC(attackerObj);
         }
     }
-    
-    void Explode()
+
+    [ServerRpc]
+    void RequestExplosion_ServerRPC(GameObject attackerObj)
     {
+        if (hasExploded) return;
+
+        ExplodeInternal(attackerObj);
+    }
+
+    void ExplodeInternal(GameObject attackerObj)
+    {
+        if (hasExploded) return;
+
         hasExploded = true;
-        
-        Debug.Log(gameObject.name + " exploded!");
-        
-        // Spawn explosion effect
-        if (explosionEffect != null)
-        {
-            GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
-            
-            ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-            float duration = ps != null ? ps.main.duration : 2f;
-            
-            Destroy(explosion, duration);
-        }
-        
-        // Find all objects in explosion radius
+        attacker = attackerObj;
+
+        // Sync explosion visuals
+        PlayExplosion_ObserversRPC(transform.position);
+
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
-        
+
         foreach (Collider hit in hitColliders)
         {
-            // Damage enemies
+            // DAMAGE ENEMIES (SERVER ONLY)
             Enemy enemy = hit.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.TakeDamage(explosionDamage);
+                enemy.TakeDamage(explosionDamage, attacker);
                 enemy.HitByExplosion();
             }
-            
-            // Chain reaction with other explosive objects
-            ExplosiveObject otherExplosive = hit.GetComponent<ExplosiveObject>();
-            if (otherExplosive != null && otherExplosive != this && !otherExplosive.hasExploded)
+
+            // CHAIN EXPLOSIONS
+            ExplosiveObject other = hit.GetComponent<ExplosiveObject>();
+            if (other != null && other != this && !other.hasExploded)
             {
-                otherExplosive.Explode();
+                other.TriggerExplosion(attacker);
             }
-            
-            // Apply force to rigidbodies
+
+            // APPLY FORCE (SYNCED)
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
             {
-                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+                ApplyForce_ObserversRPC(rb.gameObject, transform.position);
             }
         }
-        
-        // Destroy the object
+
         Destroy(gameObject);
     }
-    
+
+    [ObserversRpc]
+    void PlayExplosion_ObserversRPC(Vector3 pos)
+    {
+        if (explosionEffect != null)
+        {
+            GameObject explosion = Instantiate(explosionEffect, pos, Quaternion.identity);
+
+            ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+            float duration = ps != null ? ps.main.duration : 2f;
+
+            Destroy(explosion, duration);
+        }
+    }
+
+    [ObserversRpc]
+    void ApplyForce_ObserversRPC(GameObject target, Vector3 origin)
+    {
+        if (target == null) return;
+
+        Rigidbody rb = target.GetComponent<Rigidbody>();
+        if (rb != null && !rb.isKinematic)
+        {
+            rb.AddExplosionForce(explosionForce, origin, explosionRadius, 1f, ForceMode.Impulse);
+        }
+    }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

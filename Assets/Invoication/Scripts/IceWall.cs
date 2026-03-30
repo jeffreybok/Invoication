@@ -1,6 +1,7 @@
 using UnityEngine;
+using PurrNet;
 
-public class IceWall : MonoBehaviour
+public class IceWall : NetworkBehaviour
 {
     [Header("Ice Wall Settings")]
     public float lifetime = 6f;
@@ -8,24 +9,36 @@ public class IceWall : MonoBehaviour
     public float tickRate = 0.5f;
 
     private float _tickTimer;
+    private GameObject attacker;
 
-    void Awake()
+    public void Initialize(GameObject owner)
     {
-        _tickTimer = tickRate;
+        attacker = owner;
+    }
+
+    void Start()
+    {
+        if (!isServer) return;
+
+        Destroy(gameObject, lifetime);
     }
 
     void Update()
     {
+        if (!isServer) return;
+
         _tickTimer += Time.deltaTime;
     }
 
     void OnCollisionStay(Collision collision)
     {
+        if (!isServer) return;
+
         Enemy enemy = collision.gameObject.GetComponentInParent<Enemy>();
         if (enemy != null && _tickTimer >= tickRate)
         {
             _tickTimer = 0f;
-            enemy.Freeze(freezeDuration);
+            enemy.Freeze_Server(freezeDuration, attacker);
         }
     }
 }

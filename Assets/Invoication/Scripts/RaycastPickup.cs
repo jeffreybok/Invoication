@@ -1,3 +1,4 @@
+// RaycastPickup.cs
 using UnityEngine;
 using PurrNet;
 
@@ -6,25 +7,33 @@ public class RaycastPickup : NetworkBehaviour
     public float pickupRange = 3f;
     public Transform playerHand;
     public LayerMask pickupLayer;
-
-    // Throw settings
     public float throwForce = 1f;
 
     private GameObject currentItem;
     private string currentItemName;
-    public GameObject heldItem; // Track what we're holding
+    public GameObject heldItem;
 
     void Update()
     {
         if (!isOwner) return;
 
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
 
         Debug.DrawRay(ray.origin, ray.direction * pickupRange, Color.green);
 
-        // Only look for items if not already holding something
-        if (heldItem == null && Physics.Raycast(ray, out hit, pickupRange))
+        bool didHit = false;
+
+        // If no pickup layer is assigned in inspector, fall back to normal raycast
+        if (pickupLayer.value == 0)
+            didHit = Physics.Raycast(ray, out hit, pickupRange);
+        else
+            didHit = Physics.Raycast(ray, out hit, pickupRange, pickupLayer);
+
+        if (heldItem == null && didHit)
         {
             if (hit.collider.CompareTag("Pickup"))
             {
@@ -45,45 +54,47 @@ public class RaycastPickup : NetworkBehaviour
             else
             {
                 currentItem = null;
+                currentItemName = "";
             }
         }
         else
         {
             currentItem = null;
+            currentItemName = "";
         }
 
-        // Throw input
         if (Input.GetKeyDown(KeyCode.Q) && heldItem != null)
         {
-            Ray aimRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             Vector3 throwDirection;
 
-            if (Physics.Raycast(aimRay, out hit, 100f))
-                throwDirection = (hit.point - heldItem.transform.position).normalized;
+            if (Physics.Raycast(ray, out hit, 100f))
+                throwDirection = (hit.point - playerHand.position).normalized;
             else
-                throwDirection = Camera.main.transform.forward;
+                throwDirection = cam.transform.forward;
 
-            ThrowItem_ServerRPC(throwDirection);
+            NetworkIdentity playerIdentity = GetComponent<NetworkIdentity>();
+            if (playerIdentity != null)
+            {
+                ThrowItem_ServerRPC(playerIdentity, throwDirection);
+            }
         }
     }
 
     [ServerRpc]
     void PickupItem_ServerRPC(NetworkIdentity itemIdentity, NetworkIdentity playerIdentity)
     {
+        if (!isServer) return;
         if (itemIdentity == null || playerIdentity == null) return;
 
         GameObject item = itemIdentity.gameObject;
         GameObject player = playerIdentity.gameObject;
 
+        if (item == null || player == null) return;
+
         RaycastPickup playerPickup = player.GetComponent<RaycastPickup>();
         if (playerPickup == null) return;
-
-        Transform hand = playerPickup.playerHand;
-        if (hand == null) return;
-
-        Debug.Log("Picked up: " + item.name);
-
-        Vector3 originalScale = item.transform.localScale;
+        if (playerPickup.playerHand == null) return;
+        if (playerPickup.heldItem != null) return;
 
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)
@@ -94,48 +105,80 @@ public class RaycastPickup : NetworkBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        Collider col = item.GetComponent<Collider>();
-        if (col != null) col.enabled = false;
+        Collider[] itemColliders = item.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < itemColliders.Length; i++)
+        {
+            itemColliders[i].enabled = false;
+        }
 
-        item.transform.SetParent(hand);
+        item.transform.SetParent(playerPickup.playerHand);
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
-        item.transform.localScale = originalScale;
 
         playerPickup.heldItem = item;
     }
 
     [ServerRpc]
-    void ThrowItem_ServerRPC(Vector3 throwDirection)
+    void ThrowItem_ServerRPC(NetworkIdentity playerIdentity, Vector3 throwDirection)
     {
-        if (heldItem == null) return;
+        if (!isServer) return;
+        if (playerIdentity == null) return;
 
-        Debug.Log("Throwing: " + heldItem.name);
+        GameObject player = playerIdentity.gameObject;
+        if (player == null) return;
 
-        Vector3 currentScale = heldItem.transform.localScale;
+        RaycastPickup playerPickup = player.GetComponent<RaycastPickup>();
+        if (playerPickup == null) return;
+        if (playerPickup.heldItem == null) return;
 
-        heldItem.transform.SetParent(null);
-        heldItem.transform.localScale = currentScale;
+        GameObject item = playerPickup.heldItem;
+        playerPickup.heldItem = null;
 
-        Collider col = heldItem.GetComponent<Collider>();
-        if (col != null) col.enabled = true;
+        item.transform.SetParent(null);
 
-        Rigidbody rb = heldItem.GetComponent<Rigidbody>();
-
-        if (rb == null)
-            rb = heldItem.AddComponent<Rigidbody>();
-        else
+        Collider[] itemColliders = item.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < itemColliders.Length; i++)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
+            itemColliders[i].enabled = true;
         }
 
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        if (rb == null)
+            rb = item.AddComponent<Rigidbody>();
+
+        rb.isKinematic = false;
+        rb.useGravity = true;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        rb.AddForce(throwDirection.normalized * throwForce, ForceMode.VelocityChange);
+    }
 
-        rb.AddForce(throwDirection * throwForce, ForceMode.VelocityChange);
+    public void SetHeldItem_Server(GameObject item)
+    {
+        if (!isServer) return;
 
-        heldItem = null;
+        heldItem = item;
+
+        if (heldItem == null || playerHand == null) return;
+
+        Rigidbody rb = heldItem.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        Collider[] itemColliders = heldItem.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < itemColliders.Length; i++)
+        {
+            itemColliders[i].enabled = false;
+        }
+
+        heldItem.transform.SetParent(playerHand);
+        heldItem.transform.localPosition = Vector3.zero;
+        heldItem.transform.localRotation = Quaternion.identity;
     }
 
     void OnGUI()
@@ -154,10 +197,13 @@ public class RaycastPickup : NetworkBehaviour
         {
             GUI.Label(new Rect(10, 10, 200, 30), "Press Q to throw " + heldItem.name);
 
-            if (heldItem.name == "MagicStaff")
+            string heldName = heldItem.name.ToLower();
+            if (heldName.Contains("magicstaff") || heldName.Contains("staff") || heldName.Contains("wand"))
             {
-                GUI.Label(new Rect(10, 40, 400, 30),
-                    "PRESS V TO TOGGLE SPELL CASTING MODE. SAY 'FIREBALL'");
+                GUI.Label(
+                    new Rect(10, 40, 400, 30),
+                    "PRESS V TO TOGGLE SPELL CASTING MODE. SAY 'FIREBALL'"
+                );
             }
         }
     }
@@ -167,8 +213,7 @@ public class RaycastPickup : NetworkBehaviour
         if (Camera.main != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(Camera.main.transform.position,
-                           Camera.main.transform.forward * pickupRange);
+            Gizmos.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * pickupRange);
         }
     }
 }

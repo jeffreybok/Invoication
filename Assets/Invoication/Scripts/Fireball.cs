@@ -1,74 +1,148 @@
 using UnityEngine;
+using PurrNet;
 
-public class Fireball : MonoBehaviour
+public class Fireball : NetworkBehaviour
 {
     [Header("Explosion Settings")]
     public float explosionRadius = 5f;
     public float explosionDamage = 50f;
     public GameObject explosionEffect;
 
-    private GameObject owner;
-    private PlayerStats ownerStats;
+    // FIX: do NOT conflict with NetworkIdentity.owner
+    private GameObject attacker;
+    private PlayerStats attackerStats;
 
-    public void SetOwner(GameObject shooter)
+    private bool hasExploded = false;
+
+    // =========================
+    // INIT (used by SpellCaster)
+    // =========================
+    public void Initialize(GameObject shooter)
     {
-        owner = shooter;
-        ownerStats = shooter.GetComponent<PlayerStats>();
+        attacker = shooter;
 
-        Collider myCollider = GetComponent<Collider>();
-        Collider[] ownerColliders = shooter.GetComponentsInChildren<Collider>();
-
-        foreach (Collider col in ownerColliders)
+        if (attacker != null)
         {
-            Physics.IgnoreCollision(myCollider, col);
+            attackerStats = attacker.GetComponent<PlayerStats>();
+
+            Collider myCollider = GetComponent<Collider>();
+            Collider[] attackerColliders = attacker.GetComponentsInChildren<Collider>();
+
+            if (myCollider != null)
+            {
+                foreach (Collider col in attackerColliders)
+                {
+                    if (col != null)
+                        Physics.IgnoreCollision(myCollider, col);
+                }
+            }
         }
     }
 
+    // =========================
+    // COLLISION
+    // =========================
     void OnCollisionEnter(Collision collision)
     {
-        if (owner != null && collision.transform.root.gameObject == owner)
+        if (hasExploded) return;
+
+        if (attacker != null && collision.transform.root.gameObject == attacker)
             return;
 
-        Explode();
+        if (isServer)
+        {
+            ExplodeInternal();
+        }
+        else
+        {
+            RequestExplode_ServerRPC();
+        }
     }
 
-    void Explode()
+    [ServerRpc]
+    void RequestExplode_ServerRPC()
     {
-        Debug.Log("Fireball exploded at: " + transform.position);
+        if (!isServer) return;
+        if (hasExploded) return;
 
-        float damage = ownerStats != null
-            ? ownerStats.GetFireballDamage()
+        ExplodeInternal();
+    }
+
+    // =========================
+    // EXPLOSION LOGIC
+    // =========================
+    void ExplodeInternal()
+    {
+        if (!isServer) return;
+        if (hasExploded) return;
+
+        hasExploded = true;
+
+        float damage = attackerStats != null
+            ? attackerStats.GetFireballDamage()
             : explosionDamage;
 
-        float radius = ownerStats != null
-            ? ownerStats.fireballExplosionRadius
+        float radius = attackerStats != null
+            ? attackerStats.fireballExplosionRadius
             : explosionRadius;
+
+        // VISUAL SYNC
+        PlayExplosion_ObserversRPC(transform.position);
 
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
 
         foreach (Collider hit in hitColliders)
         {
-            if (owner != null && hit.transform.root.gameObject == owner) continue;
+            if (attacker != null && hit.transform.root.gameObject == attacker)
+                continue;
 
-            Enemy enemy = hit.GetComponent<Enemy>();
+            Enemy enemy = hit.GetComponentInParent<Enemy>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);
-                enemy.HitByExplosion();
+                // SERVER AUTHORITATIVE + ATTACKER PASSED
+                enemy.TakeDamage_Server(damage, attacker);
+                enemy.HitByExplosion(attacker);
             }
 
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
-                rb.AddExplosionForce(200f, transform.position, radius, 0.5f, ForceMode.Impulse);
-        }
-
-        if (explosionEffect != null)
-        {
-            GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
-            ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-            Destroy(explosion, ps != null ? ps.main.duration : 2f);
+            {
+                ApplyForce_ObserversRPC(rb.gameObject, transform.position, radius);
+            }
         }
 
         Destroy(gameObject);
+    }
+
+    // =========================
+    // VISUAL SYNC
+    // =========================
+    [ObserversRpc]
+    void PlayExplosion_ObserversRPC(Vector3 pos)
+    {
+        if (explosionEffect != null)
+        {
+            GameObject explosion = Instantiate(explosionEffect, pos, Quaternion.identity);
+
+            ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+            float duration = ps != null ? ps.main.duration : 2f;
+
+            Destroy(explosion, duration);
+        }
+    }
+
+    // =========================
+    // FORCE SYNC
+    // =========================
+    [ObserversRpc]
+    void ApplyForce_ObserversRPC(GameObject target, Vector3 origin, float radius)
+    {
+        if (target == null) return;
+
+        Rigidbody rb = target.GetComponent<Rigidbody>();
+        if (rb != null && !rb.isKinematic)
+        {
+            rb.AddExplosionForce(200f, origin, radius, 0.5f, ForceMode.Impulse);
+        }
     }
 }
