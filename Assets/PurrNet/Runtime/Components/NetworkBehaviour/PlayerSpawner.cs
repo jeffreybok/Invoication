@@ -25,7 +25,6 @@ namespace PurrNet
     {
         [SerializeField, HideInInspector] private NetworkIdentity playerPrefab;
         [SerializeField] private GameObject _playerPrefab;
-        [Tooltip("Even if rules are to not despawn on disconnect, this will ignore that and always spawn a player.")]
         [SerializeField] private bool _ignoreNetworkRules;
 
         [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
@@ -34,35 +33,21 @@ namespace PurrNet
         private IProvideSpawnPoints _spawnPointProvider;
         private IProvidePrefabInstantiated _prefabInstantiatedProvider;
 
-        /// <summary>
-        /// Sets a provider that will be used to provide spawn points for players.
-        /// Spawn points lists will be ignored.
-        /// </summary>
         public void SetRespawnPointProvider(IProvideSpawnPoints provider)
         {
             _spawnPointProvider = provider;
         }
 
-        /// <summary>
-        /// Resets the spawn point provider.
-        /// Uses the spawn points list instead.
-        /// </summary>
         public void ResetSpawnPointProvider()
         {
             _spawnPointProvider = null;
         }
 
-        /// <summary>
-        /// Sets a provider that will be used to notify when a player prefab has been instantiated.
-        /// </summary>
         public void SetPrefabInstantiatedProvider(IProvidePrefabInstantiated provider)
         {
             _prefabInstantiatedProvider = provider;
         }
 
-        /// <summary>
-        /// Resets the prefab instantiated provider.
-        /// </summary>
         public void ResetPrefabInstantiatedProvider()
         {
             _prefabInstantiatedProvider = null;
@@ -75,19 +60,14 @@ namespace PurrNet
 
         private void CleanupSpawnPoints()
         {
-            bool hadNullEntry = false;
             for (int i = 0; i < spawnPoints.Count; i++)
             {
                 if (!spawnPoints[i])
                 {
-                    hadNullEntry = true;
                     spawnPoints.RemoveAt(i);
                     i--;
                 }
             }
-
-            if (hadNullEntry)
-                PurrLogger.LogWarning($"Some spawn points were invalid and have been cleaned up.", this);
         }
 
         private void OnValidate()
@@ -101,20 +81,21 @@ namespace PurrNet
 
         public override void Subscribe(NetworkManager manager, bool asServer)
         {
-            if (asServer && manager.TryGetModule(out ScenePlayersModule scenePlayersModule, true))
+            if (!asServer) return;
+
+            if (!manager.TryGetModule(out ScenePlayersModule scenePlayersModule, true)) return;
+
+            scenePlayersModule.onPlayerLoadedScene += OnPlayerLoadedScene;
+
+            if (!manager.TryGetModule(out ScenesModule scenes, true)) return;
+
+            if (!scenes.TryGetSceneID(gameObject.scene, out var sceneID)) return;
+
+            if (scenePlayersModule.TryGetPlayersInScene(sceneID, out var players))
             {
-                scenePlayersModule.onPlayerLoadedScene += OnPlayerLoadedScene;
-
-                if (!manager.TryGetModule(out ScenesModule scenes, true))
-                    return;
-
-                if (!scenes.TryGetSceneID(gameObject.scene, out var sceneID))
-                    return;
-
-                if (scenePlayersModule.TryGetPlayersInScene(sceneID, out var players))
+                foreach (var player in players)
                 {
-                    foreach (var player in players)
-                        OnPlayerLoadedScene(player, sceneID, true);
+                    OnPlayerLoadedScene(player, sceneID, true);
                 }
             }
         }
@@ -122,42 +103,47 @@ namespace PurrNet
         public override void Unsubscribe(NetworkManager manager, bool asServer)
         {
             if (asServer && manager.TryGetModule(out ScenePlayersModule scenePlayersModule, true))
+            {
                 scenePlayersModule.onPlayerLoadedScene -= OnPlayerLoadedScene;
+            }
         }
 
         private void OnDestroy()
         {
             if (NetworkManager.main &&
                 NetworkManager.main.TryGetModule(out ScenePlayersModule scenePlayersModule, true))
+            {
                 scenePlayersModule.onPlayerLoadedScene -= OnPlayerLoadedScene;
+            }
         }
 
         private void OnPlayerLoadedScene(PlayerID player, SceneID scene, bool asServer)
         {
             var main = NetworkManager.main;
+            if (!main) return;
 
-            if (!main || !main.TryGetModule(out ScenesModule scenes, true))
-                return;
+            if (!main.TryGetModule(out ScenesModule scenes, true)) return;
 
             var unityScene = gameObject.scene;
 
-            if (!scenes.TryGetSceneID(unityScene, out var sceneID))
-                return;
-
-            if (sceneID != scene)
-                return;
-
-            if (!asServer)
-                return;
+            if (!scenes.TryGetSceneID(unityScene, out var sceneID)) return;
+            if (sceneID != scene) return;
+            if (!asServer) return;
 
             bool isDestroyOnDisconnectEnabled = main.networkRules.ShouldDespawnOnOwnerDisconnect();
-            if (!_ignoreNetworkRules && !isDestroyOnDisconnectEnabled && main.TryGetModule(out GlobalOwnershipModule ownership, true) &&
-                ownership.PlayerOwnsSomething(player))
-                return;
 
-            GameObject newPlayer;
+            if (!_ignoreNetworkRules &&
+                !isDestroyOnDisconnectEnabled &&
+                main.TryGetModule(out GlobalOwnershipModule ownership, true))
+            {
+                if (ownership.PlayerOwnsSomething(player)) return;
+            }
+
+            if (_playerPrefab == null) return;
 
             CleanupSpawnPoints();
+
+            GameObject newPlayer;
 
             if (_spawnPointProvider != null)
             {
@@ -167,7 +153,10 @@ namespace PurrNet
             else if (spawnPoints.Count > 0)
             {
                 var spawnPoint = spawnPoints[_currentSpawnPoint];
+                if (spawnPoint == null) return;
+
                 _currentSpawnPoint = (_currentSpawnPoint + 1) % spawnPoints.Count;
+
                 newPlayer = UnityProxy.Instantiate(_playerPrefab, spawnPoint.position, spawnPoint.rotation, unityScene);
             }
             else
@@ -176,10 +165,14 @@ namespace PurrNet
                 newPlayer = UnityProxy.Instantiate(_playerPrefab, position, rotation, unityScene);
             }
 
+            if (newPlayer == null) return;
+
             _prefabInstantiatedProvider?.OnPrefabInstantiated(newPlayer, player, scene);
 
             if (newPlayer.TryGetComponent(out NetworkIdentity identity))
+            {
                 identity.GiveOwnership(player);
+            }
         }
     }
 }

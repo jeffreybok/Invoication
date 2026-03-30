@@ -39,11 +39,16 @@ public class Enemy : NetworkBehaviour
     private Transform hipsBone;
 
     private NavMeshAgent navAgent;
-    private bool playerInSight = false;
     private bool isChasing = false;
     private float timeSinceLastSeen = 0f;
 
     private bool isBurning = false;
+
+    private GameObject lastDamageDealer;
+
+    // OPTIMIZATION: don't search every frame
+    private float playerSearchTimer = 0f;
+    private float playerSearchInterval = 0.3f;
 
     void Start()
     {
@@ -82,7 +87,14 @@ public class Enemy : NetworkBehaviour
         if (!isServer) return;
         if (isFrozen || isDead || isRagdolled) return;
 
-        FindClosestPlayer();
+        // Only search periodically
+        playerSearchTimer += Time.deltaTime;
+        if (playerSearchTimer >= playerSearchInterval)
+        {
+            playerSearchTimer = 0f;
+            FindClosestPlayer();
+        }
+
         if (player == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -99,7 +111,6 @@ public class Enemy : NetworkBehaviour
 
         if (canSeePlayer)
         {
-            playerInSight = true;
             isChasing = true;
             timeSinceLastSeen = 0f;
 
@@ -108,8 +119,6 @@ public class Enemy : NetworkBehaviour
         }
         else
         {
-            playerInSight = false;
-
             if (isChasing)
             {
                 timeSinceLastSeen += Time.deltaTime;
@@ -140,6 +149,11 @@ public class Enemy : NetworkBehaviour
 
         foreach (GameObject p in players)
         {
+            if (p == null) continue;
+
+            PlayerHealth ph = p.GetComponent<PlayerHealth>();
+            if (ph != null && ph.isDead) continue;
+
             float dist = Vector3.Distance(transform.position, p.transform.position);
 
             if (dist < closestDist)
@@ -152,7 +166,7 @@ public class Enemy : NetworkBehaviour
         if (closest != null)
         {
             player = closest;
-            playerHealth = player.GetComponent<PlayerHealth>();
+            playerHealth = closest.GetComponent<PlayerHealth>();
         }
     }
 
@@ -345,7 +359,15 @@ public class Enemy : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
+        TakeDamage(damage, null);
+    }
+
+    public void TakeDamage(float damage, GameObject damageDealer)
+    {
         if (isDead) return;
+
+        if (damageDealer != null)
+            lastDamageDealer = damageDealer;
 
         currentHealth -= damage;
         currentHealth = Mathf.Max(currentHealth, 0);
@@ -364,9 +386,13 @@ public class Enemy : NetworkBehaviour
 
         if (ragdollOnOff != null)
             ragdollOnOff.RagdollModeOn();
-        
-        if (PlayerXP.Instance != null)
-            PlayerXP.Instance.GainXP(xpReward);
+
+        if (lastDamageDealer != null)
+        {
+            PlayerXP xp = lastDamageDealer.GetComponent<PlayerXP>();
+            if (xp != null)
+                xp.GainXP(xpReward);
+        }
 
         Destroy(gameObject, 5f);
     }

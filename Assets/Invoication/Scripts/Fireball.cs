@@ -8,16 +8,16 @@ public class Fireball : MonoBehaviour
     public GameObject explosionEffect;
 
     private GameObject owner;
+    private PlayerStats ownerStats;
 
-    // Called immediately after spawning
     public void SetOwner(GameObject shooter)
     {
         owner = shooter;
+        ownerStats = shooter.GetComponent<PlayerStats>();
 
         Collider myCollider = GetComponent<Collider>();
         Collider[] ownerColliders = shooter.GetComponentsInChildren<Collider>();
 
-        // Ignore ALL colliders on the shooter
         foreach (Collider col in ownerColliders)
         {
             Physics.IgnoreCollision(myCollider, col);
@@ -26,7 +26,6 @@ public class Fireball : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // Extra safety — never explode on owner
         if (owner != null && collision.transform.root.gameObject == owner)
             return;
 
@@ -37,12 +36,12 @@ public class Fireball : MonoBehaviour
     {
         Debug.Log("Fireball exploded at: " + transform.position);
 
-        float damage = PlayerStats.Instance != null
-            ? PlayerStats.Instance.GetFireballDamage()
+        float damage = ownerStats != null
+            ? ownerStats.GetFireballDamage()
             : explosionDamage;
 
-        float radius = PlayerStats.Instance != null
-            ? PlayerStats.Instance.fireballExplosionRadius
+        float radius = ownerStats != null
+            ? ownerStats.fireballExplosionRadius
             : explosionRadius;
 
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
@@ -71,11 +70,5 @@ public class Fireball : MonoBehaviour
         }
 
         Destroy(gameObject);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 }

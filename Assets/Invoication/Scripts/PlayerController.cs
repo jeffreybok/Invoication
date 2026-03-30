@@ -29,15 +29,10 @@ public class PlayerController : NetworkBehaviour
     
     private float jumpBufferCounter = 0;
     private float coyoteTimeCounter = 0;
-
-    protected override void OnSpawned()
-    {
-        Debug.Log($"[PlayerController] Spawned | isOwner: {isOwner} | isServer: {isServer}");
-    }
+    
     
     void Start()
     {
-        Debug.Log($"[PlayerController] Start | isOwner: {isOwner}");
 
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();

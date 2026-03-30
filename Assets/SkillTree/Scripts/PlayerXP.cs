@@ -4,8 +4,6 @@ using TMPro;
 
 public class PlayerXP : MonoBehaviour
 {
-    public static PlayerXP Instance;
-
     [Header("XP Settings")]
     public int currentXP = 0;
     public int currentLevel = 1;
@@ -13,22 +11,18 @@ public class PlayerXP : MonoBehaviour
     public float scalingFactor = 1.5f;
 
     [Header("HUD References")]
-    // public TextMeshProUGUI levelText;
     public TextMeshProUGUI xpText;
     public Slider xpBar;
 
-    void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
+    private PlayerStats playerStats;
 
     void Start()
     {
+        playerStats = GetComponent<PlayerStats>();
         UpdateHUD();
     }
 
-    // Returns XP required to reach next level from current level
+    // XP needed for next level
     public int GetXPRequired()
     {
         return Mathf.RoundToInt(baseXPRequired * Mathf.Pow(currentLevel, scalingFactor));
@@ -37,9 +31,8 @@ public class PlayerXP : MonoBehaviour
     public void GainXP(int amount)
     {
         currentXP += amount;
-        Debug.Log($"Gained {amount} XP. Total: {currentXP}/{GetXPRequired()}");
+        Debug.Log($"XP +{amount} → {currentXP}/{GetXPRequired()}");
 
-        // Handle multiple level ups in one kill
         while (currentXP >= GetXPRequired())
         {
             currentXP -= GetXPRequired();
@@ -49,20 +42,27 @@ public class PlayerXP : MonoBehaviour
         UpdateHUD();
     }
 
-    private void LevelUp()
+    void LevelUp()
     {
         currentLevel++;
-        PlayerStats.Instance.skillPoints++;
-        SkillTreeManager.Instance.RefreshSkillPointsDisplay();
 
-        Debug.Log($"Level Up! Now level {currentLevel}. Skill points: {PlayerStats.Instance.skillPoints}");
+        if (playerStats != null)
+        {
+            playerStats.skillPoints++;
+        }
+
+        var manager = FindFirstObjectByType<SkillTreeManager>();
+
+        if (manager != null && GetComponent<PurrNet.NetworkIdentity>().isOwner)
+        {
+            manager.RefreshSkillPointsDisplay();
+        }
+
+        Debug.Log($"LEVEL UP → {currentLevel}");
     }
 
-    private void UpdateHUD()
+    void UpdateHUD()
     {
-        // if (levelText != null)
-            // levelText.text = $"Level {currentLevel}";
-
         if (xpText != null)
             xpText.text = $"{currentXP} / {GetXPRequired()} XP";
 

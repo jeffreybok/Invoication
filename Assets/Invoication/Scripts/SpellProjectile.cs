@@ -47,8 +47,25 @@ public class SpellProjectile : NetworkBehaviour
 
     private bool _fireWallDeployed = false;
     private bool _iceWallDeployed = false;
-
     private Vector3 _spawnPosition;
+
+    private GameObject shooter;
+    private PlayerStats shooterStats;
+
+    public void SetOwner(GameObject newShooter)
+    {
+        shooter = newShooter;
+        shooterStats = newShooter.GetComponent<PlayerStats>();
+
+        Collider myCollider = GetComponent<Collider>();
+        if (myCollider == null) return;
+
+        Collider[] shooterColliders = newShooter.GetComponentsInChildren<Collider>();
+        foreach (Collider col in shooterColliders)
+        {
+            Physics.IgnoreCollision(myCollider, col);
+        }
+    }
 
     void Start()
     {
@@ -64,6 +81,7 @@ public class SpellProjectile : NetworkBehaviour
             if (distanceTraveled >= fireWallTravelDistance)
                 DeployFireWall(transform.position);
         }
+
         if (spellType == SpellType.IceWall && !_iceWallDeployed)
         {
             float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
@@ -74,11 +92,15 @@ public class SpellProjectile : NetworkBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (shooter != null && collision.transform.root.gameObject == shooter)
+            return;
+
         if (spellType == SpellType.FireWall)
         {
             DeployFireWall(collision.contacts[0].point);
             return;
         }
+
         if (spellType == SpellType.IceWall)
         {
             DeployIceWall(collision.contacts[0].point);
@@ -95,6 +117,8 @@ public class SpellProjectile : NetworkBehaviour
 
         foreach (Collider hit in hitColliders)
         {
+            if (shooter != null && hit.transform.root.gameObject == shooter) continue;
+
             Enemy enemy = hit.GetComponent<Enemy>();
 
             if (enemy != null && enemy != directEnemy)
@@ -136,17 +160,18 @@ public class SpellProjectile : NetworkBehaviour
             FireWall fw = wall.GetComponent<FireWall>();
             if (fw != null)
             {
-                fw.lifetime          = fireWallLifetime;
+                fw.lifetime = fireWallLifetime;
                 fw.burnDamagePerTick = fireWallBurnDamagePerTick;
-                fw.burnDuration      = fireWallBurnDuration;
-                fw.tickRate          = fireWallTickRate;
+                fw.burnDuration = fireWallBurnDuration;
+                fw.tickRate = fireWallTickRate;
             }
+
             Destroy(wall, fireWallLifetime);
         }
 
         Destroy(gameObject);
     }
-    
+
     void DeployIceWall(Vector3 position)
     {
         if (_iceWallDeployed) return;
@@ -154,6 +179,7 @@ public class SpellProjectile : NetworkBehaviour
 
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
+
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
 
@@ -163,10 +189,11 @@ public class SpellProjectile : NetworkBehaviour
             IceWall iw = wall.GetComponent<IceWall>();
             if (iw != null)
             {
-                iw.lifetime        = iceWallLifetime;
-                iw.freezeDuration  = iceWallFreezeDuration;
-                iw.tickRate        = iceWallTickRate;
+                iw.lifetime = iceWallLifetime;
+                iw.freezeDuration = iceWallFreezeDuration;
+                iw.tickRate = iceWallTickRate;
             }
+
             Destroy(wall, iceWallLifetime);
         }
 
@@ -178,41 +205,41 @@ public class SpellProjectile : NetworkBehaviour
         switch (spellType)
         {
             case SpellType.Fireball:
-                float fireballDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetFireballDamage()
+                float fireballDmg = shooterStats != null
+                    ? shooterStats.GetFireballDamage()
                     : directDamage;
-                enemy.TakeDamage(fireballDmg);
+                enemy.TakeDamage(fireballDmg, shooter);
                 break;
 
             case SpellType.BlazingImpact:
-                float blazingDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetBlazingDamage()
+                float blazingDmg = shooterStats != null
+                    ? shooterStats.GetBlazingDamage()
                     : directDamage;
-                float burnTick = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDamagePerTick
+                float burnTick = shooterStats != null
+                    ? shooterStats.blazingBurnDamagePerTick
                     : burnDamagePerTick;
-                float burnDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDuration
+                float burnDur = shooterStats != null
+                    ? shooterStats.blazingBurnDuration
                     : burnDuration;
-                
-                enemy.TakeDamage(blazingDmg);
+
+                enemy.TakeDamage(blazingDmg, shooter);
                 enemy.ApplyBurn(burnTick, burnDur);
                 break;
 
             case SpellType.DragonsBreath:
-                enemy.TakeDamage(directDamage);
+                enemy.TakeDamage(directDamage, shooter);
                 enemy.ApplyBurn(burnDamagePerTick, burnDuration * 0.5f);
                 break;
 
             case SpellType.Iceball:
-                float iceDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetIceSpikeDamage()
+                float iceDmg = shooterStats != null
+                    ? shooterStats.GetIceSpikeDamage()
                     : directDamage;
-                float freezeDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.iceSpikeSlowDuration
+                float freezeDur = shooterStats != null
+                    ? shooterStats.iceSpikeSlowDuration
                     : freezeDuration;
-                
-                enemy.TakeDamage(iceDmg);
+
+                enemy.TakeDamage(iceDmg, shooter);
                 enemy.Freeze(freezeDur);
                 break;
         }
@@ -223,30 +250,30 @@ public class SpellProjectile : NetworkBehaviour
         switch (spellType)
         {
             case SpellType.Fireball:
-                float fireballSplashDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetFireballDamage()
+                float fireballSplashDmg = shooterStats != null
+                    ? shooterStats.GetFireballDamage()
                     : directDamage;
-                enemy.TakeDamage(fireballSplashDmg * splashDamageMult);
+                enemy.TakeDamage(fireballSplashDmg * splashDamageMult, shooter);
                 break;
 
             case SpellType.BlazingImpact:
-                float blazingSplashDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetBlazingDamage()
+                float blazingSplashDmg = shooterStats != null
+                    ? shooterStats.GetBlazingDamage()
                     : directDamage;
-                float splashBurnTick = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDamagePerTick
+                float splashBurnTick = shooterStats != null
+                    ? shooterStats.blazingBurnDamagePerTick
                     : burnDamagePerTick;
-                float splashBurnDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDuration
+                float splashBurnDur = shooterStats != null
+                    ? shooterStats.blazingBurnDuration
                     : burnDuration;
 
-                enemy.TakeDamage(blazingSplashDmg * splashDamageMult);
+                enemy.TakeDamage(blazingSplashDmg * splashDamageMult, shooter);
                 enemy.ApplyBurn(splashBurnTick, splashBurnDur);
                 break;
 
             case SpellType.Iceball:
-                float splashFreezeDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.iceSpikeSlowDuration
+                float splashFreezeDur = shooterStats != null
+                    ? shooterStats.iceSpikeSlowDuration
                     : freezeDuration;
                 enemy.Freeze(splashFreezeDur);
                 break;
