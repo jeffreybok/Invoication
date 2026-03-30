@@ -6,69 +6,58 @@ public static class SkillTreeSaveSystem
     private const string XPKey = "playerXP";
     private const string LevelKey = "playerLevel";
 
-    public static void SaveAll(SkillTreeData[] allTrees, int skillPoints)
+    public static void SaveAll(SkillTreeData[] allTrees, PlayerStats stats, PlayerXP xp)
     {
-        PlayerPrefs.SetInt(skillPointsKey, skillPoints);
+        PlayerPrefs.SetInt(skillPointsKey, stats.skillPoints);
 
-        if (PlayerXP.Instance != null)
+        if (xp != null)
         {
-            PlayerPrefs.SetInt(XPKey, PlayerXP.Instance.currentXP);
-            PlayerPrefs.SetInt(LevelKey, PlayerXP.Instance.currentLevel);
+            PlayerPrefs.SetInt(XPKey, xp.currentXP);
+            PlayerPrefs.SetInt(LevelKey, xp.currentLevel);
         }
 
         foreach (SkillTreeData tree in allTrees)
-            foreach (SkillNode node in tree.GetAllNodes())
-            {
-                PlayerPrefs.SetInt(node.nodeID, node.isUnlocked ? 1 : 0);
-                Debug.Log($"Saved {node.nodeID}: {node.isUnlocked}");
-            }
+        foreach (SkillNode node in tree.GetAllNodes())
+            PlayerPrefs.SetInt(node.nodeID, node.isUnlocked ? 1 : 0);
 
         PlayerPrefs.Save();
-        Debug.Log("Player Stats Saved.");
     }
 
-    public static void LoadAll(SkillTreeData[] allTrees, out int skillPoints)
+    public static void LoadAll(SkillTreeData[] allTrees, PlayerStats stats, PlayerXP xp)
     {
-        skillPoints = PlayerPrefs.GetInt(skillPointsKey, 100); // Change back to 4 after testings
+        stats.skillPoints = PlayerPrefs.GetInt(skillPointsKey, 100);
 
-        if (PlayerXP.Instance != null)
+        if (xp != null)
         {
-            PlayerXP.Instance.currentXP = PlayerPrefs.GetInt(XPKey, 0);
-            PlayerXP.Instance.currentLevel = PlayerPrefs.GetInt(LevelKey, 1);
+            xp.currentXP = PlayerPrefs.GetInt(XPKey, 0);
+            xp.currentLevel = PlayerPrefs.GetInt(LevelKey, 1);
         }
 
         foreach (SkillTreeData tree in allTrees)
-            foreach (SkillNode node in tree.GetAllNodes())
-            {
-                int saved = PlayerPrefs.GetInt(node.nodeID, 0);
-                node.isUnlocked = saved == 1;
-                Debug.Log($"Loaded {node.nodeID}: isUnlocked = {node.isUnlocked}");
-            }
-
-        Debug.Log("Stats Loaded.");
+        foreach (SkillNode node in tree.GetAllNodes())
+            node.isUnlocked = PlayerPrefs.GetInt(node.nodeID, 0) == 1;
     }
 
-    public static void ResetAll(SkillTreeData[] allTrees, int defaultSkillPoints, out int skillPoints)
+    public static void ResetAll(SkillTreeData[] allTrees, int defaultSkillPoints, PlayerStats stats, PlayerXP xp)
     {
-        skillPoints = defaultSkillPoints;
+        stats.skillPoints = defaultSkillPoints;
 
-        if (PlayerXP.Instance != null)
+        if (xp != null)
         {
-            PlayerXP.Instance.currentXP = 0;
-            PlayerXP.Instance.currentLevel = 1;
+            xp.currentXP = 0;
+            xp.currentLevel = 1;
             PlayerPrefs.SetInt(XPKey, 0);
             PlayerPrefs.SetInt(LevelKey, 1);
         }
 
         foreach (SkillTreeData tree in allTrees)
-            foreach (SkillNode node in tree.GetAllNodes())
-            {
-                node.isUnlocked = false;
-                PlayerPrefs.SetInt(node.nodeID, 0);
-            }
+        foreach (SkillNode node in tree.GetAllNodes())
+        {
+            node.isUnlocked = false;
+            PlayerPrefs.SetInt(node.nodeID, 0);
+        }
 
         PlayerPrefs.SetInt(skillPointsKey, defaultSkillPoints);
         PlayerPrefs.Save();
-        Debug.Log("Skill tree reset.");
     }
 }

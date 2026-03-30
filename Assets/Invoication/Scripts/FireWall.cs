@@ -1,8 +1,8 @@
-// FireWall.cs — attach this to your FireWall prefab
 using System.Collections.Generic;
 using UnityEngine;
+using PurrNet;
 
-public class FireWall : MonoBehaviour
+public class FireWall : NetworkBehaviour
 {
     [Header("Fire Wall Settings")]
     public float lifetime = 6f;
@@ -13,29 +13,42 @@ public class FireWall : MonoBehaviour
     private readonly HashSet<Enemy> _enemiesInWall = new();
     private float _tickTimer = 0f;
 
-    void Awake()
+    private GameObject attacker;
+
+    public void Initialize(GameObject owner)
     {
-        _tickTimer = tickRate;
+        attacker = owner;
+    }
+
+    void Start()
+    {
+        if (!isServer) return;
+
+        Destroy(gameObject, lifetime);
     }
 
     void Update()
     {
+        if (!isServer) return;
         if (_enemiesInWall.Count == 0) return;
 
         _tickTimer += Time.deltaTime;
         if (_tickTimer >= tickRate)
         {
             _tickTimer = 0f;
+
             foreach (Enemy enemy in _enemiesInWall)
             {
                 if (enemy != null)
-                    enemy.ApplyBurn(burnDamagePerTick, burnDuration);
+                    enemy.ApplyBurn_Server(burnDamagePerTick, burnDuration, attacker);
             }
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
+        if (!isServer) return;
+
         Enemy enemy = other.GetComponentInParent<Enemy>();
         if (enemy != null)
             _enemiesInWall.Add(enemy);
@@ -43,6 +56,8 @@ public class FireWall : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        if (!isServer) return;
+
         Enemy enemy = other.GetComponentInParent<Enemy>();
         if (enemy != null)
             _enemiesInWall.Remove(enemy);

@@ -27,9 +27,11 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void UpdateVisual()
     {
+        var manager = FindFirstObjectByType<SkillTreeManager>();
+
         if (nodeData.isUnlocked)
             nodeImage.color = unlockedColor;
-        else if (SkillTreeManager.Instance.CanUnlock(treeData, nodeData))
+        else if (manager != null && manager.CanUnlock(treeData, nodeData))
             nodeImage.color = availableColor;
         else
             nodeImage.color = lockedColor;
@@ -47,8 +49,11 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!SkillTreeManager.Instance.CanUnlock(treeData, nodeData))
+        var manager = FindFirstObjectByType<SkillTreeManager>();
+
+        if (manager == null || !manager.CanUnlock(treeData, nodeData))
             return;
+
         ConfirmationUI.Instance.Show(nodeData, treeData, this);
     }
 }
