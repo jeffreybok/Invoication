@@ -406,6 +406,18 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.549999
       objectReference: {fileID: 0}
@@ -444,6 +456,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8391222552659086748, guid: 0eab31e1cb029a945828c0964db502ff, type: 3}
       propertyPath: m_Layer
@@ -1792,11 +1808,11 @@ MonoBehaviour:
   player: {fileID: 0}
   detectionRadius: 10
   fieldOfViewAngle: 180
-  moveSpeed: 2
+  moveSpeed: 5
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
-  chaseMemoryTime: 3
+  chaseMemoryTime: 5
   attackDamage: 10
   attackCooldown: 1.5
   attackRange: 2
