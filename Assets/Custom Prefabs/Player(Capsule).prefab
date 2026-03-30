@@ -111,7 +111,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.9, y: 0, z: -10.68}
-  m_LocalScale: {x: 1, y: 0.8, z: 1}
+  m_LocalScale: {x: 1.4, y: 1.2, z: 1.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3678921392594614502}
@@ -301,7 +301,6 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   playerUI: {fileID: 6049116333962532282}
-  skillTreePanel: {fileID: 3976834539419048579, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
 --- !u!114 &-7508205112042622592
 MonoBehaviour:
   m_ObjectHideFlags: 0

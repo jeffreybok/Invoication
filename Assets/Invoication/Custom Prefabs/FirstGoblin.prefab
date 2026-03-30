@@ -174,7 +174,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2}
+  m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &7889592469182196386
@@ -1816,6 +1816,8 @@ MonoBehaviour:
   attackDamage: 10
   attackCooldown: 1.5
   attackRange: 2
+  frozenColor: {r: 0, g: 1, b: 1, a: 1}
+  burningColor: {r: 1, g: 0.4, b: 0, a: 1}
 --- !u!114 &7624189363725209756
 MonoBehaviour:
   m_ObjectHideFlags: 0
