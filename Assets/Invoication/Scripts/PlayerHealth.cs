@@ -1,83 +1,128 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using PurrNet;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : NetworkBehaviour
 {
-    [Header("Health Settings")]
+    [Header("Health")]
     public float maxHealth = 100f;
-    public float currentHealth = 100f;
-
-    [Header("UI References")]
-    public Text healthText;
-
-    [Header("Game Over")]
-    public GameObject gameOverScreen;
-    public string mainMenuSceneName = "StartScreenScene";
+    public float currentHealth;
 
     public bool isDead = false;
+
+    [Header("UI")]
+    public Text healthText;
+    public GameObject youDiedUI;
 
     void Start()
     {
         currentHealth = maxHealth;
-        UpdateHealthBar();
 
-        if (gameOverScreen != null)
-            gameOverScreen.SetActive(false);
+        if (youDiedUI != null)
+            youDiedUI.SetActive(false);
+
+        UpdateUI();
     }
 
-    public void TakeDamage(float damage)
+    // =========================
+    // DAMAGE
+    // =========================
+
+    public void TakeDamage(float dmg)
     {
+        if (!isServer) return;
         if (isDead) return;
 
-        currentHealth -= damage;
+        currentHealth -= dmg;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateHealthBar();
+
+        UpdateUI_ObserversRPC(currentHealth);
 
         if (currentHealth <= 0)
-            Die();
+        {
+            Die_Server();
+        }
     }
+
+    // =========================
+    // HEAL
+    // =========================
 
     public void Heal(float amount)
     {
+        if (!isServer) return;
         if (isDead) return;
 
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateHealthBar();
+
+        UpdateUI_ObserversRPC(currentHealth);
     }
 
-    void UpdateHealthBar()
+    // =========================
+    // DEATH
+    // =========================
+
+    void Die_Server()
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        StartFlicker_ObserversRPC();
+        Die_ObserversRPC();
+
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        if (gm != null)
+            gm.CheckAllPlayersDead();
+    }
+
+    // =========================
+    // FLICKER
+    // =========================
+
+    [ObserversRpc]
+    void StartFlicker_ObserversRPC()
+    {
+        var flicker = GetComponent<DeathFlicker>();
+        if (flicker != null)
+            flicker.StartFlicker();
+    }
+
+    // =========================
+    // CLIENT SIDE
+    // =========================
+
+    [ObserversRpc]
+    void Die_ObserversRPC()
+    {
+        if (!isOwner) return;
+
+        Debug.Log("You died");
+
+        if (youDiedUI != null)
+            youDiedUI.SetActive(true);
+
+        // disable movement
+        var controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.enabled = false;
+    }
+
+    // =========================
+    // UI SYNC
+    // =========================
+
+    [ObserversRpc]
+    void UpdateUI_ObserversRPC(float newHealth)
+    {
+        currentHealth = newHealth;
+        UpdateUI();
+    }
+
+    void UpdateUI()
     {
         if (healthText != null)
-            healthText.text = "HP: " + currentHealth.ToString("0") + " / " + maxHealth.ToString("0");
-    }
-
-    void Die()
-    {
-        isDead = true;
-        Debug.Log("Player Died!");
-
-        if (gameOverScreen != null)
-            gameOverScreen.SetActive(true);
-
-        Time.timeScale = 0f;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-
-    public void GoToMainMenu()
-    {  
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("StartScreenScene");
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-            Heal(10f);
-        if (Input.GetKeyDown(KeyCode.J))
-            TakeDamage(10f);
+            healthText.text = "HP: " + currentHealth.ToString("0");
     }
 }

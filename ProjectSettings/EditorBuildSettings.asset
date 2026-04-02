@@ -23,12 +23,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Level1_NOAHTEST.unity
     guid: f625edf88be294a27b5ed5b12c4a4486
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level1.unity
     guid: 6700052ee32064c918237cf0b12ceb15
   - enabled: 0
     path: Assets/Scenes/Level1_JEFFREYTEST.unity
     guid: d2d5b4672c5c17849acfff8079bd0360
+  - enabled: 1
+    path: Assets/Scenes/Level1_NOAHTESTING.unity
+    guid: 5a5041c3b307a4007b058ea8850cb3c3
+  - enabled: 1
+    path: Assets/Scenes/NoahStartScreen.unity
+    guid: f55f9eb6401d14523a17845607326c82
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
