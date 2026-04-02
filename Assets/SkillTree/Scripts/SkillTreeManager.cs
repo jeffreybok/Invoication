@@ -50,7 +50,7 @@ public class SkillTreeManager : MonoBehaviour
 
     void Update()
     {
-        if (stats == null) return; // ✅ only local player can use UI
+        if (stats == null) return;
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -191,7 +191,7 @@ public class SkillTreeManager : MonoBehaviour
         }
     }
 
-    // 🔥 DEBUG: find who disables stuff
+    // DEBUG: find who disables stuff
     void OnDisable()
     {
         Debug.Log("[SkillTreeManager DISABLED]");
