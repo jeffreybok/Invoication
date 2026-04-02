@@ -32,8 +32,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -5.97, y: 1.05, z: -7.10496}
-  m_LocalScale: {x: 2.202425, y: 4, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4.40485, y: 8, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
@@ -126,6 +126,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e39cbf2edc34c57428494191bc5a32aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireWall
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   lifetime: 6
   burnDamagePerTick: 5
   burnDuration: 3
