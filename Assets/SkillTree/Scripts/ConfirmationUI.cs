@@ -35,10 +35,16 @@ public class ConfirmationUI : MonoBehaviour
 
     void OnConfirm()
     {
-        SkillTreeManager.Instance.UnlockNode(pendingTree, pendingNode);
+        var manager = FindFirstObjectByType<SkillTreeManager>();
+
+        if (manager != null)
+        {
+            manager.UnlockNode(pendingTree, pendingNode);
+            manager.RefreshSkillPointsDisplay();
+        }
+
         pendingCaller.UpdateVisual();
-        FindObjectOfType<SkillTreeUI>().RefreshAllNodes();
-        SkillTreeManager.Instance.RefreshSkillPointsDisplay();
+        FindFirstObjectByType<SkillTreeUI>().RefreshAllNodes();
         confirmationPanel.SetActive(false);
     }
 

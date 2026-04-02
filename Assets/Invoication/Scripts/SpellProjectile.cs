@@ -47,8 +47,27 @@ public class SpellProjectile : NetworkBehaviour
 
     private bool _fireWallDeployed = false;
     private bool _iceWallDeployed = false;
-
     private Vector3 _spawnPosition;
+
+    private GameObject shooter;
+    private PlayerStats shooterStats;
+
+    private bool hasHit = false;
+
+    public void SetOwner(GameObject newShooter)
+    {
+        shooter = newShooter;
+        shooterStats = newShooter.GetComponent<PlayerStats>();
+
+        Collider myCollider = GetComponent<Collider>();
+        if (myCollider == null) return;
+
+        Collider[] shooterColliders = newShooter.GetComponentsInChildren<Collider>();
+        foreach (Collider col in shooterColliders)
+        {
+            Physics.IgnoreCollision(myCollider, col);
+        }
+    }
 
     void Start()
     {
@@ -58,118 +77,89 @@ public class SpellProjectile : NetworkBehaviour
 
     void Update()
     {
+        if (!isServer) return;
+
         if (spellType == SpellType.FireWall && !_fireWallDeployed)
         {
-            float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
-            if (distanceTraveled >= fireWallTravelDistance)
-                DeployFireWall(transform.position);
+            float dist = Vector3.Distance(_spawnPosition, transform.position);
+            if (dist >= fireWallTravelDistance)
+                DeployFireWallInternal(transform.position);
         }
+
         if (spellType == SpellType.IceWall && !_iceWallDeployed)
         {
-            float distanceTraveled = Vector3.Distance(_spawnPosition, transform.position);
-            if (distanceTraveled >= iceWallTravelDistance)
-                DeployIceWall(transform.position);
+            float dist = Vector3.Distance(_spawnPosition, transform.position);
+            if (dist >= iceWallTravelDistance)
+                DeployIceWallInternal(transform.position);
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        if (hasHit) return;
+
+        if (shooter != null && collision.transform.root.gameObject == shooter)
+            return;
+
+        if (isServer)
+        {
+            HandleHitInternal(collision);
+        }
+        else
+        {
+            RequestHit_ServerRPC();
+        }
+    }
+
+    [ServerRpc]
+    void RequestHit_ServerRPC()
+    {
+        if (hasHit) return;
+
+        HandleHitInternal(null);
+    }
+
+    void HandleHitInternal(Collision collision)
+    {
+        if (hasHit) return;
+        hasHit = true;
+
+        Vector3 point = transform.position;
+        if (collision != null && collision.contacts.Length > 0)
+            point = collision.contacts[0].point;
+
         if (spellType == SpellType.FireWall)
         {
-            DeployFireWall(collision.contacts[0].point);
+            DeployFireWallInternal(point);
             return;
         }
+
         if (spellType == SpellType.IceWall)
         {
-            DeployIceWall(collision.contacts[0].point);
+            DeployIceWallInternal(point);
             return;
         }
-
-        Vector3 point = collision.contacts[0].point;
-
-        Enemy directEnemy = collision.gameObject.GetComponent<Enemy>();
-        if (directEnemy != null)
-            ApplyEffect(directEnemy);
 
         Collider[] hitColliders = Physics.OverlapSphere(point, splashRadius > 0f ? splashRadius : 0.1f);
 
         foreach (Collider hit in hitColliders)
         {
+            if (shooter != null && hit.transform.root.gameObject == shooter) continue;
+
             Enemy enemy = hit.GetComponent<Enemy>();
-
-            if (enemy != null && enemy != directEnemy)
-                ApplySplashEffect(enemy);
-
-            if (spellType == SpellType.Fireball || spellType == SpellType.BlazingImpact)
+            if (enemy != null)
             {
-                Rigidbody rb = hit.GetComponent<Rigidbody>();
-                if (rb != null && !rb.isKinematic)
-                    rb.AddExplosionForce(200f, point, splashRadius, 0.5f, ForceMode.Impulse);
+                ApplyEffect(enemy);
+            }
+
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+            if (rb != null && !rb.isKinematic)
+            {
+                ApplyForce_ObserversRPC(rb.gameObject, point);
             }
         }
 
-        if (directEnemy != null && (spellType == SpellType.Fireball || spellType == SpellType.BlazingImpact))
-            directEnemy.HitByExplosion();
-
-        if (impactVFX != null)
-        {
-            ParticleSystem ps = impactVFX.GetComponent<ParticleSystem>();
-            float duration = ps != null ? ps.main.duration : vfxDuration;
-
-            GameObject vfx = Instantiate(impactVFX, point, Quaternion.identity);
-            Destroy(vfx, duration);
-        }
-
-        Destroy(gameObject);
-    }
-
-    void DeployFireWall(Vector3 position)
-    {
-        if (_fireWallDeployed) return;
-        _fireWallDeployed = true;
-
-        position.y += 4f;
-
-        if (fireWallPrefab != null)
-        {
-            GameObject wall = Instantiate(fireWallPrefab, position, transform.rotation);
-            FireWall fw = wall.GetComponent<FireWall>();
-            if (fw != null)
-            {
-                fw.lifetime          = fireWallLifetime;
-                fw.burnDamagePerTick = fireWallBurnDamagePerTick;
-                fw.burnDuration      = fireWallBurnDuration;
-                fw.tickRate          = fireWallTickRate;
-            }
-            Destroy(wall, fireWallLifetime);
-        }
-
-        Destroy(gameObject);
-    }
-    
-    void DeployIceWall(Vector3 position)
-    {
-        if (_iceWallDeployed) return;
-        _iceWallDeployed = true;
-
-        Collider col = GetComponent<Collider>();
-        if (col != null) col.enabled = false;
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = true;
-
-        if (iceWallPrefab != null)
-        {
-            GameObject wall = Instantiate(iceWallPrefab, position, transform.rotation);
-            IceWall iw = wall.GetComponent<IceWall>();
-            if (iw != null)
-            {
-                iw.lifetime        = iceWallLifetime;
-                iw.freezeDuration  = iceWallFreezeDuration;
-                iw.tickRate        = iceWallTickRate;
-            }
-            Destroy(wall, iceWallLifetime);
-        }
-
+        PlayImpactVFX_ObserversRPC(point);
         Destroy(gameObject);
     }
 
@@ -178,78 +168,112 @@ public class SpellProjectile : NetworkBehaviour
         switch (spellType)
         {
             case SpellType.Fireball:
-                float fireballDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetFireballDamage()
+                float fireballDmg = shooterStats != null
+                    ? shooterStats.GetFireballDamage()
                     : directDamage;
-                enemy.TakeDamage(fireballDmg);
+
+                enemy.TakeDamage(fireballDmg, shooter);
                 break;
 
             case SpellType.BlazingImpact:
-                float blazingDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetBlazingDamage()
+                float blazingDmg = shooterStats != null
+                    ? shooterStats.GetBlazingDamage()
                     : directDamage;
-                float burnTick = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDamagePerTick
-                    : burnDamagePerTick;
-                float burnDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDuration
-                    : burnDuration;
-                
-                enemy.TakeDamage(blazingDmg);
-                enemy.ApplyBurn(burnTick, burnDur);
+
+                enemy.TakeDamage(blazingDmg, shooter);
+                enemy.ApplyBurn(burnDamagePerTick, burnDuration, shooter);
                 break;
 
             case SpellType.DragonsBreath:
-                enemy.TakeDamage(directDamage);
-                enemy.ApplyBurn(burnDamagePerTick, burnDuration * 0.5f);
+                enemy.TakeDamage(directDamage, shooter);
+                enemy.ApplyBurn(burnDamagePerTick, burnDuration * 0.5f, shooter);
                 break;
 
             case SpellType.Iceball:
-                float iceDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetIceSpikeDamage()
+                float iceDmg = shooterStats != null
+                    ? shooterStats.GetIceSpikeDamage()
                     : directDamage;
-                float freezeDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.iceSpikeSlowDuration
-                    : freezeDuration;
-                
-                enemy.TakeDamage(iceDmg);
-                enemy.Freeze(freezeDur);
+
+                enemy.TakeDamage(iceDmg, shooter);
+                enemy.Freeze(freezeDuration, shooter);
                 break;
         }
     }
 
-    void ApplySplashEffect(Enemy enemy)
+    void DeployFireWallInternal(Vector3 position)
     {
-        switch (spellType)
+        if (_fireWallDeployed) return;
+        _fireWallDeployed = true;
+
+        position.y += 4f;
+
+        SpawnFireWall_ObserversRPC(position, transform.rotation);
+        Destroy(gameObject);
+    }
+
+    void DeployIceWallInternal(Vector3 position)
+    {
+        if (_iceWallDeployed) return;
+        _iceWallDeployed = true;
+
+        SpawnIceWall_ObserversRPC(position, transform.rotation);
+        Destroy(gameObject);
+    }
+
+    [ObserversRpc]
+    void SpawnFireWall_ObserversRPC(Vector3 pos, Quaternion rot)
+    {
+        if (fireWallPrefab == null) return;
+
+        GameObject wall = Instantiate(fireWallPrefab, pos, rot);
+        FireWall fw = wall.GetComponent<FireWall>();
+        if (fw != null)
         {
-            case SpellType.Fireball:
-                float fireballSplashDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetFireballDamage()
-                    : directDamage;
-                enemy.TakeDamage(fireballSplashDmg * splashDamageMult);
-                break;
+            fw.lifetime = fireWallLifetime;
+            fw.burnDamagePerTick = fireWallBurnDamagePerTick;
+            fw.burnDuration = fireWallBurnDuration;
+            fw.tickRate = fireWallTickRate;
+        }
 
-            case SpellType.BlazingImpact:
-                float blazingSplashDmg = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.GetBlazingDamage()
-                    : directDamage;
-                float splashBurnTick = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDamagePerTick
-                    : burnDamagePerTick;
-                float splashBurnDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.blazingBurnDuration
-                    : burnDuration;
+        Destroy(wall, fireWallLifetime);
+    }
 
-                enemy.TakeDamage(blazingSplashDmg * splashDamageMult);
-                enemy.ApplyBurn(splashBurnTick, splashBurnDur);
-                break;
+    [ObserversRpc]
+    void SpawnIceWall_ObserversRPC(Vector3 pos, Quaternion rot)
+    {
+        if (iceWallPrefab == null) return;
 
-            case SpellType.Iceball:
-                float splashFreezeDur = PlayerStats.Instance != null
-                    ? PlayerStats.Instance.iceSpikeSlowDuration
-                    : freezeDuration;
-                enemy.Freeze(splashFreezeDur);
-                break;
+        GameObject wall = Instantiate(iceWallPrefab, pos, rot);
+        IceWall iw = wall.GetComponent<IceWall>();
+        if (iw != null)
+        {
+            iw.lifetime = iceWallLifetime;
+            iw.freezeDuration = iceWallFreezeDuration;
+            iw.tickRate = iceWallTickRate;
+        }
+
+        Destroy(wall, iceWallLifetime);
+    }
+
+    [ObserversRpc]
+    void ApplyForce_ObserversRPC(GameObject target, Vector3 origin)
+    {
+        if (target == null) return;
+
+        Rigidbody rb = target.GetComponent<Rigidbody>();
+        if (rb != null && !rb.isKinematic)
+        {
+            rb.AddExplosionForce(200f, origin, splashRadius, 0.5f, ForceMode.Impulse);
+        }
+    }
+
+    [ObserversRpc]
+    void PlayImpactVFX_ObserversRPC(Vector3 pos)
+    {
+        if (impactVFX != null)
+        {
+            GameObject vfx = Instantiate(impactVFX, pos, Quaternion.identity);
+            Destroy(vfx, vfxDuration);
         }
     }
 

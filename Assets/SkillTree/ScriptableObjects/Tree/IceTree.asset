@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c2d0b3671f24669ba80023071078d3, type: 3}
+  m_Name: IceTree
+  m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
+  elementName: Ice
+  elementIcon: {fileID: 0}
+  tankTree:
+    className: Tank
+    classIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    nodes:
+    - {fileID: 11400000, guid: c0e595fed309f49d891878bfe9102c2f, type: 2}
+  damageTree:
+    className: Damage
+    classIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    nodes:
+    - {fileID: 11400000, guid: f9bca5af4b5fd4da3868f74d377f6ea1, type: 2}
+    - {fileID: 11400000, guid: 15d99fea3c8204ecab6a2231d46a8a4a, type: 2}
+    - {fileID: 11400000, guid: 0b0cbcdb5c96748f59273bc66b7249fe, type: 2}
+    - {fileID: 11400000, guid: fbd7c6d1bbb664ba6b9e6778a20049bf, type: 2}
+    - {fileID: 11400000, guid: 49d859768429a4e059781e282fbbd20e, type: 2}
+    - {fileID: 11400000, guid: 1c6f92f55f41f4f3d95d36d3ef81253e, type: 2}
+  supportTree:
+    className: Support
+    classIcon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    nodes: []

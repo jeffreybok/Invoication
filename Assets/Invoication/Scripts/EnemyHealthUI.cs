@@ -48,7 +48,7 @@ public class EnemyHealthUI : MonoBehaviour
             targetPosition = enemyTransform.position;
         }
         
-        targetPosition.y += 2.5f;
+        targetPosition.y += 5f;
         transform.position = targetPosition;
         
         // Always face camera
