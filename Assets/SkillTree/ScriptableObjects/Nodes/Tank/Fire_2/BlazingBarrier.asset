@@ -18,6 +18,7 @@ MonoBehaviour:
     on enemies that continuously hurts them.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: 829f38d5e84dd4b1dbb93e79b4a68a24, type: 3}
   prerequisiteNodeIDs:
   - FireWall_0
   nodeEffect: 0

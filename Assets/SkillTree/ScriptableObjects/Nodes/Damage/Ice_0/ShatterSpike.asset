@@ -18,6 +18,7 @@ MonoBehaviour:
     duration.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: 9cafa9615b3a340e6bec68278b39c2ab, type: 3}
   prerequisiteNodeIDs:
   - IceSpike_0
   nodeEffect: 0

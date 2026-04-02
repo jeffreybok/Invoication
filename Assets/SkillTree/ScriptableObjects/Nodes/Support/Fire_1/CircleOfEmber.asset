@@ -18,6 +18,7 @@ MonoBehaviour:
     time allies inside. Minor fire damage on enemies inside circle.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: ba7876355b8a04475b925e8e1bf88254, type: 3}
   prerequisiteNodeIDs: []
   nodeEffect: 0
   effectValue: 0

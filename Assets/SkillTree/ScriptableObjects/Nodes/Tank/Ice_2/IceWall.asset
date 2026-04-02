@@ -17,6 +17,7 @@ MonoBehaviour:
   nodeDescription: Wall of ice that blocks and slows down enemies on contact.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: 6270c1b8d90b64cb7bbd508702778789, type: 3}
   prerequisiteNodeIDs: []
   nodeEffect: 0
   effectValue: 0

@@ -18,6 +18,7 @@ MonoBehaviour:
     dealing burn damage over time.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: f51b9f0265f0a4d1986091e0b277edf6, type: 3}
   prerequisiteNodeIDs:
   - FireWall_0
   nodeEffect: 0

@@ -18,6 +18,7 @@ MonoBehaviour:
     Allies with fire element receive an increase in damage and casting speed.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: b21bb0af47e894aceb7b07ee39daaecb, type: 3}
   prerequisiteNodeIDs:
   - CircleOfEmber_0
   nodeEffect: 0

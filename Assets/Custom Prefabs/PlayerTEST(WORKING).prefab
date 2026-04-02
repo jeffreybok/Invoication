@@ -363,17 +363,6 @@ MonoBehaviour:
   baseMana: 100
   currentMana: 0
   skillPoints: 0
-  fireballBaseDamage: 50
-  fireballFlatBonus: 0
-  fireballExplosionRadius: 5
-  blazingBaseDamage: 30
-  blazingFlatBonus: 0
-  blazingBurnDamagePerTick: 5
-  blazingBurnDuration: 3
-  iceSpikeBaseDamage: 30
-  iceSpikeFlatBonus: 0
-  iceSpikeSlowDuration: 2
-  iceSpikeFreezeRadius: 2
 --- !u!114 &8709370847321677925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1331,12 +1320,12 @@ RectTransform:
   m_Children:
   - {fileID: 4339496917881000837}
   - {fileID: 1412511016041839855}
-  - {fileID: 2801549174164371907}
   - {fileID: 9024662064869509357}
   - {fileID: 2829106195367497912}
   - {fileID: 2986543734366433363}
   - {fileID: 2023006256454004696}
   - {fileID: 5607366011727185709}
+  - {fileID: 2801549174164371907}
   m_Father: {fileID: 2610131854456392755}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1422,7 +1411,7 @@ MonoBehaviour:
   skillTreePanel: {fileID: 8882919489863921447}
   skillTreeUI: {fileID: 5413024820966136199}
   skillPointText: {fileID: 8160634075521512942}
-  elementNameText: {fileID: 4309762950792281701}
+  elementTitleImage: {fileID: 0}
   allTrees:
   - {fileID: 11400000, guid: cbe13974e46a649a78c293d12306d5bf, type: 2}
   - {fileID: 11400000, guid: 13e9c1d1060c342d9aedde1c50a37515, type: 2}
@@ -3254,8 +3243,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -3277,17 +3265,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7231416498286730192, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
   m_PrefabInstance: {fileID: 4808222470473294355}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4309762950792281701 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8752013933734288502, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
-  m_PrefabInstance: {fileID: 4808222470473294355}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &5413024820966136199 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 694910837429877652, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
