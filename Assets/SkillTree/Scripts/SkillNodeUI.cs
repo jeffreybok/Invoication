@@ -7,12 +7,10 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 {
     [Header("References")]
     public Image nodeImage;
-    public TextMeshProUGUI nodeNameText;
 
-    [Header("Colors")]
-    public Color lockedColor;
-    public Color unlockedColor;
-    public Color availableColor;
+    [Header("Tint Colors")]
+    public Color lockedTint = new Color(0.3f, 0.3f, 0.3f, 1f);
+    public Color unlockedTint = new Color(0.7f, 0.7f, 0.7f, 1f);
 
     private SkillNode nodeData;
     private SkillTreeData treeData;
@@ -21,7 +19,10 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         nodeData = node;
         treeData = tree;
-        nodeNameText.text = node.nodeName;
+        
+        if (nodeImage != null && node.nodeIcon != null)
+            nodeImage.sprite = node.nodeIcon;
+        
         UpdateVisual();
     }
 
@@ -30,11 +31,9 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         var manager = FindFirstObjectByType<SkillTreeManager>();
 
         if (nodeData.isUnlocked)
-            nodeImage.color = unlockedColor;
-        else if (manager != null && manager.CanUnlock(treeData, nodeData))
-            nodeImage.color = availableColor;
+            nodeImage.color = unlockedTint;
         else
-            nodeImage.color = lockedColor;
+            nodeImage.color = lockedTint;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -50,10 +49,8 @@ public class SkillNodeUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnPointerClick(PointerEventData eventData)
     {
         var manager = FindFirstObjectByType<SkillTreeManager>();
-
         if (manager == null || !manager.CanUnlock(treeData, nodeData))
             return;
-
         ConfirmationUI.Instance.Show(nodeData, treeData, this);
     }
 }

@@ -13,28 +13,24 @@ MonoBehaviour:
   m_Name: FireTree
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
   elementName: Fire
-  elementIcon: {fileID: 0}
+  elementIcon: {fileID: 21300000, guid: bedf6fae50d6a428eaa750ea83403d0a, type: 3}
   tankTree:
     className: Tank
-    classIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    classIcon: {fileID: 21300000, guid: acb597c2b04a742748a107828c8ab01f, type: 3}
     nodes:
     - {fileID: 11400000, guid: af74fb7516ad74e8eaf4e11a4da5441a, type: 2}
     - {fileID: 11400000, guid: 32a20df03e809447587832aeab059aad, type: 2}
     - {fileID: 11400000, guid: fcdaa546ea6ff4594a551fbe75666473, type: 2}
   damageTree:
     className: Damage
-    classIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    classIcon: {fileID: 21300000, guid: af3edb263387344c5a310099ad122a2c, type: 3}
     nodes:
     - {fileID: 11400000, guid: 4110c006beb8e4666a0fa0ccc1c9a686, type: 2}
     - {fileID: 11400000, guid: c10b06f032c9043f7963c31720d377c8, type: 2}
-    - {fileID: 11400000, guid: 4d8d8637a0bc041319df73555c1d6fd6, type: 2}
-    - {fileID: 11400000, guid: 5da87b4d4fa7a4091a2c8230a5670419, type: 2}
     - {fileID: 11400000, guid: be2712b7403f84f9cacd641a3318e706, type: 2}
-    - {fileID: 11400000, guid: 7fbfaab35444d4592aa946d34a1bdf45, type: 2}
-    - {fileID: 11400000, guid: 3c9ad81a691fa4b71a103940497aa786, type: 2}
   supportTree:
     className: Support
-    classIcon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    classIcon: {fileID: 21300000, guid: 359b4b890cc6444d2b90df29296580c3, type: 3}
     nodes:
     - {fileID: 11400000, guid: 493b66be8746d4217b0b7709042f618b, type: 2}
     - {fileID: 11400000, guid: b277bf043a57d41c188e89f2fb773d00, type: 2}

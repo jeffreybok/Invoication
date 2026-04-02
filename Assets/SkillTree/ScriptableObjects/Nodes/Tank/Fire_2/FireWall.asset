@@ -18,6 +18,7 @@ MonoBehaviour:
     whoever comes in contact.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: de934d2885f4f46fa8440c2fc77cdb0f, type: 3}
   prerequisiteNodeIDs: []
   nodeEffect: 0
   effectValue: 0
