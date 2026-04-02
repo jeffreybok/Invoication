@@ -25,7 +25,7 @@ public static class SkillTreeSaveSystem
 
     public static void LoadAll(SkillTreeData[] allTrees, PlayerStats stats, PlayerXP xp)
     {
-        stats.skillPoints = PlayerPrefs.GetInt(skillPointsKey, 100);
+        stats.skillPoints = PlayerPrefs.GetInt(skillPointsKey, 0);
 
         if (xp != null)
         {

@@ -13,23 +13,20 @@ MonoBehaviour:
   m_Name: IceTree
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
   elementName: Ice
-  elementIcon: {fileID: 0}
+  elementIcon: {fileID: 21300000, guid: 605f274ef55ff4f90a410b117bfc8f18, type: 3}
   tankTree:
     className: Tank
-    classIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    classIcon: {fileID: 21300000, guid: acb597c2b04a742748a107828c8ab01f, type: 3}
     nodes:
     - {fileID: 11400000, guid: c0e595fed309f49d891878bfe9102c2f, type: 2}
   damageTree:
     className: Damage
-    classIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    classIcon: {fileID: 21300000, guid: af3edb263387344c5a310099ad122a2c, type: 3}
     nodes:
-    - {fileID: 11400000, guid: f9bca5af4b5fd4da3868f74d377f6ea1, type: 2}
     - {fileID: 11400000, guid: 15d99fea3c8204ecab6a2231d46a8a4a, type: 2}
-    - {fileID: 11400000, guid: 0b0cbcdb5c96748f59273bc66b7249fe, type: 2}
-    - {fileID: 11400000, guid: fbd7c6d1bbb664ba6b9e6778a20049bf, type: 2}
     - {fileID: 11400000, guid: 49d859768429a4e059781e282fbbd20e, type: 2}
     - {fileID: 11400000, guid: 1c6f92f55f41f4f3d95d36d3ef81253e, type: 2}
   supportTree:
     className: Support
-    classIcon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    classIcon: {fileID: 21300000, guid: 359b4b890cc6444d2b90df29296580c3, type: 3}
     nodes: []

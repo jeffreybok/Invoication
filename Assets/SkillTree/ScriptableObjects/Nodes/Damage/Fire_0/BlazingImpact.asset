@@ -18,6 +18,7 @@ MonoBehaviour:
     and applying burn effect.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: 14d8cf3a29c6a4ff7930aecffe03efb1, type: 3}
   prerequisiteNodeIDs:
   - Fireball_0
   nodeEffect: 0

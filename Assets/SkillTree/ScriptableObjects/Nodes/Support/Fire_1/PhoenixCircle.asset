@@ -18,6 +18,7 @@ MonoBehaviour:
     magic damage.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: 159f89dba91334ac39bc0f74d4bb82bd, type: 3}
   prerequisiteNodeIDs:
   - CircleOfEmber_0
   nodeEffect: 0

@@ -50,23 +50,19 @@ public class SpellProjectile : NetworkBehaviour
     private Vector3 _spawnPosition;
 
     private GameObject shooter;
-    private PlayerStats shooterStats;
 
     private bool hasHit = false;
 
     public void SetOwner(GameObject newShooter)
     {
         shooter = newShooter;
-        shooterStats = newShooter.GetComponent<PlayerStats>();
-
+        
         Collider myCollider = GetComponent<Collider>();
         if (myCollider == null) return;
 
         Collider[] shooterColliders = newShooter.GetComponentsInChildren<Collider>();
         foreach (Collider col in shooterColliders)
-        {
             Physics.IgnoreCollision(myCollider, col);
-        }
     }
 
     void Start()
@@ -168,19 +164,11 @@ public class SpellProjectile : NetworkBehaviour
         switch (spellType)
         {
             case SpellType.Fireball:
-                float fireballDmg = shooterStats != null
-                    ? shooterStats.GetFireballDamage()
-                    : directDamage;
-
-                enemy.TakeDamage(fireballDmg, shooter);
+                enemy.TakeDamage(directDamage, shooter);
                 break;
 
             case SpellType.BlazingImpact:
-                float blazingDmg = shooterStats != null
-                    ? shooterStats.GetBlazingDamage()
-                    : directDamage;
-
-                enemy.TakeDamage(blazingDmg, shooter);
+                enemy.TakeDamage(directDamage, shooter);
                 enemy.ApplyBurn(burnDamagePerTick, burnDuration, shooter);
                 break;
 
@@ -190,11 +178,7 @@ public class SpellProjectile : NetworkBehaviour
                 break;
 
             case SpellType.Iceball:
-                float iceDmg = shooterStats != null
-                    ? shooterStats.GetIceSpikeDamage()
-                    : directDamage;
-
-                enemy.TakeDamage(iceDmg, shooter);
+                enemy.TakeDamage(directDamage, shooter);
                 enemy.Freeze(freezeDuration, shooter);
                 break;
         }

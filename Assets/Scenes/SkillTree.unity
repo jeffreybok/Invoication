@@ -200,16 +200,13 @@ MonoBehaviour:
   skillPoints: 14
   fireballBaseDamage: 50
   fireballFlatBonus: 0
-  fireballPercentBonus: 0
   fireballExplosionRadius: 5
   blazingBaseDamage: 30
   blazingFlatBonus: 0
-  blazingPercentBonus: 0
   blazingBurnDamagePerTick: 5
   blazingBurnDuration: 3
   iceSpikeBaseDamage: 30
   iceSpikeFlatBonus: 0
-  iceSpikePercentBonus: 0
   iceSpikeSlowDuration: 2
   iceSpikeFreezeRadius: 2
 --- !u!1 &528326794

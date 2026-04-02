@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using PurrNet;
+using UnityEngine.UI;
 
 public class SkillTreeManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class SkillTreeManager : MonoBehaviour
     public GameObject skillTreePanel;
     public SkillTreeUI skillTreeUI;
     public TextMeshProUGUI skillPointText;
-    public TextMeshProUGUI elementNameText;
+    public Image elementTitleImage;
 
     [Header("Skill Trees")]
     public SkillTreeData[] allTrees;
@@ -31,7 +32,7 @@ public class SkillTreeManager : MonoBehaviour
         StartCoroutine(InitializeAfterDelay());
     }
 
-    System.Collections.IEnumerator InitializeAfterDelay()
+    private System.Collections.IEnumerator InitializeAfterDelay()
     {
         yield return new WaitForSeconds(1f);
 
@@ -44,24 +45,12 @@ public class SkillTreeManager : MonoBehaviour
         }
 
         SkillTreeSaveSystem.LoadAll(allTrees, stats, xp);
-
-        foreach (SkillTreeData tree in allTrees)
-        {
-            foreach (SkillNode node in tree.GetAllNodes())
-            {
-                if (node.isUnlocked && node.nodeEffect != NodeEffect.None)
-                {
-                    stats.ApplyEffect(node.nodeEffect, node.effectValue);
-                }
-            }
-        }
-
         LoadCurrentTree();
     }
 
     void Update()
     {
-        if (stats == null) return; // ✅ only local player can use UI
+        if (stats == null) return;
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -106,7 +95,10 @@ public class SkillTreeManager : MonoBehaviour
             return;
 
         skillTreeUI.LoadTree(allTrees[currentTreeIndex]);
-        elementNameText.text = allTrees[currentTreeIndex].elementName;
+
+        if (elementTitleImage != null && allTrees[currentTreeIndex].elementIcon != null)
+            elementTitleImage.sprite = allTrees[currentTreeIndex].elementIcon;
+
         RefreshSkillPointsDisplay();
     }
 
@@ -157,9 +149,6 @@ public class SkillTreeManager : MonoBehaviour
         node.isUnlocked = true;
         stats.skillPoints -= node.skillPointCost;
 
-        if (node.nodeEffect != NodeEffect.None)
-            stats.ApplyEffect(node.nodeEffect, node.effectValue);
-
         SkillTreeSaveSystem.SaveAll(allTrees, stats, xp);
         RefreshSkillPointsDisplay();
     }
@@ -202,7 +191,7 @@ public class SkillTreeManager : MonoBehaviour
         }
     }
 
-    // 🔥 DEBUG: find who disables stuff
+    // DEBUG: find who disables stuff
     void OnDisable()
     {
         Debug.Log("[SkillTreeManager DISABLED]");

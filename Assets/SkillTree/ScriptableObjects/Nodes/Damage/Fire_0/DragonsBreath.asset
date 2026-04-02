@@ -17,6 +17,7 @@ MonoBehaviour:
   nodeDescription: Shoots out three fireballs horizontally.
   skillPointCost: 4
   nodeType: 0
+  nodeIcon: {fileID: 21300000, guid: abbb02cebd20343ac825b08afd6f1762, type: 3}
   prerequisiteNodeIDs:
   - Fireball_0
   nodeEffect: 0
