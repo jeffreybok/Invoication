@@ -30,24 +30,23 @@ public class PlayerController : NetworkBehaviour
     private float jumpBufferCounter = 0;
     private float coyoteTimeCounter = 0;
     
-    
     void Start()
     {
-
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
         
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // ONLY lock cursor for local player
+        if (isOwner)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
     
     void Update()
     {
-        if (!isOwner)
-            return;
-
-        if (PauseMenu.IsPaused)
-            return;
+        if (!isOwner) return;
+        if (PauseMenu.IsPaused) return;
 
         HandleMovement();
         HandleMouseLook();

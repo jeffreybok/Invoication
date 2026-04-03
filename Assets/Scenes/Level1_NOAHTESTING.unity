@@ -42353,6 +42353,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4872678228248915580, guid: 0ee22e3bc954e49429ccad663624f478, type: 3}
+      propertyPath: _tickRate
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872678228248915580, guid: 0ee22e3bc954e49429ccad663624f478, type: 3}
       propertyPath: _startServerFlags
       value: 9
       objectReference: {fileID: 0}
