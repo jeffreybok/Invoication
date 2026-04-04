@@ -13,6 +13,7 @@ public class PlayerXP : MonoBehaviour
     [Header("HUD References")]
     public TextMeshProUGUI xpText;
     public Slider xpBar;
+    public TextMeshProUGUI levelText;
 
     private PlayerStats playerStats;
 
@@ -57,6 +58,8 @@ public class PlayerXP : MonoBehaviour
         {
             manager.RefreshSkillPointsDisplay();
         }
+        
+        levelText.text = currentLevel.ToString();
 
         Debug.Log($"LEVEL UP → {currentLevel}");
     }

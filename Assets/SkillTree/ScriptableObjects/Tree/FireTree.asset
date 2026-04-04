@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
   elementName: Fire
   elementIcon: {fileID: 21300000, guid: bedf6fae50d6a428eaa750ea83403d0a, type: 3}
+  leftArrowIcon: {fileID: 21300000, guid: 03d06554e1579492d87b5a3b76c85942, type: 3}
+  rightArrowIcon: {fileID: 21300000, guid: e7b57d343608b4551a2783187d7c5ab9, type: 3}
   tankTree:
     className: Tank
     classIcon: {fileID: 21300000, guid: acb597c2b04a742748a107828c8ab01f, type: 3}
