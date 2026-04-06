@@ -1,17 +1,39 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class StartScreen : MonoBehaviour
 {
+    public GameObject SettingsScreen;
+
+    private void Start()
+    {
+        SettingsScreen.SetActive(false);
+    }
+
     public void PlayGame()
     {
-        // Load your main game scene
-        SceneManager.LoadScene("TutorialLevel"); // Replace with your game scene name
+        SceneManager.LoadScene("Level1_JEFFREYTEST");
+    }
+
+    public void Options()
+    {
+        SettingsScreen.SetActive(true);
+    }
+
+    public void BackButton()
+    {
+        SettingsScreen.SetActive(false);
     }
 
     public void QuitGame()
     {
         Debug.Log("Quitting game...");
-        Application.Quit();
+        
+    #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+    #else
+            Application.Quit();
+    #endif
     }
 }
