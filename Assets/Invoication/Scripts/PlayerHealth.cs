@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class PlayerHealth : MonoBehaviour
     public float currentHealth = 100f;
 
     [Header("UI References")]
-    public Text healthText;
+    public Text healthText; // keep if you're still using normal UI Text
+    public Slider healthSlider;
+    public Image healthFill;
 
     [Header("Game Over")]
     public GameObject gameOverScreen;
@@ -20,6 +23,13 @@ public class PlayerHealth : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
+
         UpdateHealthBar();
 
         if (gameOverScreen != null)
@@ -51,6 +61,14 @@ public class PlayerHealth : MonoBehaviour
     {
         if (healthText != null)
             healthText.text = "HP: " + currentHealth.ToString("0") + " / " + maxHealth.ToString("0");
+        
+        if (healthSlider != null)
+            healthSlider.value = currentHealth;
+
+        if (healthFill != null)
+        {
+            healthFill.color = Color.red;
+        }
     }
 
     void Die()
@@ -62,19 +80,19 @@ public class PlayerHealth : MonoBehaviour
             gameOverScreen.SetActive(true);
 
         Time.timeScale = 0f;
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void GoToMainMenu()
-    {  
+    {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("StartScreenScene");
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     void Update()
     {
+        // testing
         if (Input.GetKeyDown(KeyCode.H))
             Heal(10f);
         if (Input.GetKeyDown(KeyCode.J))

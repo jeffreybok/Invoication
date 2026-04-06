@@ -12,6 +12,8 @@ public class SkillTreeManager : MonoBehaviour
     public SkillTreeUI skillTreeUI;
     public TextMeshProUGUI skillPointText;
     public Image elementTitleImage;
+    public Image leftArrowImage;
+    public Image rightArrowImage;
 
     [Header("Skill Trees")]
     public SkillTreeData[] allTrees;
@@ -98,6 +100,12 @@ public class SkillTreeManager : MonoBehaviour
 
         if (elementTitleImage != null && allTrees[currentTreeIndex].elementIcon != null)
             elementTitleImage.sprite = allTrees[currentTreeIndex].elementIcon;
+        
+        if (leftArrowImage != null && allTrees[currentTreeIndex].leftArrowIcon != null)
+            leftArrowImage.sprite = allTrees[currentTreeIndex].leftArrowIcon;
+        
+        if (rightArrowImage != null && allTrees[currentTreeIndex].rightArrowIcon != null)
+            rightArrowImage.sprite = allTrees[currentTreeIndex].rightArrowIcon;
 
         RefreshSkillPointsDisplay();
     }
@@ -105,7 +113,7 @@ public class SkillTreeManager : MonoBehaviour
     public void RefreshSkillPointsDisplay()
     {
         if (stats != null)
-            skillPointText.text = $"Skill Points: {stats.skillPoints}";
+            skillPointText.text = $"{stats.skillPoints}";
     }
 
     public void NextTree()

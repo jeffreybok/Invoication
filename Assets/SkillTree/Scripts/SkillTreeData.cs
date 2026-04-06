@@ -15,6 +15,8 @@ public class SkillTreeData : ScriptableObject
     [Header("Element Info")]
     public string elementName;
     public Sprite elementIcon;
+    public Sprite leftArrowIcon;
+    public Sprite rightArrowIcon;
 
     [Header("Class Trees")]
     public SkillClassTree tankTree;

@@ -36,7 +36,6 @@ public class ConfirmationUI : MonoBehaviour
     void OnConfirm()
     {
         var manager = FindFirstObjectByType<SkillTreeManager>();
-
         if (manager != null)
         {
             manager.UnlockNode(pendingTree, pendingNode);
@@ -44,7 +43,15 @@ public class ConfirmationUI : MonoBehaviour
         }
 
         pendingCaller.UpdateVisual();
-        FindFirstObjectByType<SkillTreeUI>().RefreshAllNodes();
+
+        var treeUI = FindFirstObjectByType<SkillTreeUI>();
+        if (treeUI != null)
+        {
+            treeUI.RefreshAllNodes();
+            // Only animate the line for the node just unlocked
+            treeUI.AnimateNodeLines(pendingNode, pendingTree);
+        }
+
         confirmationPanel.SetActive(false);
     }
 
