@@ -8,16 +8,14 @@ public class ExplosiveObject : NetworkBehaviour
     public float explosionDamage = 75f;
     public float explosionForce = 600f;
     public GameObject explosionEffect;
-    
+
     [Header("Trigger Settings")]
     public bool explodeOnImpact = true;
     public float impactThreshold = 5f;
     public bool explodeFromFireball = true;
     public bool explodeFromPickup = true;
-    
-    private bool hasExploded = false;
 
-    // Track who caused explosion
+    private bool hasExploded = false;
     private GameObject attacker;
 
     void OnCollisionEnter(Collision collision)
@@ -27,21 +25,18 @@ public class ExplosiveObject : NetworkBehaviour
         bool shouldExplode = false;
         GameObject detectedAttacker = null;
 
-        // Pickup hit
         if (explodeFromPickup && collision.gameObject.CompareTag("Pickup"))
         {
             shouldExplode = true;
             detectedAttacker = collision.gameObject;
         }
 
-        // Fireball hit
         if (explodeFromFireball && collision.gameObject.GetComponent<Fireball>() != null)
         {
             shouldExplode = true;
             detectedAttacker = collision.gameObject;
         }
 
-        // Impact force
         if (explodeOnImpact && collision.relativeVelocity.magnitude > impactThreshold)
         {
             shouldExplode = true;
@@ -50,35 +45,34 @@ public class ExplosiveObject : NetworkBehaviour
 
         if (!shouldExplode) return;
 
+#if UNITY_EDITOR
+        ExplodeInternal(detectedAttacker);
+#else
         if (isServer)
-        {
             ExplodeInternal(detectedAttacker);
-        }
         else
-        {
             RequestExplosion_ServerRPC(detectedAttacker);
-        }
+#endif
     }
 
     public void TriggerExplosion(GameObject attackerObj = null)
     {
         if (hasExploded) return;
 
+#if UNITY_EDITOR
+        ExplodeInternal(attackerObj);
+#else
         if (isServer)
-        {
             ExplodeInternal(attackerObj);
-        }
         else
-        {
             RequestExplosion_ServerRPC(attackerObj);
-        }
+#endif
     }
 
     [ServerRpc]
     void RequestExplosion_ServerRPC(GameObject attackerObj)
     {
         if (hasExploded) return;
-
         ExplodeInternal(attackerObj);
     }
 
@@ -89,14 +83,16 @@ public class ExplosiveObject : NetworkBehaviour
         hasExploded = true;
         attacker = attackerObj;
 
-        // Sync explosion visuals
+#if UNITY_EDITOR
+        SpawnExplosionVFX(transform.position);
+#else
         PlayExplosion_ObserversRPC(transform.position);
+#endif
 
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
 
         foreach (Collider hit in hitColliders)
         {
-            // DAMAGE ENEMIES (SERVER ONLY)
             Enemy enemy = hit.GetComponent<Enemy>();
             if (enemy != null)
             {
@@ -104,19 +100,13 @@ public class ExplosiveObject : NetworkBehaviour
                 enemy.HitByExplosion();
             }
 
-            // CHAIN EXPLOSIONS
             ExplosiveObject other = hit.GetComponent<ExplosiveObject>();
             if (other != null && other != this && !other.hasExploded)
-            {
                 other.TriggerExplosion(attacker);
-            }
 
-            // APPLY FORCE (SYNCED)
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
-            {
                 ApplyForce_ObserversRPC(rb.gameObject, transform.position);
-            }
         }
 
         Destroy(gameObject);
@@ -125,15 +115,17 @@ public class ExplosiveObject : NetworkBehaviour
     [ObserversRpc]
     void PlayExplosion_ObserversRPC(Vector3 pos)
     {
-        if (explosionEffect != null)
-        {
-            GameObject explosion = Instantiate(explosionEffect, pos, Quaternion.identity);
+        SpawnExplosionVFX(pos);
+    }
 
-            ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
-            float duration = ps != null ? ps.main.duration : 2f;
+    void SpawnExplosionVFX(Vector3 pos)
+    {
+        if (explosionEffect == null) return;
 
-            Destroy(explosion, duration);
-        }
+        GameObject explosion = Instantiate(explosionEffect, pos, Quaternion.identity);
+        ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+        float duration = ps != null ? ps.main.duration : 2f;
+        Destroy(explosion, duration);
     }
 
     [ObserversRpc]
@@ -143,9 +135,7 @@ public class ExplosiveObject : NetworkBehaviour
 
         Rigidbody rb = target.GetComponent<Rigidbody>();
         if (rb != null && !rb.isKinematic)
-        {
             rb.AddExplosionForce(explosionForce, origin, explosionRadius, 1f, ForceMode.Impulse);
-        }
     }
 
     void OnDrawGizmosSelected()
