@@ -41994,6 +41994,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FirstGoblin (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 7505545618399885610, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -128194,6 +128198,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FirstGoblin (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 7505545618399885610, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -175271,6 +175279,10 @@ PrefabInstance:
     - target: {fileID: 7505545618399885610, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
       propertyPath: m_Name
       value: FirstGoblin (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505545618399885610, guid: e0f9ecdbab1654c1491803a22586adea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
