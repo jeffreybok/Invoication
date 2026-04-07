@@ -1,24 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using TMPro;
+using PurrNet;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : NetworkBehaviour
 {
-    [Header("Health Settings")]
+    [Header("Health")]
     public float maxHealth = 100f;
-    public float currentHealth = 100f;
-
-    [Header("UI References")]
-    public Text healthText; // keep if you're still using normal UI Text
-    public Slider healthSlider;
-    public Image healthFill;
-
-    [Header("Game Over")]
-    public GameObject gameOverScreen;
-    public string mainMenuSceneName = "StartScreenScene";
+    public float currentHealth;
 
     public bool isDead = false;
+
+    [Header("UI")]
+    public Text healthText;
+    public Slider healthSlider;
+    public Image healthFill;
+    public GameObject youDiedUI;
 
     void Start()
     {
@@ -30,72 +26,110 @@ public class PlayerHealth : MonoBehaviour
             healthSlider.value = currentHealth;
         }
 
-        UpdateHealthBar();
+        if (youDiedUI != null)
+            youDiedUI.SetActive(false);
 
-        if (gameOverScreen != null)
-            gameOverScreen.SetActive(false);
+        UpdateUI();
     }
 
-    public void TakeDamage(float damage)
+    // =========================
+    // DAMAGE (SERVER ONLY)
+    // =========================
+    public void TakeDamage(float dmg)
     {
+        if (!isServer) return;
         if (isDead) return;
 
-        currentHealth -= damage;
+        currentHealth -= dmg;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateHealthBar();
+
+        UpdateUI_ObserversRPC(currentHealth);
 
         if (currentHealth <= 0)
-            Die();
+        {
+            Die_Server();
+        }
     }
 
+    // =========================
+    // HEAL (SERVER ONLY)
+    // =========================
     public void Heal(float amount)
     {
+        if (!isServer) return;
         if (isDead) return;
 
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateHealthBar();
+
+        UpdateUI_ObserversRPC(currentHealth);
     }
 
-    void UpdateHealthBar()
+    // =========================
+    // DEATH (SERVER)
+    // =========================
+    void Die_Server()
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        StartFlicker_ObserversRPC();
+        Die_ObserversRPC();
+
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        if (gm != null)
+            gm.CheckAllPlayersDead();
+    }
+
+    // =========================
+    // FLICKER (ALL CLIENTS)
+    // =========================
+    [ObserversRpc]
+    void StartFlicker_ObserversRPC()
+    {
+        var flicker = GetComponent<DeathFlicker>();
+        if (flicker != null)
+            flicker.StartFlicker();
+    }
+
+    // =========================
+    // CLIENT DEATH (OWNER ONLY)
+    // =========================
+    [ObserversRpc]
+    void Die_ObserversRPC()
+    {
+        if (!isOwner) return;
+
+        Debug.Log("You died");
+
+        if (youDiedUI != null)
+            youDiedUI.SetActive(true);
+
+        var controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.enabled = false;
+    }
+
+    // =========================
+    // UI SYNC (ALL CLIENTS)
+    // =========================
+    [ObserversRpc]
+    void UpdateUI_ObserversRPC(float newHealth)
+    {
+        currentHealth = newHealth;
+        UpdateUI();
+    }
+
+    void UpdateUI()
     {
         if (healthText != null)
             healthText.text = "HP: " + currentHealth.ToString("0") + " / " + maxHealth.ToString("0");
-        
+
         if (healthSlider != null)
             healthSlider.value = currentHealth;
 
         if (healthFill != null)
-        {
             healthFill.color = Color.red;
-        }
-    }
-
-    void Die()
-    {
-        isDead = true;
-        Debug.Log("Player Died!");
-
-        if (gameOverScreen != null)
-            gameOverScreen.SetActive(true);
-
-        Time.timeScale = 0f;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-
-    public void GoToMainMenu()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(mainMenuSceneName);
-    }
-
-    void Update()
-    {
-        // testing
-        if (Input.GetKeyDown(KeyCode.H))
-            Heal(10f);
-        if (Input.GetKeyDown(KeyCode.J))
-            TakeDamage(10f);
     }
 }

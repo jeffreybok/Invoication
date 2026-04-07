@@ -1808,7 +1808,7 @@ MonoBehaviour:
   player: {fileID: 0}
   detectionRadius: 10
   fieldOfViewAngle: 180
-  moveSpeed: 5
+  moveSpeed: 10
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
