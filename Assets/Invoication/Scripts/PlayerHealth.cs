@@ -12,11 +12,19 @@ public class PlayerHealth : NetworkBehaviour
 
     [Header("UI")]
     public Text healthText;
+    public Slider healthSlider;
+    public Image healthFill;
     public GameObject youDiedUI;
 
     void Start()
     {
         currentHealth = maxHealth;
+
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
 
         if (youDiedUI != null)
             youDiedUI.SetActive(false);
@@ -25,9 +33,8 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
-    // DAMAGE
+    // DAMAGE (SERVER ONLY)
     // =========================
-
     public void TakeDamage(float dmg)
     {
         if (!isServer) return;
@@ -45,9 +52,8 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
-    // HEAL
+    // HEAL (SERVER ONLY)
     // =========================
-
     public void Heal(float amount)
     {
         if (!isServer) return;
@@ -60,9 +66,8 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
-    // DEATH
+    // DEATH (SERVER)
     // =========================
-
     void Die_Server()
     {
         if (isDead) return;
@@ -78,9 +83,8 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
-    // FLICKER
+    // FLICKER (ALL CLIENTS)
     // =========================
-
     [ObserversRpc]
     void StartFlicker_ObserversRPC()
     {
@@ -90,9 +94,8 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
-    // CLIENT SIDE
+    // CLIENT DEATH (OWNER ONLY)
     // =========================
-
     [ObserversRpc]
     void Die_ObserversRPC()
     {
@@ -103,16 +106,14 @@ public class PlayerHealth : NetworkBehaviour
         if (youDiedUI != null)
             youDiedUI.SetActive(true);
 
-        // disable movement
         var controller = GetComponent<PlayerController>();
         if (controller != null)
             controller.enabled = false;
     }
 
     // =========================
-    // UI SYNC
+    // UI SYNC (ALL CLIENTS)
     // =========================
-
     [ObserversRpc]
     void UpdateUI_ObserversRPC(float newHealth)
     {
@@ -123,6 +124,12 @@ public class PlayerHealth : NetworkBehaviour
     void UpdateUI()
     {
         if (healthText != null)
-            healthText.text = "HP: " + currentHealth.ToString("0");
+            healthText.text = "HP: " + currentHealth.ToString("0") + " / " + maxHealth.ToString("0");
+
+        if (healthSlider != null)
+            healthSlider.value = currentHealth;
+
+        if (healthFill != null)
+            healthFill.color = Color.red;
     }
 }

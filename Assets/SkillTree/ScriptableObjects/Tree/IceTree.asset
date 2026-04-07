@@ -14,11 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
   elementName: Ice
   elementIcon: {fileID: 21300000, guid: 605f274ef55ff4f90a410b117bfc8f18, type: 3}
+  leftArrowIcon: {fileID: 21300000, guid: dc1114acba9be42d0bdd20de3c29b5df, type: 3}
+  rightArrowIcon: {fileID: 21300000, guid: c1105d76c54c14acca1ad9adc48141d4, type: 3}
   tankTree:
     className: Tank
     classIcon: {fileID: 21300000, guid: acb597c2b04a742748a107828c8ab01f, type: 3}
     nodes:
     - {fileID: 11400000, guid: c0e595fed309f49d891878bfe9102c2f, type: 2}
+    - {fileID: 11400000, guid: 33e91102e4e914112b5183148e49ecb5, type: 2}
+    - {fileID: 11400000, guid: 74dd32b946d714023a9d6c3f4434a42b, type: 2}
   damageTree:
     className: Damage
     classIcon: {fileID: 21300000, guid: af3edb263387344c5a310099ad122a2c, type: 3}
@@ -29,4 +33,7 @@ MonoBehaviour:
   supportTree:
     className: Support
     classIcon: {fileID: 21300000, guid: 359b4b890cc6444d2b90df29296580c3, type: 3}
-    nodes: []
+    nodes:
+    - {fileID: 11400000, guid: d0be9be27a4d3468ea04c5e95a490d4f, type: 2}
+    - {fileID: 11400000, guid: efe20686b9d044b0ea2327565cd02525, type: 2}
+    - {fileID: 11400000, guid: 2fe3eb3ee4d0d48c0b8329a328f0bc77, type: 2}

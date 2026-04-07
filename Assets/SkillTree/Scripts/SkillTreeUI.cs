@@ -120,15 +120,60 @@ public class SkillTreeUI : MonoBehaviour
 
             foreach (string prereqID in node.prerequisiteNodeIDs)
             {
-                if (nodeRectMap.ContainsKey(node.nodeID) && nodeRectMap.ContainsKey(prereqID))
-                {
-                    NodeConnector.Instance.DrawLine(
-                        nodeRectMap[prereqID],
-                        nodeRectMap[node.nodeID],
-                        lineContainer,
-                        node.isUnlocked
-                    );
-                }
+                if (!nodeRectMap.ContainsKey(node.nodeID) || !nodeRectMap.ContainsKey(prereqID))
+                    continue;
+
+                // Find the prerequisite node to check if it's unlocked
+                SkillNode prereqNode = classTree.nodes.Find(n => n.nodeID == prereqID);
+                bool prereqUnlocked = prereqNode != null && prereqNode.isUnlocked;
+
+                NodeConnector.Instance.DrawLine(
+                    nodeRectMap[prereqID],
+                    nodeRectMap[node.nodeID],
+                    lineContainer,
+                    prereqUnlocked // line is white if prereq is unlocked, grey if not
+                );
+            }
+        }
+    }
+    
+    public void AnimateNodeLines(SkillNode unlockedNode, SkillTreeData tree)
+    {
+        // Find which class tree this node belongs to
+        SkillClassTree classTree = null;
+        Transform lineContainer = null;
+
+        if (tree.tankTree.nodes != null && tree.tankTree.nodes.Contains(unlockedNode))
+        {
+            classTree = tree.tankTree;
+            lineContainer = tankLineContainer;
+        }
+        else if (tree.damageTree.nodes != null && tree.damageTree.nodes.Contains(unlockedNode))
+        {
+            classTree = tree.damageTree;
+            lineContainer = damageLineContainer;
+        }
+        else if (tree.supportTree.nodes != null && tree.supportTree.nodes.Contains(unlockedNode))
+        {
+            classTree = tree.supportTree;
+            lineContainer = supportLineContainer;
+        }
+
+        if (classTree == null || lineContainer == null) return;
+
+        // Find all nodes that have the just-unlocked node as a prerequisite
+        foreach (SkillNode node in classTree.nodes)
+        {
+            if (node.prerequisiteNodeIDs == null) continue;
+            if (!node.prerequisiteNodeIDs.Contains(unlockedNode.nodeID)) continue;
+
+            if (nodeRectMap.ContainsKey(unlockedNode.nodeID) && nodeRectMap.ContainsKey(node.nodeID))
+            {
+                NodeConnector.Instance.AnimateLine(
+                    nodeRectMap[unlockedNode.nodeID],
+                    nodeRectMap[node.nodeID],
+                    lineContainer
+                );
             }
         }
     }
@@ -139,6 +184,15 @@ public class SkillTreeUI : MonoBehaviour
             node.UpdateVisual();
 
         if (currentTree == null) return;
+        StartCoroutine(DelayedLineRedraw());
+    }
+
+    private System.Collections.IEnumerator DelayedLineRedraw()
+    {
+        // Wait for any running wipe animations to finish
+        yield return new WaitForSecondsRealtime(NodeConnector.Instance.fillDuration + 0.1f);
+
+        if (currentTree == null) yield break;
         DrawTreeLines(currentTree.tankTree, tankLineContainer);
         DrawTreeLines(currentTree.damageTree, damageLineContainer);
         DrawTreeLines(currentTree.supportTree, supportLineContainer);
