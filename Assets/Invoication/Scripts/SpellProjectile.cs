@@ -50,13 +50,12 @@ public class SpellProjectile : NetworkBehaviour
     private Vector3 _spawnPosition;
 
     private GameObject shooter;
-
     private bool hasHit = false;
 
     public void SetOwner(GameObject newShooter)
     {
         shooter = newShooter;
-        
+
         Collider myCollider = GetComponent<Collider>();
         if (myCollider == null) return;
 
@@ -97,21 +96,20 @@ public class SpellProjectile : NetworkBehaviour
         if (shooter != null && collision.transform.root.gameObject == shooter)
             return;
 
+#if UNITY_EDITOR
+        HandleHitInternal(collision);
+#else
         if (isServer)
-        {
             HandleHitInternal(collision);
-        }
         else
-        {
             RequestHit_ServerRPC();
-        }
+#endif
     }
 
     [ServerRpc]
     void RequestHit_ServerRPC()
     {
         if (hasHit) return;
-
         HandleHitInternal(null);
     }
 
@@ -144,18 +142,18 @@ public class SpellProjectile : NetworkBehaviour
 
             Enemy enemy = hit.GetComponent<Enemy>();
             if (enemy != null)
-            {
                 ApplyEffect(enemy);
-            }
 
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
-            {
                 ApplyForce_ObserversRPC(rb.gameObject, point);
-            }
         }
 
+#if UNITY_EDITOR
+        SpawnVFX(point);
+#else
         PlayImpactVFX_ObserversRPC(point);
+#endif
         Destroy(gameObject);
     }
 
@@ -190,7 +188,6 @@ public class SpellProjectile : NetworkBehaviour
         _fireWallDeployed = true;
 
         position.y += 4f;
-
         SpawnFireWall_ObserversRPC(position, transform.rotation);
         Destroy(gameObject);
     }
@@ -246,19 +243,20 @@ public class SpellProjectile : NetworkBehaviour
 
         Rigidbody rb = target.GetComponent<Rigidbody>();
         if (rb != null && !rb.isKinematic)
-        {
             rb.AddExplosionForce(200f, origin, splashRadius, 0.5f, ForceMode.Impulse);
-        }
     }
 
     [ObserversRpc]
     void PlayImpactVFX_ObserversRPC(Vector3 pos)
     {
-        if (impactVFX != null)
-        {
-            GameObject vfx = Instantiate(impactVFX, pos, Quaternion.identity);
-            Destroy(vfx, vfxDuration);
-        }
+        SpawnVFX(pos);
+    }
+
+    void SpawnVFX(Vector3 pos)
+    {
+        if (impactVFX == null) return;
+        GameObject vfx = Instantiate(impactVFX, pos, Quaternion.identity);
+        Destroy(vfx, vfxDuration);
     }
 
     void OnDrawGizmosSelected()

@@ -222,5 +222,16 @@ MonoBehaviour:
   burnDamagePerTick: 5
   burnDuration: 3
   freezeDuration: 3
+  fireWallPrefab: {fileID: 0}
+  fireWallTravelDistance: 5
+  fireWallLifetime: 6
+  fireWallBurnDamagePerTick: 8
+  fireWallBurnDuration: 4
+  fireWallTickRate: 0.5
+  iceWallPrefab: {fileID: 0}
+  iceWallTravelDistance: 5
+  iceWallLifetime: 6
+  iceWallFreezeDuration: 3
+  iceWallTickRate: 0.5
   impactVFX: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
-  vfxDuration: 2
+  vfxDuration: 1
