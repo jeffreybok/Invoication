@@ -11,6 +11,7 @@ public class SpellProjectile : NetworkBehaviour
         Iceball,
         FireWall,
         IceWall,
+        LightningStrike,
     }
 
     [Header("Spell Settings")]
@@ -41,6 +42,11 @@ public class SpellProjectile : NetworkBehaviour
     public float iceWallFreezeDuration = 3f;
     public float iceWallTickRate = 0.5f;
 
+    [Header("Lightning Strike")]
+    public float lightningChainRadius = 6f;
+    public GameObject lightningImpactVFX;
+    public GameObject lightningChainVFX;
+
     [Header("VFX")]
     public GameObject impactVFX;
     public float vfxDuration = 2f;
@@ -48,6 +54,7 @@ public class SpellProjectile : NetworkBehaviour
     private bool _fireWallDeployed = false;
     private bool _iceWallDeployed = false;
     private Vector3 _spawnPosition;
+    private Vector3 _travelDirection;
 
     private GameObject shooter;
     private bool hasHit = false;
@@ -64,6 +71,12 @@ public class SpellProjectile : NetworkBehaviour
             Physics.IgnoreCollision(myCollider, col);
     }
 
+    public void SetTravelDirection(Vector3 dir)
+    {
+        _travelDirection = dir.normalized;
+        Debug.Log("Travel direction set: " + _travelDirection);
+    }
+x
     void Start()
     {
         if (spellType == SpellType.FireWall || spellType == SpellType.IceWall)
@@ -86,6 +99,20 @@ public class SpellProjectile : NetworkBehaviour
             float dist = Vector3.Distance(_spawnPosition, transform.position);
             if (dist >= iceWallTravelDistance)
                 DeployIceWallInternal(transform.position);
+        }
+
+        if (spellType == SpellType.LightningStrike && !hasHit)
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            Vector3 dir = _travelDirection != Vector3.zero ? _travelDirection : transform.forward;
+            float checkDistance = rb != null ? rb.linearVelocity.magnitude * Time.deltaTime * 2f : 3f;
+
+            if (Physics.Raycast(transform.position, dir, out RaycastHit hit, checkDistance))
+            {
+                if (shooter != null && hit.transform.root.gameObject == shooter) return;
+                hasHit = true;
+                HandleLightningStrike(null, hit.point);
+            }
         }
     }
 
@@ -134,6 +161,12 @@ public class SpellProjectile : NetworkBehaviour
             return;
         }
 
+        if (spellType == SpellType.LightningStrike)
+        {
+            HandleLightningStrike(collision, point);
+            return;
+        }
+
         Collider[] hitColliders = Physics.OverlapSphere(point, splashRadius > 0f ? splashRadius : 0.1f);
 
         foreach (Collider hit in hitColliders)
@@ -156,6 +189,53 @@ public class SpellProjectile : NetworkBehaviour
 #endif
         Destroy(gameObject);
     }
+
+    // ─── Lightning Strike ─────────────────────────────────────────────────────
+
+    void HandleLightningStrike(Collision collision, Vector3 point)
+    {
+        Enemy primaryEnemy = null;
+
+        if (collision != null)
+            primaryEnemy = collision.collider.GetComponentInParent<Enemy>();
+
+        if (primaryEnemy == null)
+        {
+            Vector3 dir = _travelDirection != Vector3.zero ? _travelDirection : transform.forward;
+            if (Physics.Raycast(transform.position, dir, out RaycastHit rayHit, 3f))
+                primaryEnemy = rayHit.collider.GetComponentInParent<Enemy>();
+        }
+
+        if (primaryEnemy != null)
+            primaryEnemy.TakeDamage(directDamage, shooter);
+
+#if UNITY_EDITOR
+        SpawnLightningVFX(point, true);
+#else
+        PlayLightningImpactVFX_ObserversRPC(point);
+#endif
+
+        Collider[] nearby = Physics.OverlapSphere(point, lightningChainRadius);
+        foreach (Collider hit in nearby)
+        {
+            if (shooter != null && hit.transform.root.gameObject == shooter) continue;
+
+            Enemy chainEnemy = hit.GetComponentInParent<Enemy>();
+            if (chainEnemy == null || chainEnemy == primaryEnemy) continue;
+
+            chainEnemy.TakeDamage(directDamage * splashDamageMult, shooter);
+
+#if UNITY_EDITOR
+            SpawnLightningVFX(hit.transform.position, false);
+#else
+            PlayLightningChainVFX_ObserversRPC(hit.transform.position);
+#endif
+        }
+
+        Destroy(gameObject);
+    }
+
+    // ─── Effect Dispatch ──────────────────────────────────────────────────────
 
     void ApplyEffect(Enemy enemy)
     {
@@ -181,6 +261,8 @@ public class SpellProjectile : NetworkBehaviour
                 break;
         }
     }
+
+    // ─── FireWall / IceWall ───────────────────────────────────────────────────
 
     void DeployFireWallInternal(Vector3 position)
     {
@@ -236,6 +318,8 @@ public class SpellProjectile : NetworkBehaviour
         Destroy(wall, iceWallLifetime);
     }
 
+    // ─── RPCs ─────────────────────────────────────────────────────────────────
+
     [ObserversRpc]
     void ApplyForce_ObserversRPC(GameObject target, Vector3 origin)
     {
@@ -252,6 +336,18 @@ public class SpellProjectile : NetworkBehaviour
         SpawnVFX(pos);
     }
 
+    [ObserversRpc]
+    void PlayLightningImpactVFX_ObserversRPC(Vector3 pos)
+    {
+        SpawnLightningVFX(pos, true);
+    }
+
+    [ObserversRpc]
+    void PlayLightningChainVFX_ObserversRPC(Vector3 pos)
+    {
+        SpawnLightningVFX(pos, false);
+    }
+
     void SpawnVFX(Vector3 pos)
     {
         if (impactVFX == null) return;
@@ -259,9 +355,25 @@ public class SpellProjectile : NetworkBehaviour
         Destroy(vfx, vfxDuration);
     }
 
+    void SpawnLightningVFX(Vector3 pos, bool isPrimary)
+    {
+        GameObject prefab = isPrimary ? lightningImpactVFX : lightningChainVFX;
+        if (prefab == null) return;
+        GameObject vfx = Instantiate(prefab, pos, Quaternion.identity);
+        Destroy(vfx, vfxDuration);
+    }
+
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = spellType == SpellType.Iceball ? Color.cyan : Color.red;
-        Gizmos.DrawWireSphere(transform.position, splashRadius);
+        if (spellType == SpellType.LightningStrike)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, lightningChainRadius);
+        }
+        else
+        {
+            Gizmos.color = spellType == SpellType.Iceball ? Color.cyan : Color.red;
+            Gizmos.DrawWireSphere(transform.position, splashRadius);
+        }
     }
 }

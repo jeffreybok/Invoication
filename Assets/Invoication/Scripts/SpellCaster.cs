@@ -76,7 +76,17 @@ public class SpellCaster : NetworkBehaviour
         if (!isServer) return;
         if (prefab == null || player == null) return;
 
-        GameObject projectile = Instantiate(prefab, spawnPos, Quaternion.LookRotation(direction));
+        Quaternion spawnRotation = Quaternion.LookRotation(direction);
+
+        // Fix lightning orientation and height
+        SpellProjectile spCheck = prefab.GetComponent<SpellProjectile>();
+        if (spCheck != null && spCheck.spellType == SpellProjectile.SpellType.LightningStrike)
+        {
+            spawnRotation *= Quaternion.Euler(0f, -90f, 0f);
+            spawnPos += Vector3.down * 1.5f; // tweak to taste
+        }
+
+        GameObject projectile = Instantiate(prefab, spawnPos, spawnRotation);
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         if (rb != null)
@@ -99,8 +109,10 @@ public class SpellCaster : NetworkBehaviour
 
         SpellProjectile spellProjectile = projectile.GetComponent<SpellProjectile>();
         if (spellProjectile != null)
+        {
             spellProjectile.SetOwner(player);
-
+            spellProjectile.SetTravelDirection(direction); // ADD THIS
+        }
         Fireball fireball = projectile.GetComponent<Fireball>();
         if (fireball != null)
             fireball.Initialize(player);
@@ -127,7 +139,7 @@ public class SpellCaster : NetworkBehaviour
             case 1: prefab = blazingImpactPrefab; speed = fireballSpeed;      break;
             case 2: prefab = iceballPrefab;       speed = iceballSpeed;       break;
             case 3: prefab = emberCirclePrefab;   speed = emberCircleSpeed;   break;
-            case 4: prefab = lightningBoltPrefab; speed = lightningBoltSpeed; break;
+            case 4: prefab = lightningBoltPrefab; speed = lightningBoltSpeed; break;        
         }
 
         if (prefab == null) return;
@@ -144,9 +156,11 @@ public class SpellCaster : NetworkBehaviour
         if (forward == Vector3.zero)
             forward = player.transform.forward;
 
+        float spawnForwardOffset = (spellType == 4) ? 0.1f : 2f;
+
         Vector3 spawnPos = spawnPoint != null
-            ? spawnPoint.position + forward * 2f
-            : cam.transform.position + forward * 2f;
+            ? spawnPoint.position + forward * spawnForwardOffset
+            : cam.transform.position + forward * spawnForwardOffset;
 
         Ray aimRay = new Ray(cam.transform.position, forward);
         Vector3 targetPoint;
@@ -229,7 +243,7 @@ public class SpellCaster : NetworkBehaviour
         SpellCaster caster = player.GetComponent<SpellCaster>();
         if (caster == null) return;
 
-        Vector3 origin = player.transform.position;
+        Vector3 origin = player.transform.position + Vector3.down * 1f; // tweak to taste
 
         // Damage all enemies in radius
         Collider[] hits = Physics.OverlapSphere(origin, caster.shockwaveRadius);
@@ -285,7 +299,7 @@ public class SpellCaster : NetworkBehaviour
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 3, cam.transform.forward);
     }
 
-    public void CastLightningBolt()
+    public void CastLightningStrike()
     {
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
