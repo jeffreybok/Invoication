@@ -5,9 +5,9 @@ using PurrNet;
 public class FireWall : NetworkBehaviour
 {
     [Header("Fire Wall Settings")]
-    public float lifetime = 6f;
-    public float burnDamagePerTick = 8f;
-    public float burnDuration = 4f;
+    public float lifetime = 9f;
+    public float burnDamagePerTick = 10f;
+    public float burnDuration = 6f;
     public float tickRate = 0.5f;
 
     private readonly HashSet<Enemy> _enemiesInWall = new();
