@@ -737,7 +737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   baseMana: 100
   currentMana: 0
-  skillPoints: 4
+  skillPoints: 100
 --- !u!114 &8709370847321677925
 MonoBehaviour:
   m_ObjectHideFlags: 0
