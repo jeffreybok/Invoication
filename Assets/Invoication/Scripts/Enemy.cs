@@ -229,6 +229,11 @@ public class Enemy : NetworkBehaviour
         if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time;
+
+            // 🔥 PLAY ANIMATION
+            PlayAttackAnimation();
+
+            // damage
             playerHealth.TakeDamage(attackDamage);
         }
     }
@@ -1220,5 +1225,23 @@ public class Enemy : NetworkBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawLine(transform.position + Vector3.up * 1.5f, player.position + Vector3.up);
         }
+    }
+    // =========================
+// ATTACK ANIMATION
+// =========================
+
+    void PlayAttackAnimation()
+    {
+        if (!isServer) return;
+
+        Attack_ObserversRPC();
+    }
+
+    [ObserversRpc]
+    void Attack_ObserversRPC()
+    {
+        if (animator == null) return;
+
+        animator.SetTrigger("Attack");
     }
 }
