@@ -3162,7 +3162,7 @@ MonoBehaviour:
   shockwaveVFXPrefab: {fileID: 1419433412524400228, guid: 94e3a60dfabad3147915787b43e09075, type: 3}
   shockwaveVFXDuration: 1.5
   fireballSpawnPoint: {fileID: 0}
-  fireballSpeed: 20
+  fireballSpeed: 8
   iceballSpeed: 20
   fireWallSpeed: 12
   emberCircleSpeed: 15
