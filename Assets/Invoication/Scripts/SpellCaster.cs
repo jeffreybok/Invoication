@@ -34,10 +34,15 @@ public class SpellCaster : NetworkBehaviour
     public LayerMask aimLayers = ~0;
 
     private RaycastPickup pickupScript;
+    private PlayerAnimationController anim;
+
+    public KeyCode castKey = KeyCode.Mouse0;
 
     void Start()
     {
         pickupScript = GetComponent<RaycastPickup>();
+        anim = GetComponent<PlayerAnimationController>();
+
         if (pickupScript == null)
             Debug.LogError("RaycastPickup script not found!");
     }
@@ -58,8 +63,6 @@ public class SpellCaster : NetworkBehaviour
         }
     }
 
-    public KeyCode castKey = KeyCode.Mouse0;
-
     bool IsHoldingStaff()
     {
         if (pickupScript != null && pickupScript.heldItem != null)
@@ -69,6 +72,16 @@ public class SpellCaster : NetworkBehaviour
         }
 
         return false;
+    }
+
+    void PlayCastAnimation()
+    {
+        if (anim == null) return;
+
+        if (isServer)
+            anim.PlayAttack();
+        else
+            anim.PlayAttack_ServerRPC();
     }
 
     void LaunchProjectile_Server(GameObject prefab, float speed, Vector3 spawnPos, Vector3 direction, GameObject player)
@@ -113,6 +126,7 @@ public class SpellCaster : NetworkBehaviour
             spellProjectile.SetOwner(player);
             spellProjectile.SetTravelDirection(direction); // ADD THIS
         }
+
         Fireball fireball = projectile.GetComponent<Fireball>();
         if (fireball != null)
             fireball.Initialize(player);
@@ -139,7 +153,7 @@ public class SpellCaster : NetworkBehaviour
             case 1: prefab = blazingImpactPrefab; speed = fireballSpeed;      break;
             case 2: prefab = iceballPrefab;       speed = iceballSpeed;       break;
             case 3: prefab = emberCirclePrefab;   speed = emberCircleSpeed;   break;
-            case 4: prefab = lightningBoltPrefab; speed = lightningBoltSpeed; break;        
+            case 4: prefab = lightningBoltPrefab; speed = lightningBoltSpeed; break;
         }
 
         if (prefab == null) return;
@@ -188,7 +202,7 @@ public class SpellCaster : NetworkBehaviour
         float speed = 0f;
 
         if (wallType == 0) { prefab = fireWallPrefab; speed = fireWallSpeed; }
-        else if (wallType == 1) { prefab = iceWallPrefab;  speed = iceWallSpeed;  }
+        else if (wallType == 1) { prefab = iceWallPrefab; speed = iceWallSpeed; }
 
         if (prefab == null) return;
 
@@ -273,6 +287,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastFireball()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 0, cam.transform.forward);
@@ -280,6 +296,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastBlazingImpact()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 1, cam.transform.forward);
@@ -287,6 +305,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastIceball()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 2, cam.transform.forward);
@@ -294,6 +314,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastEmberCircle()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 3, cam.transform.forward);
@@ -301,6 +323,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastLightningStrike()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 4, cam.transform.forward);
@@ -308,11 +332,14 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastShockwave()
     {
+        PlayCastAnimation();
         CastShockwave_ServerRPC(GetComponent<NetworkIdentity>());
     }
 
     public void CastFireWall()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         CastWall_ServerRPC(GetComponent<NetworkIdentity>(), 0, cam.transform.forward);
@@ -320,6 +347,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastIceWall()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         CastWall_ServerRPC(GetComponent<NetworkIdentity>(), 1, cam.transform.forward);

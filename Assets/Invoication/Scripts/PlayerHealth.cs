@@ -43,6 +43,10 @@ public class PlayerHealth : NetworkBehaviour
         currentHealth -= dmg;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
+        var anim = GetComponent<PlayerAnimationController>();
+        if (anim != null)
+            anim.PlayHit();
+
         UpdateUI_ObserversRPC(currentHealth);
 
         if (currentHealth <= 0)
@@ -73,6 +77,10 @@ public class PlayerHealth : NetworkBehaviour
         if (isDead) return;
 
         isDead = true;
+
+        var anim = GetComponent<PlayerAnimationController>();
+        if (anim != null)
+            anim.PlayDeath();
 
         StartFlicker_ObserversRPC();
         Die_ObserversRPC();
