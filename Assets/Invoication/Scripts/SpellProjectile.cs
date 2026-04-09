@@ -76,7 +76,7 @@ public class SpellProjectile : NetworkBehaviour
         _travelDirection = dir.normalized;
         Debug.Log("Travel direction set: " + _travelDirection);
     }
-x
+
     void Start()
     {
         if (spellType == SpellType.FireWall || spellType == SpellType.IceWall)
