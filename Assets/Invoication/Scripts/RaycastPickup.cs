@@ -23,8 +23,6 @@ public class RaycastPickup : NetworkBehaviour
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
 
-        Debug.DrawRay(ray.origin, ray.direction * pickupRange, Color.green);
-
         bool didHit = false;
 
         // If no pickup layer is assigned in inspector, fall back to normal raycast
