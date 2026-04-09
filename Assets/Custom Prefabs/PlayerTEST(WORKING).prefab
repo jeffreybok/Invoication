@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: -6997898493906967065}
   - component: {fileID: 2802816692492144520}
   - component: {fileID: -5169829710014060794}
+  - component: {fileID: 8626232928920024981}
   m_Layer: 0
   m_Name: PlayerTEST(WORKING)
   m_TagString: Player
@@ -842,6 +843,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeathFlicker
   speed: 3
   flickerColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &8626232928920024981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149732754908716945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd950eca957047bf8c2724d1003a162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
 --- !u!1 &1359432926434809374
 GameObject:
   m_ObjectHideFlags: 0
