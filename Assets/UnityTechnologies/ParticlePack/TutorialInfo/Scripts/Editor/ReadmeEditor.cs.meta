@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: fcf7219bab7fe46a1ad266029b2fee19
-timeCreated: 1484669930
+guid: 476cc7d7cd9874016adc216baab94a0a
+timeCreated: 1484146680
 licenseType: Store
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
   executionOrder: 0
-  icon: {fileID: 2800000, guid: a186f8a87ca4f4d3aa864638ad5dfb65, type: 3}
+  icon: {instanceID: 0}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -15,5 +15,5 @@ AssetOrigin:
   productId: 127325
   packageName: Particle Pack
   packageVersion: 3.1
-  assetPath: Assets/Invoication/TutorialInfo/Scripts/Readme.cs
+  assetPath: Assets/UnityTechnologies/ParticlePack/TutorialInfo/Scripts/Editor/ReadmeEditor.cs
   uploadId: 691001
