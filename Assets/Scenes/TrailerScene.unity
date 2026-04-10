@@ -20818,7 +20818,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 776946301523532552, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: impactThreshold
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1992337373087132618, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: m_Name
@@ -44724,7 +44724,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 776946301523532552, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: impactThreshold
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1992337373087132618, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: m_Name
@@ -74306,7 +74306,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 776946301523532552, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: impactThreshold
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1992337373087132618, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: m_Name
@@ -75309,6 +75309,10 @@ PrefabInstance:
     - target: {fileID: 82655983661229168, guid: 8d44963b3525c45bd8fb2e834e1bcc74, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003458755882083990, guid: 8d44963b3525c45bd8fb2e834e1bcc74, type: 3}
+      propertyPath: m_Intensity
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6557542825170036457, guid: 8d44963b3525c45bd8fb2e834e1bcc74, type: 3}
       propertyPath: m_Name
@@ -92848,6 +92852,10 @@ PrefabInstance:
     - target: {fileID: 82655983661229168, guid: 8d44963b3525c45bd8fb2e834e1bcc74, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003458755882083990, guid: 8d44963b3525c45bd8fb2e834e1bcc74, type: 3}
+      propertyPath: m_Intensity
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6557542825170036457, guid: 8d44963b3525c45bd8fb2e834e1bcc74, type: 3}
       propertyPath: m_Name
@@ -179320,7 +179328,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 776946301523532552, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: impactThreshold
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1992337373087132618, guid: 052d9c46cb3dd40dc86787e1e641acd5, type: 3}
       propertyPath: m_Name
@@ -184517,7 +184525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4334774714138240446, guid: de1a0cb8d3a9840d4b23bcb32b05ff8e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4334774714138240446, guid: de1a0cb8d3a9840d4b23bcb32b05ff8e, type: 3}
       propertyPath: m_LocalPosition.z

@@ -196,3 +196,4 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   floatSpeed: 1
   fadeDuration: 2
+  enabled: 0

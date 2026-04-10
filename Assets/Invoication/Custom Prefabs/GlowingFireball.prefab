@@ -435,6 +435,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6255412606136272911, guid: 308373fbbe6104d7aa82729ae428df6c, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9151960186737590628, guid: 308373fbbe6104d7aa82729ae428df6c, type: 3}
       propertyPath: m_Name
       value: FireBall
