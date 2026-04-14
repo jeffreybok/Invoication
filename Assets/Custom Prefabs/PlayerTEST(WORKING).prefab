@@ -3162,13 +3162,13 @@ MonoBehaviour:
   shockwaveVFXPrefab: {fileID: 1419433412524400228, guid: 94e3a60dfabad3147915787b43e09075, type: 3}
   shockwaveVFXDuration: 1.5
   fireballSpawnPoint: {fileID: 0}
-  fireballSpeed: 20
+  fireballSpeed: 8
   iceballSpeed: 20
   fireWallSpeed: 12
   emberCircleSpeed: 15
   iceWallSpeed: 12
   lightningBoltSpeed: 50
-  textPopupPrefab: {fileID: 5657472185379806464, guid: 4383bae9c35fe4978a76c908c46166d0, type: 3}
+  textPopupPrefab: {fileID: 0}
   textFloatSpeed: 1
   textFadeDuration: 2
   castKey: 102
@@ -3310,7 +3310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a6cd19aecb444a68d6d3fffc3c957f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VoiceSpellCaster
-  textPopupPrefab: {fileID: 5657472185379806464, guid: 4383bae9c35fe4978a76c908c46166d0, type: 3}
+  textPopupPrefab: {fileID: 0}
   textSpawnPoint: {fileID: 0}
   textFloatSpeed: 1
   textFadeDuration: 2

@@ -7,9 +7,11 @@ public class SpellTextPopup : MonoBehaviour
     public Transform spawnPoint;
     public float floatSpeed = 1f;
     public float fadeDuration = 2f;
+    public bool enabled = true; // uncheck in Inspector to hide popups
 
     public void ShowSpellText(string spellName)
     {
+        if (!enabled) return;
         if (textPopupPrefab == null || spawnPoint == null) return;
 
         GameObject popup = Instantiate(textPopupPrefab, spawnPoint.position, Quaternion.identity);

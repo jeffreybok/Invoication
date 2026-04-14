@@ -238,7 +238,7 @@ MonoBehaviour:
   lightningImpactVFX: {fileID: 0}
   lightningChainVFX: {fileID: 0}
   impactVFX: {fileID: 4924508274929071776, guid: 0edef91621bb6b34384ccc9dbb98729c, type: 3}
-  vfxDuration: 2
+  vfxDuration: 3
 --- !u!1001 &836526636269191497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -274,6 +274,22 @@ PrefabInstance:
     - target: {fileID: 678552468505426179, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1016205607445848570, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1016205607445848570, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
+      propertyPath: lengthInSec
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324265731788817029, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324265731788817029, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
+      propertyPath: lengthInSec
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8155721079034713101, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
       propertyPath: m_Name
@@ -333,6 +349,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8376303655548753195, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
       propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9125038393663574057, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9125038393663574057, guid: 0ba885123844a42b6926233ba28b7c15, type: 3}
+      propertyPath: lengthInSec
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

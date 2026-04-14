@@ -26,7 +26,7 @@ public class Enemy : NetworkBehaviour
     public float attackRange = 2f;
 
     [Header("Freeze Settings")]
-    public Color frozenColor = Color.cyan;
+    public Color frozenColor = new Color(0.4f, 0.9f, 1f);
 
     [Header("Burn Settings")]
     public Color burningColor = new Color(1f, 0.4f, 0f);
@@ -156,6 +156,12 @@ public class Enemy : NetworkBehaviour
         if (animator == null) return;
         if (navAgent == null) return;
 
+        if (isFrozen || isRagdolled || isDead)
+        {
+            animator.SetBool("isWalking", false);
+            return;
+        }
+
         bool moving = navAgent.enabled && navAgent.velocity.magnitude > 0.1f;
         animator.SetBool("isWalking", moving);
     }
@@ -229,6 +235,11 @@ public class Enemy : NetworkBehaviour
         if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time;
+
+            // 🔥 PLAY ANIMATION
+            PlayAttackAnimation();
+
+            // damage
             playerHealth.TakeDamage(attackDamage);
         }
     }
@@ -469,6 +480,8 @@ public class Enemy : NetworkBehaviour
                 navAgent.ResetPath();
 
             navAgent.enabled = false;
+            if (animator != null)
+                animator.speed = 0f;
         }
 
         SyncState_ObserversRPC(currentHealth, isDead, isFrozen, isRagdolled, isBurning);
@@ -493,6 +506,8 @@ public class Enemy : NetworkBehaviour
         if (isDead) return;
 
         isFrozen = false;
+        if (animator != null)
+            animator.speed = 1f;
 
         if (navAgent != null && !navAgent.enabled && !isRagdolled)
             navAgent.enabled = true;
@@ -1220,5 +1235,23 @@ public class Enemy : NetworkBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawLine(transform.position + Vector3.up * 1.5f, player.position + Vector3.up);
         }
+    }
+    // =========================
+// ATTACK ANIMATION
+// =========================
+
+    void PlayAttackAnimation()
+    {
+        if (!isServer) return;
+
+        Attack_ObserversRPC();
+    }
+
+    [ObserversRpc]
+    void Attack_ObserversRPC()
+    {
+        if (animator == null) return;
+
+        animator.SetTrigger("Attack");
     }
 }
