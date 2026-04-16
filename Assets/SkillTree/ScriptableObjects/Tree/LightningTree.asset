@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c2d0b3671f24669ba80023071078d3, type: 3}
+  m_Name: LightningTree
+  m_EditorClassIdentifier: Assembly-CSharp::SkillTreeData
+  elementName: Lightning
+  elementIcon: {fileID: 21300000, guid: 8379101a0e2bf4416a23e4c0439df9d3, type: 3}
+  leftArrowIcon: {fileID: 21300000, guid: fe0b19227f3814236b593d5dfdf70e80, type: 3}
+  rightArrowIcon: {fileID: 21300000, guid: b4542bd70be0b49e9840bab456dd1078, type: 3}
+  tankTree:
+    className: Tank
+    classIcon: {fileID: 21300000, guid: acb597c2b04a742748a107828c8ab01f, type: 3}
+    nodes:
+    - {fileID: 11400000, guid: 4af11725c1c5243f0912e1298010a176, type: 2}
+  damageTree:
+    className: Attack
+    classIcon: {fileID: 21300000, guid: af3edb263387344c5a310099ad122a2c, type: 3}
+    nodes:
+    - {fileID: 11400000, guid: 4e68267990b4c40f3acc621351887aee, type: 2}
+  supportTree:
+    className: Support
+    classIcon: {fileID: 21300000, guid: 359b4b890cc6444d2b90df29296580c3, type: 3}
+    nodes: []
