@@ -2295,8 +2295,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4115523241777967279}
-  - {fileID: 4839050485609911568}
   - {fileID: 8295660128681031990}
+  - {fileID: 4839050485609911568}
   m_Father: {fileID: 5126604632275189686}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -5059,6 +5059,14 @@ PrefabInstance:
       propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: allTrees.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: 'allTrees.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 534a28da9669f476ab4999180aad4b19, type: 2}
     - target: {fileID: 3223047655503226499, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
       propertyPath: m_RaycastTarget
       value: 0
