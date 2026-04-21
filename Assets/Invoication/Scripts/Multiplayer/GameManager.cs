@@ -60,15 +60,10 @@ public class GameManager : NetworkBehaviour
             yield return new WaitForSeconds(1f);
             timer--;
         }
+        StopAllCoroutines();
 
-        // 🔥 FIX: send clients FIRST
+        // ✅ ONLY THIS
         RPC_LoadLobby();
-
-        // small delay so RPC actually sends
-        yield return new WaitForSeconds(0.5f);
-
-        // then server loads
-        SceneManager.LoadScene("NoahStartScreen");
     }
 
     [ObserversRpc]
@@ -147,13 +142,14 @@ public class GameManager : NetworkBehaviour
             yield return new WaitForSeconds(1f);
             time--;
         }
+        StopAllCoroutines();
 
         // 🔥 FIX: same as game over
         RPC_LoadLobby();
 
         yield return new WaitForSeconds(0.5f);
 
-        SceneManager.LoadScene("NoahStartScreen");
+        SceneManager.LoadScene("StartScreenScene");
     }
 
     [ObserversRpc]
@@ -170,6 +166,6 @@ public class GameManager : NetworkBehaviour
     [ObserversRpc]
     void RPC_LoadLobby()
     {
-        SceneManager.LoadScene("NoahStartScreen");
+        SceneManager.LoadScene("StartScreenScene");
     }
 }
