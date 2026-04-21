@@ -663,7 +663,7 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   _syncPosition: 1
-  _syncRotation: 0
+  _syncRotation: 1
   _syncScale: 1
   _syncParent: 1
   _interpolateSettings: 3
