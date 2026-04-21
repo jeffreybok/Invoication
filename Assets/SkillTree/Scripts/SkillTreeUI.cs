@@ -33,6 +33,12 @@ public class SkillTreeUI : MonoBehaviour
     private Dictionary<string, RectTransform> nodeRectMap = new Dictionary<string, RectTransform>();
     
     [SerializeField] private NodeConnector nodeConnector;
+    
+    void Start()
+    {
+        if (nodeConnector == null)
+            nodeConnector = GetComponentInParent<NodeConnector>();
+    }
 
     public void LoadTree(SkillTreeData tree)
     {

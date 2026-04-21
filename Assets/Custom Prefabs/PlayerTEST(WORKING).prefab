@@ -5043,6 +5043,10 @@ PrefabInstance:
       propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 694910837429877652, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: nodeConnector
+      value: 
+      objectReference: {fileID: 8986785388598081335}
     - target: {fileID: 851083322447476936, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -5121,7 +5125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3976834539419048579, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4178290330269322548, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
       propertyPath: m_IsActive
@@ -5284,6 +5288,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8986785388598081335 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4471306347179382052, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+  m_PrefabInstance: {fileID: 4808222470473294355}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e403ee45124fa4cad9bf3f5829a1e98a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NodeConnector
 --- !u!1 &9145641035649596428 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4346506681635413535, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
