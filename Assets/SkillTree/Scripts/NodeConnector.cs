@@ -4,8 +4,6 @@ using System.Collections;
 
 public class NodeConnector : MonoBehaviour
 {
-    public static NodeConnector Instance;
-
     [Header("Style")]
     public Color lockedLineColor = new Color(0.3f, 0.3f, 0.3f, 1f);
     public Color unlockedLineColor = Color.white;
@@ -13,8 +11,6 @@ public class NodeConnector : MonoBehaviour
 
     [Header("Animation")]
     public float fillDuration = 0.5f;
-
-    void Awake() { Instance = this; }
 
     public void DrawLine(RectTransform from, RectTransform to, Transform lineContainer, bool isUnlocked)
     {
@@ -25,11 +21,9 @@ public class NodeConnector : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Vector2 centerPos = fromPos + direction * 0.5f;
 
-        // Bottom layer - always grey, full width, centered
         CreateLineImage("Line_Locked", lineContainer, lockedLineColor,
             distance, lineThickness, centerPos, angle, false);
 
-        // Top layer - white, starts at fromPos, zero width if locked
         CreateLineImage("Line_Unlocked", lineContainer, unlockedLineColor,
             isUnlocked ? distance : 0f, lineThickness,
             isUnlocked ? centerPos : fromPos,

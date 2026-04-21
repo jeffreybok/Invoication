@@ -31,6 +31,8 @@ public class SkillTreeUI : MonoBehaviour
     private SkillTreeData currentTree;
     private List<SkillNodeUI> spawnedNodes = new List<SkillNodeUI>();
     private Dictionary<string, RectTransform> nodeRectMap = new Dictionary<string, RectTransform>();
+    
+    [SerializeField] private NodeConnector nodeConnector;
 
     public void LoadTree(SkillTreeData tree)
     {
@@ -127,7 +129,7 @@ public class SkillTreeUI : MonoBehaviour
                 SkillNode prereqNode = classTree.nodes.Find(n => n.nodeID == prereqID);
                 bool prereqUnlocked = prereqNode != null && prereqNode.isUnlocked;
 
-                NodeConnector.Instance.DrawLine(
+                nodeConnector.DrawLine(
                     nodeRectMap[prereqID],
                     nodeRectMap[node.nodeID],
                     lineContainer,
@@ -169,7 +171,7 @@ public class SkillTreeUI : MonoBehaviour
 
             if (nodeRectMap.ContainsKey(unlockedNode.nodeID) && nodeRectMap.ContainsKey(node.nodeID))
             {
-                NodeConnector.Instance.AnimateLine(
+                nodeConnector.AnimateLine(
                     nodeRectMap[unlockedNode.nodeID],
                     nodeRectMap[node.nodeID],
                     lineContainer
@@ -190,7 +192,7 @@ public class SkillTreeUI : MonoBehaviour
     private System.Collections.IEnumerator DelayedLineRedraw()
     {
         // Wait for any running wipe animations to finish
-        yield return new WaitForSecondsRealtime(NodeConnector.Instance.fillDuration + 0.1f);
+        yield return new WaitForSecondsRealtime(nodeConnector.fillDuration + 0.1f);
 
         if (currentTree == null) yield break;
         DrawTreeLines(currentTree.tankTree, tankLineContainer);
