@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class EnemyHealthUI : MonoBehaviour
 {
     public TextMeshProUGUI nameText;
-    public TextMeshProUGUI healthText;
+    // public TextMeshProUGUI healthText;
+    public Slider healthSlider;
+    public Image fillImage;
     public string enemyName = "Legendary";
     
     private Enemy enemy;
@@ -58,9 +61,26 @@ public class EnemyHealthUI : MonoBehaviour
         }
         
         // Update health display
-        if (enemy != null && healthText != null)
+        if (enemy != null /* && healthText != null */)
         {
-            healthText.text = Mathf.CeilToInt(enemy.currentHealth) + " / " + (int)enemy.maxHealth;
+            // healthText.text = Mathf.CeilToInt(enemy.currentHealth) + " / " + (int)enemy.maxHealth;
+            
+            float healthPercent = enemy.GetHealthPercent();
+            healthSlider.value = healthPercent;
+            
+            // Color change
+            if (fillImage != null)
+            {
+                if (healthPercent > 0.6f)
+                    fillImage.color = Color.green;
+                else if (healthPercent > 0.3f)
+                    fillImage.color = Color.yellow;
+                else
+                    fillImage.color = Color.red;
+            }
+            
+            if (healthPercent <= 0)
+                fillImage.gameObject.SetActive(false);
         }
     }
 }
