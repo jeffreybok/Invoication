@@ -22,6 +22,12 @@ public class GameManager : NetworkBehaviour
     // =========================
     // CHECK ALL DEAD
     // =========================
+    
+    void Awake()
+    {
+        Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        QualitySettings.vSyncCount = 0;
+    }
 
     public void CheckAllPlayersDead()
     {
