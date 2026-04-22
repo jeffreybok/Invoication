@@ -48,9 +48,15 @@ public class Fireball : NetworkBehaviour
         if (!isServer || hasExploded) return;
         hasExploded = true;
 
-        PlayExplosion_ObserversRPC(transform.position);
+        Vector3 pos = transform.position;
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
+        // 🔊 PLAY EXPLOSION SOUND (SERVER ONLY → NO DUPES)
+        SoundManager.Instance.PlayExplosion(pos);
+
+        // VFX (networked)
+        PlayExplosion_ObserversRPC(pos);
+
+        Collider[] hitColliders = Physics.OverlapSphere(pos, explosionRadius);
 
         foreach (Collider hit in hitColliders)
         {
@@ -65,7 +71,7 @@ public class Fireball : NetworkBehaviour
 
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
-                ApplyForce_ObserversRPC(rb.gameObject, transform.position, explosionRadius);
+                ApplyForce_ObserversRPC(rb.gameObject, pos, explosionRadius);
         }
 
         Destroy(gameObject);

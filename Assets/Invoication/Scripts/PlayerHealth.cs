@@ -35,7 +35,7 @@ public class PlayerHealth : NetworkBehaviour
     // =========================
     // DAMAGE (SERVER ONLY)
     // =========================
-// ADD THIS INSIDE TakeDamage()
+
 
     public void TakeDamage(float dmg)
     {

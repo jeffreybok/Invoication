@@ -688,6 +688,9 @@ public class Enemy : NetworkBehaviour
         if (isDead) return;
 
         isDead = true;
+        
+        SoundManager.Instance.PlayGoblinDeath(transform.position);
+        
         isRagdolled = true;
         isFrozen = false;
         isBurning = false;
