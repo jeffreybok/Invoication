@@ -35,6 +35,8 @@ public class PlayerHealth : NetworkBehaviour
     // =========================
     // DAMAGE (SERVER ONLY)
     // =========================
+// ADD THIS INSIDE TakeDamage()
+
     public void TakeDamage(float dmg)
     {
         if (!isServer) return;
@@ -42,6 +44,9 @@ public class PlayerHealth : NetworkBehaviour
 
         currentHealth -= dmg;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        // 🔊 PLAY DAMAGE SOUND (SERVER ONLY → NO DUPES)
+        SoundManager.Instance.PlayDamage(transform.position);
 
         var anim = GetComponent<PlayerAnimationController>();
         if (anim != null)
