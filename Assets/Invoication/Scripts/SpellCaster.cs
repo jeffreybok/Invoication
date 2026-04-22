@@ -126,6 +126,7 @@ public class SpellCaster : NetworkBehaviour
             spellProjectile.SetOwner(player);
             spellProjectile.SetTravelDirection(direction); // ADD THIS
         }
+        
 
         Fireball fireball = projectile.GetComponent<Fireball>();
         if (fireball != null)
