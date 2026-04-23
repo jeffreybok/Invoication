@@ -171,12 +171,20 @@ public class SpellProjectile : NetworkBehaviour
 
         foreach (Collider hit in hitColliders)
         {
+            // Never hit the shooter
             if (shooter != null && hit.transform.root.gameObject == shooter) continue;
 
+            // Hit enemies
             Enemy enemy = hit.GetComponent<Enemy>();
             if (enemy != null)
                 ApplyEffect(enemy);
 
+            // Friendly fire: hit other players (Iceball also freezes + colors them)
+            PlayerHealth playerHealth = hit.GetComponentInParent<PlayerHealth>();
+            if (playerHealth != null && spellType != SpellType.LightningStrike)
+                ApplyEffectToPlayer(playerHealth);
+
+            // Physics force
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
                 ApplyForce_ObserversRPC(rb.gameObject, point);
@@ -191,6 +199,7 @@ public class SpellProjectile : NetworkBehaviour
     }
 
     // ─── Lightning Strike ─────────────────────────────────────────────────────
+    // Lightning does NOT apply friendly fire
 
     void HandleLightningStrike(Collision collision, Vector3 point)
     {
@@ -260,6 +269,43 @@ public class SpellProjectile : NetworkBehaviour
                 enemy.Freeze(freezeDuration, shooter);
                 break;
         }
+    }
+
+    // Applies spell effects to a player (friendly fire)
+    // Iceball also freezes the player and turns them bright blue
+    void ApplyEffectToPlayer(PlayerHealth playerHealth)
+    {
+        NetworkIdentity netId = playerHealth.GetComponent<NetworkIdentity>();
+        if (netId == null) return;
+
+        DamagePlayer_ServerRPC(netId, directDamage);
+
+        if (spellType == SpellType.Iceball)
+            FreezePlayer_ServerRPC(netId, freezeDuration);
+    }
+
+    // ─── Player Damage / Freeze RPCs ──────────────────────────────────────────
+
+    [ServerRpc(requireOwnership: false)]
+    void DamagePlayer_ServerRPC(NetworkIdentity targetIdentity, float damage)
+    {
+        if (!isServer) return;
+        if (targetIdentity == null) return;
+
+        PlayerHealth playerHealth = targetIdentity.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.TakeDamage(damage);
+    }
+
+    [ServerRpc(requireOwnership: false)]
+    void FreezePlayer_ServerRPC(NetworkIdentity targetIdentity, float duration)
+    {
+        if (!isServer) return;
+        if (targetIdentity == null) return;
+
+        PlayerHealth playerHealth = targetIdentity.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.Freeze(duration);
     }
 
     // ─── FireWall / IceWall ───────────────────────────────────────────────────

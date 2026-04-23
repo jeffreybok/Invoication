@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using PurrNet;
+using System.Collections;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -16,6 +17,15 @@ public class PlayerHealth : NetworkBehaviour
     public Image healthFill;
     public GameObject youDiedUI;
 
+    [Header("Freeze Settings")]
+    public Color frozenColor = new Color(0.4f, 0.9f, 1f); // Matches goblin frozen color
+
+    public bool isFrozen = false;
+
+    private Renderer[] renderers;
+    private Color[][] originalColors;
+    private Coroutine freezeRoutine;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -29,23 +39,41 @@ public class PlayerHealth : NetworkBehaviour
         if (youDiedUI != null)
             youDiedUI.SetActive(false);
 
+        CacheRenderersAndColors();
         UpdateUI();
+    }
+
+    // =========================
+    // RENDERER CACHE
+    // =========================
+
+    void CacheRenderersAndColors()
+    {
+        renderers = GetComponentsInChildren<Renderer>();
+        originalColors = new Color[renderers.Length][];
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            originalColors[i] = new Color[renderers[i].materials.Length];
+
+            for (int j = 0; j < renderers[i].materials.Length; j++)
+                originalColors[i][j] = renderers[i].materials[j].color;
+        }
     }
 
     // =========================
     // DAMAGE (SERVER ONLY)
     // =========================
 
-
     public void TakeDamage(float dmg)
     {
         if (!isServer) return;
         if (isDead) return;
+        if (isFrozen) return; // frozen players can't take damage (optional — remove if you want them to)
 
         currentHealth -= dmg;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        // 🔊 PLAY DAMAGE SOUND (SERVER ONLY → NO DUPES)
         SoundManager.Instance.PlayDamage(transform.position);
 
         var anim = GetComponent<PlayerAnimationController>();
@@ -55,14 +83,13 @@ public class PlayerHealth : NetworkBehaviour
         UpdateUI_ObserversRPC(currentHealth);
 
         if (currentHealth <= 0)
-        {
             Die_Server();
-        }
     }
 
     // =========================
     // HEAL (SERVER ONLY)
     // =========================
+
     public void Heal(float amount)
     {
         if (!isServer) return;
@@ -75,13 +102,93 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
+    // FREEZE
+    // =========================
+
+    public void Freeze(float duration)
+    {
+        if (isServer)
+            FreezeInternal(duration);
+        else
+            Freeze_ServerRPC(duration);
+    }
+
+    [ServerRpc(requireOwnership: false)]
+    void Freeze_ServerRPC(float duration)
+    {
+        FreezeInternal(duration);
+    }
+
+    void FreezeInternal(float duration)
+    {
+        if (!isServer) return;
+        if (isDead) return;
+        if (duration <= 0f) return;
+
+        isFrozen = true;
+
+        // Stop player movement
+        var controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.enabled = false;
+
+        // Pause animation
+        var anim = GetComponent<Animator>();
+        if (anim != null)
+            anim.speed = 0f;
+
+        RefreshVisuals_ObserversRPC(true);
+
+        if (freezeRoutine != null)
+            StopCoroutine(freezeRoutine);
+
+        freezeRoutine = StartCoroutine(FreezeDurationCoroutine(duration));
+    }
+
+    IEnumerator FreezeDurationCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        UnfreezeInternal();
+        freezeRoutine = null;
+    }
+
+    void UnfreezeInternal()
+    {
+        if (!isServer) return;
+        if (isDead) return;
+
+        isFrozen = false;
+
+        var controller = GetComponent<PlayerController>();
+        if (controller != null)
+            controller.enabled = true;
+
+        var anim = GetComponent<Animator>();
+        if (anim != null)
+            anim.speed = 1f;
+
+        RefreshVisuals_ObserversRPC(false);
+    }
+
+    // =========================
     // DEATH (SERVER)
     // =========================
+
     void Die_Server()
     {
         if (isDead) return;
 
         isDead = true;
+
+        // Cancel freeze on death
+        if (freezeRoutine != null)
+        {
+            StopCoroutine(freezeRoutine);
+            freezeRoutine = null;
+        }
+
+        isFrozen = false;
+        RefreshVisuals_ObserversRPC(false);
 
         var anim = GetComponent<PlayerAnimationController>();
         if (anim != null)
@@ -96,8 +203,62 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     // =========================
+    // VISUALS (ALL CLIENTS)
+    // =========================
+
+    [ObserversRpc]
+    void RefreshVisuals_ObserversRPC(bool frozen)
+    {
+        ApplyVisualStateLocal(frozen);
+    }
+
+    void ApplyVisualStateLocal(bool frozen)
+    {
+        if (renderers == null || renderers.Length == 0)
+            CacheRenderersAndColors();
+
+        RestoreOriginalColors();
+
+        if (frozen)
+            ApplyColorToAllRenderers(frozenColor);
+    }
+
+    void ApplyColorToAllRenderers(Color color)
+    {
+        if (renderers == null) return;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] == null) continue;
+
+            Material[] mats = renderers[i].materials;
+            for (int j = 0; j < mats.Length; j++)
+                mats[j].color = color;
+        }
+    }
+
+    void RestoreOriginalColors()
+    {
+        if (renderers == null || originalColors == null) return;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] == null) continue;
+            if (i >= originalColors.Length) continue;
+
+            Material[] mats = renderers[i].materials;
+            for (int j = 0; j < mats.Length; j++)
+            {
+                if (j >= originalColors[i].Length) continue;
+                mats[j].color = originalColors[i][j];
+            }
+        }
+    }
+
+    // =========================
     // FLICKER (ALL CLIENTS)
     // =========================
+
     [ObserversRpc]
     void StartFlicker_ObserversRPC()
     {
@@ -109,6 +270,7 @@ public class PlayerHealth : NetworkBehaviour
     // =========================
     // CLIENT DEATH (OWNER ONLY)
     // =========================
+
     [ObserversRpc]
     void Die_ObserversRPC()
     {
@@ -127,6 +289,7 @@ public class PlayerHealth : NetworkBehaviour
     // =========================
     // UI SYNC (ALL CLIENTS)
     // =========================
+
     [ObserversRpc]
     void UpdateUI_ObserversRPC(float newHealth)
     {

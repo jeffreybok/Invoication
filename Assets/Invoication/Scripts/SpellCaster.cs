@@ -51,6 +51,7 @@ public class SpellCaster : NetworkBehaviour
     {
         if (!isOwner) return;
 
+        // Original staff cast
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
         {
             if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
@@ -61,6 +62,16 @@ public class SpellCaster : NetworkBehaviour
 
             CastIceball();
         }
+
+        // Presentation / demo keybinds (no staff required)
+        if (Input.GetKeyDown(KeyCode.Alpha1)) CastFireball();
+        if (Input.GetKeyDown(KeyCode.Alpha2)) CastBlazingImpact();
+        if (Input.GetKeyDown(KeyCode.Alpha3)) CastEmberCircle();
+        if (Input.GetKeyDown(KeyCode.Alpha4)) CastFireWall();
+        if (Input.GetKeyDown(KeyCode.Alpha5)) CastIceball();
+        if (Input.GetKeyDown(KeyCode.Alpha6)) CastIceWall();
+        if (Input.GetKeyDown(KeyCode.Alpha7)) CastLightningStrike();
+        if (Input.GetKeyDown(KeyCode.Alpha8)) CastShockwave();
     }
 
     bool IsHoldingStaff()
@@ -96,7 +107,7 @@ public class SpellCaster : NetworkBehaviour
         if (spCheck != null && spCheck.spellType == SpellProjectile.SpellType.LightningStrike)
         {
             spawnRotation *= Quaternion.Euler(0f, -90f, 0f);
-            spawnPos += Vector3.down * 1.5f; // tweak to taste
+            spawnPos += Vector3.down * 1.5f;
         }
 
         GameObject projectile = Instantiate(prefab, spawnPos, spawnRotation);
@@ -124,9 +135,8 @@ public class SpellCaster : NetworkBehaviour
         if (spellProjectile != null)
         {
             spellProjectile.SetOwner(player);
-            spellProjectile.SetTravelDirection(direction); // ADD THIS
+            spellProjectile.SetTravelDirection(direction);
         }
-        
 
         Fireball fireball = projectile.GetComponent<Fireball>();
         if (fireball != null)
@@ -156,7 +166,6 @@ public class SpellCaster : NetworkBehaviour
             case 3: prefab = emberCirclePrefab;   speed = emberCircleSpeed;   break;
             case 4: prefab = lightningBoltPrefab; speed = lightningBoltSpeed; break;
         }
-        
 
         if (prefab == null) return;
 
@@ -167,7 +176,6 @@ public class SpellCaster : NetworkBehaviour
         if (caster == null || cam == null) return;
 
         Transform spawnPoint = caster.fireballSpawnPoint;
-        
 
         Vector3 forward = clientForward.normalized;
         if (forward == Vector3.zero)
@@ -189,13 +197,11 @@ public class SpellCaster : NetworkBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
         LaunchProjectile_Server(prefab, speed, spawnPos, shootDirection, player);
-        
-        // 🔊 SPELL CAST SOUND (SERVER ONLY)
+
+        // Spell cast sounds
         if (spellType == 0) SoundManager.Instance.PlayFireball(player.transform.position);
         if (spellType == 2) SoundManager.Instance.PlayIceball(player.transform.position);
         if (spellType == 4) SoundManager.Instance.PlayShockwave(player.transform.position);
-        
-        
     }
 
     [ServerRpc]
@@ -215,8 +221,6 @@ public class SpellCaster : NetworkBehaviour
         else if (wallType == 1) { prefab = iceWallPrefab; speed = iceWallSpeed; }
 
         if (prefab == null) return;
-        
-        
 
         Vector3 forward = clientForward.normalized;
         if (forward == Vector3.zero)
@@ -241,8 +245,8 @@ public class SpellCaster : NetworkBehaviour
         Quaternion spawnRotation = Quaternion.LookRotation(shootDirection) * Quaternion.Euler(0f, 0f, -90f);
 
         GameObject wall = Instantiate(prefab, spawnPos, spawnRotation);
-        
-        // 🔊 WALL SOUND
+
+        // Wall sounds
         if (wallType == 0) SoundManager.Instance.PlayFirewall(spawnPos);
         if (wallType == 1) SoundManager.Instance.PlayIceball(spawnPos);
 
@@ -262,22 +266,18 @@ public class SpellCaster : NetworkBehaviour
         Destroy(wall, 5f);
     }
 
-    // Server does the damage + VFX broadcast for shockwave
     [ServerRpc]
     void CastShockwave_ServerRPC(NetworkIdentity playerIdentity)
     {
         if (!isServer) return;
         if (playerIdentity == null) return;
-        
-        
 
         GameObject player = playerIdentity.gameObject;
         SpellCaster caster = player.GetComponent<SpellCaster>();
         if (caster == null) return;
 
-        Vector3 origin = player.transform.position + Vector3.down * 1f; // tweak to taste
+        Vector3 origin = player.transform.position + Vector3.down * 1f;
 
-        // Damage all enemies in radius
         Collider[] hits = Physics.OverlapSphere(origin, caster.shockwaveRadius);
         foreach (Collider col in hits)
         {
@@ -288,9 +288,7 @@ public class SpellCaster : NetworkBehaviour
                 enemy.TakeDamage(caster.shockwaveDamage, player);
         }
 
-        // 🔊 SHOCKWAVE SOUND (ONCE ONLY)
         SoundManager.Instance.PlayShockwave(origin);
-        // All clients play the VFX at caster's position
         PlayShockwaveVFX_ObserversRPC(origin);
     }
 
@@ -303,7 +301,7 @@ public class SpellCaster : NetworkBehaviour
         Destroy(vfx, shockwaveVFXDuration);
     }
 
-    // Public cast methods called by VoiceSpellCaster
+    // Public cast methods called by VoiceSpellCaster and keybinds
 
     public void CastFireball()
     {
