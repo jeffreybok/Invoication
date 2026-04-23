@@ -42770,7 +42770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8052800360771919329, guid: 0ee22e3bc954e49429ccad663624f478, type: 3}
       propertyPath: _address
-      value: 192.168.1.74
+      value: localhost
       objectReference: {fileID: 0}
     - target: {fileID: 8806641812479853397, guid: 0ee22e3bc954e49429ccad663624f478, type: 3}
       propertyPath: m_LocalPosition.x
@@ -66264,6 +66264,9 @@ MonoBehaviour:
   takeDamage: {fileID: 8300000, guid: 5a54bdfcbca34420fa2d60c1cdc834dc, type: 3}
   iceball: {fileID: 8300000, guid: d428b74a1469b487a8546ba5c0efdbe2, type: 3}
   firewall: {fileID: 8300000, guid: 43d771ec04905491d9a800eec427ad50, type: 3}
+  book: {fileID: 8300000, guid: b6917b9382bed47fb9001c7c5133cc49, type: 3}
+  select: {fileID: 8300000, guid: ca92ee5d1a87e4c12a47b7d11bed7905, type: 3}
+  purchase: {fileID: 8300000, guid: 4b3544bd4a5224c89b27d3254e936e18, type: 3}
   minDistance: 5
   maxDistance: 30
   volume: 1
@@ -170054,6 +170057,10 @@ PrefabInstance:
     - target: {fileID: 7806553131343635501, guid: 48e9849b2002648f5a0ad1b20e234fa0, type: 3}
       propertyPath: m_Name
       value: ========Dev Tool========
+      objectReference: {fileID: 0}
+    - target: {fileID: 7806553131343635501, guid: 48e9849b2002648f5a0ad1b20e234fa0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
