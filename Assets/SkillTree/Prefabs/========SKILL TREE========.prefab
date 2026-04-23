@@ -1624,7 +1624,7 @@ MonoBehaviour:
   m_text: Want to unlock?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 7aa7211ecb0894cb8bd7bd4470507947, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2312,6 +2312,7 @@ MonoBehaviour:
   tier3Y: -85
   tier2X: -95
   tier3X: 95
+  nodeConnector: {fileID: 0}
 --- !u!1 &8007657823012797304
 GameObject:
   m_ObjectHideFlags: 0
