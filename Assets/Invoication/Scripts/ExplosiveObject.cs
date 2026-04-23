@@ -100,6 +100,11 @@ public class ExplosiveObject : NetworkBehaviour
                 enemy.HitByExplosion();
             }
 
+            // Damage players in explosion radius (excludes attacker)
+            PlayerHealth playerHealth = hit.GetComponentInParent<PlayerHealth>();
+            if (playerHealth != null && playerHealth.gameObject != attacker)
+                playerHealth.TakeDamage(explosionDamage);
+
             ExplosiveObject other = hit.GetComponent<ExplosiveObject>();
             if (other != null && other != this && !other.hasExploded)
                 other.TriggerExplosion(attacker);
