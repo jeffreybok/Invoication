@@ -14,11 +14,18 @@ public class SoundManager : NetworkBehaviour
     public AudioClip takeDamage;
     public AudioClip iceball;
     public AudioClip firewall;
+    public AudioClip iceWall;
+
+    [Header("Healing")]
+    public AudioClip healLoop;
 
     [Header("UI Audio Clips (LOCAL ONLY)")]
     public AudioClip book;
     public AudioClip select;
     public AudioClip purchase;
+
+    [Header("Background Music")]
+    public AudioClip backgroundMusic;
 
     [Header("3D Sound Settings")]
     public float minDistance = 5f;
@@ -26,25 +33,45 @@ public class SoundManager : NetworkBehaviour
     public float volume = 1f;
 
     private AudioSource uiSource;
+    private AudioSource musicSource;
 
-    // 🔥 GLOBAL BLOCK
     private bool isShuttingDown = false;
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
 
+        // ===============================
+        // UI SOUND (2D)
+        // ===============================
         uiSource = gameObject.AddComponent<AudioSource>();
         uiSource.spatialBlend = 0f;
         uiSource.playOnAwake = false;
         uiSource.volume = 1f;
+
+        // ===============================
+        // BACKGROUND MUSIC
+        // ===============================
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.clip = backgroundMusic;
+        musicSource.loop = true;
+        musicSource.volume = 0.2f;
+        musicSource.spatialBlend = 0f;
+
+        if (backgroundMusic != null)
+            musicSource.Play();
     }
 
     void OnDestroy()
     {
         isShuttingDown = true;
 
-        // 🔥 HARD CLEANUP (no delayed destroy allowed)
         AudioSource[] sources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (var s in sources)
         {
@@ -101,6 +128,12 @@ public class SoundManager : NetworkBehaviour
         PlaySound_ObserversRPC(pos, "firewall");
     }
 
+    public void PlayIceWall(Vector3 pos)
+    {
+        if (!isServer) return;
+        PlaySound_ObserversRPC(pos, "iceWall");
+    }
+
     // ===============================
     // UI (LOCAL ONLY)
     // ===============================
@@ -124,11 +157,9 @@ public class SoundManager : NetworkBehaviour
     [ObserversRpc]
     void PlaySound_ObserversRPC(Vector3 pos, string soundName)
     {
-        // 🔥 ABSOLUTE BLOCK CONDITIONS
         if (!Application.isPlaying) return;
         if (!enabled) return;
         if (isShuttingDown) return;
-        if (!gameObject.scene.isLoaded) return;
 
         AudioClip clip = GetClip(soundName);
         if (clip == null) return;
@@ -145,7 +176,6 @@ public class SoundManager : NetworkBehaviour
 
         source.Play();
 
-        // 🔥 SAFE DESTROY (NO UNITY TIMING ISSUES)
         StartCoroutine(DestroyAfterTime(temp, clip.length));
     }
 
@@ -153,7 +183,6 @@ public class SoundManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(time);
 
-        // 🔥 BLOCK DESTROY DURING SHUTDOWN
         if (obj == null) yield break;
         if (!Application.isPlaying) yield break;
         if (isShuttingDown) yield break;
@@ -176,6 +205,7 @@ public class SoundManager : NetworkBehaviour
             case "damage": return takeDamage;
             case "iceball": return iceball;
             case "firewall": return firewall;
+            case "iceWall": return iceWall;
         }
         return null;
     }

@@ -50,10 +50,8 @@ public class Fireball : NetworkBehaviour
 
         Vector3 pos = transform.position;
 
-        // 🔊 PLAY EXPLOSION SOUND (SERVER ONLY → NO DUPES)
-        SoundManager.Instance.PlayExplosion(pos);
 
-        // VFX (networked)
+        // ✅ SAME PATTERN AS BOX (VFX via RPC)
         PlayExplosion_ObserversRPC(pos);
 
         Collider[] hitColliders = Physics.OverlapSphere(pos, explosionRadius);
@@ -80,14 +78,17 @@ public class Fireball : NetworkBehaviour
     [ObserversRpc]
     void PlayExplosion_ObserversRPC(Vector3 pos)
     {
+        // ❌ REMOVED custom audio (THIS WAS YOUR BUG)
+
+        // ✅ ONLY VFX (like box)
         if (explosionEffect != null)
         {
             GameObject explosion = Instantiate(explosionEffect, pos, Quaternion.identity);
             ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
             Destroy(explosion, ps != null ? ps.main.duration : 2f);
         }
-        
-        // Camera Shake
+
+        // camera shake still fine
         CameraShake.Instance?.ShakeFromPosition(pos, 20f);
     }
 
@@ -95,6 +96,7 @@ public class Fireball : NetworkBehaviour
     void ApplyForce_ObserversRPC(GameObject target, Vector3 origin, float radius)
     {
         if (target == null) return;
+
         Rigidbody rb = target.GetComponent<Rigidbody>();
         if (rb != null && !rb.isKinematic)
             rb.AddExplosionForce(200f, origin, radius, 0.5f, ForceMode.Impulse);

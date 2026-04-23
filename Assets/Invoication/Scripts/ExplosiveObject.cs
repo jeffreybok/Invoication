@@ -89,6 +89,8 @@ public class ExplosiveObject : NetworkBehaviour
 
         hasExploded = true;
         attacker = attackerObj;
+        
+        SoundManager.Instance.PlayExplosion(transform.position);
 
 #if UNITY_EDITOR
         SpawnExplosionVFX(transform.position);
