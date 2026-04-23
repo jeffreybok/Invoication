@@ -17,10 +17,17 @@ public class ExplosiveObject : NetworkBehaviour
 
     private bool hasExploded = false;
     private GameObject attacker;
+    private float spawnTime;
+
+    void Start()
+    {
+        spawnTime = Time.time;
+    }
 
     void OnCollisionEnter(Collision collision)
     {
         if (hasExploded) return;
+        if (Time.time - spawnTime < 0.5f) return; // ignore collisions on spawn
 
         bool shouldExplode = false;
         GameObject detectedAttacker = null;
