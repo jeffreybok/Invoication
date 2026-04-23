@@ -3,6 +3,7 @@ using UnityEngine;
 public class CameraFallOnDeath : MonoBehaviour
 {
     private Rigidbody rb;
+    private bool isFalling = false;
 
     void Awake()
     {
@@ -19,17 +20,36 @@ public class CameraFallOnDeath : MonoBehaviour
     {
         if (rb == null) return;
 
+        isFalling = true;
+
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        // 🔥 prevents crazy collision spam
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        // 🔥 NO COLLISIONS EVER
+        rb.detectCollisions = false;
+
+        // 🔥 PREVENT WEIRD PHYSICS SPIKES
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 
-    // 🔥 called before scene change
+    // 🔥 CRITICAL: kill physics EARLY
+    void LateUpdate()
+    {
+        if (!isFalling) return;
+
+        // if game is about to unload, stop everything instantly
+        if (!gameObject.scene.isLoaded)
+        {
+            DisableFall();
+        }
+    }
+
     public void DisableFall()
     {
         if (rb == null) return;
+
+        isFalling = false;
 
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;

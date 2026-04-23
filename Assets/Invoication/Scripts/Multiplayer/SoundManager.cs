@@ -1,5 +1,6 @@
 using UnityEngine;
 using PurrNet;
+using System.Collections;
 
 public class SoundManager : NetworkBehaviour
 {
@@ -26,24 +27,32 @@ public class SoundManager : NetworkBehaviour
 
     private AudioSource uiSource;
 
-    // 🔥 NEW: prevents spawning during scene unload
+    // 🔥 GLOBAL BLOCK
     private bool isShuttingDown = false;
 
     void Awake()
     {
         Instance = this;
 
-        // local UI audio source (2D)
         uiSource = gameObject.AddComponent<AudioSource>();
         uiSource.spatialBlend = 0f;
         uiSource.playOnAwake = false;
         uiSource.volume = 1f;
     }
 
-    // 🔥 NEW: detect when object is being destroyed (scene change)
     void OnDestroy()
     {
         isShuttingDown = true;
+
+        // 🔥 HARD CLEANUP (no delayed destroy allowed)
+        AudioSource[] sources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        foreach (var s in sources)
+        {
+            if (s != null && s.gameObject.name.StartsWith("Sound_"))
+            {
+                DestroyImmediate(s.gameObject);
+            }
+        }
     }
 
     // ===============================
@@ -93,23 +102,12 @@ public class SoundManager : NetworkBehaviour
     }
 
     // ===============================
-    // UI (LOCAL ONLY - NO RPC)
+    // UI (LOCAL ONLY)
     // ===============================
 
-    public void PlayBook()
-    {
-        PlayUISound(book);
-    }
-
-    public void PlaySelect()
-    {
-        PlayUISound(select);
-    }
-
-    public void PlayPurchase()
-    {
-        PlayUISound(purchase);
-    }
+    public void PlayBook() => PlayUISound(book);
+    public void PlaySelect() => PlayUISound(select);
+    public void PlayPurchase() => PlayUISound(purchase);
 
     void PlayUISound(AudioClip clip)
     {
@@ -120,19 +118,17 @@ public class SoundManager : NetworkBehaviour
     }
 
     // ===============================
-    // NETWORK SYNC (GAMEPLAY ONLY)
+    // NETWORK SOUND SPAWN
     // ===============================
 
     [ObserversRpc]
     void PlaySound_ObserversRPC(Vector3 pos, string soundName)
     {
-        // 🔥 SUPER HARD BLOCK
+        // 🔥 ABSOLUTE BLOCK CONDITIONS
         if (!Application.isPlaying) return;
-        if (!gameObject.scene.isLoaded) return;
-        if (isShuttingDown) return;
-
-        // 🔥 NEW: also block if scene is changing
         if (!enabled) return;
+        if (isShuttingDown) return;
+        if (!gameObject.scene.isLoaded) return;
 
         AudioClip clip = GetClip(soundName);
         if (clip == null) return;
@@ -149,7 +145,20 @@ public class SoundManager : NetworkBehaviour
 
         source.Play();
 
-        Destroy(temp, clip.length);
+        // 🔥 SAFE DESTROY (NO UNITY TIMING ISSUES)
+        StartCoroutine(DestroyAfterTime(temp, clip.length));
+    }
+
+    IEnumerator DestroyAfterTime(GameObject obj, float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        // 🔥 BLOCK DESTROY DURING SHUTDOWN
+        if (obj == null) yield break;
+        if (!Application.isPlaying) yield break;
+        if (isShuttingDown) yield break;
+
+        Destroy(obj);
     }
 
     // ===============================
@@ -168,7 +177,6 @@ public class SoundManager : NetworkBehaviour
             case "iceball": return iceball;
             case "firewall": return firewall;
         }
-
         return null;
     }
 }

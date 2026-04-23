@@ -113,9 +113,9 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  healPerTick: 5
+  healPerTick: 40
   tickRate: 0.5
-  radius: 6
+  radius: 20
 --- !u!1 &8288222077517392687 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7834758006639453087, guid: 12a56ee4630040c4eb17ae9707ed4cef, type: 3}
