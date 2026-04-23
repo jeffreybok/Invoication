@@ -65690,9 +65690,12 @@ MonoBehaviour:
   takeDamage: {fileID: 8300000, guid: 5a54bdfcbca34420fa2d60c1cdc834dc, type: 3}
   iceball: {fileID: 8300000, guid: d428b74a1469b487a8546ba5c0efdbe2, type: 3}
   firewall: {fileID: 8300000, guid: 43d771ec04905491d9a800eec427ad50, type: 3}
+  iceWall: {fileID: 8300000, guid: 3c8c083ec1d6a43d49731d17e37a27d6, type: 3}
+  healLoop: {fileID: 8300000, guid: 51b335cc286b343e4a71d68411285f9f, type: 3}
   book: {fileID: 8300000, guid: b6917b9382bed47fb9001c7c5133cc49, type: 3}
   select: {fileID: 8300000, guid: ca92ee5d1a87e4c12a47b7d11bed7905, type: 3}
   purchase: {fileID: 8300000, guid: 4b3544bd4a5224c89b27d3254e936e18, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: afea314e714854fd9b6ccd05e8b8b975, type: 3}
   minDistance: 5
   maxDistance: 30
   volume: 1

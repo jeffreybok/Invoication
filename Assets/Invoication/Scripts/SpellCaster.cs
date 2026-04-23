@@ -200,6 +200,7 @@ public class SpellCaster : NetworkBehaviour
 
         // Spell cast sounds
         if (spellType == 0) SoundManager.Instance.PlayFireball(player.transform.position);
+        if (spellType == 1) SoundManager.Instance.PlayFireball(player.transform.position);
         if (spellType == 2) SoundManager.Instance.PlayIceball(player.transform.position);
         if (spellType == 4) SoundManager.Instance.PlayShockwave(player.transform.position);
     }
@@ -248,7 +249,7 @@ public class SpellCaster : NetworkBehaviour
 
         // Wall sounds
         if (wallType == 0) SoundManager.Instance.PlayFirewall(spawnPos);
-        if (wallType == 1) SoundManager.Instance.PlayIceball(spawnPos);
+        if (wallType == 1) SoundManager.Instance.PlayIceWall(spawnPos);
 
         Rigidbody rb = wall.GetComponent<Rigidbody>();
         if (rb != null)

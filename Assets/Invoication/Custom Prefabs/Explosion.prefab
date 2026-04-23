@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3005581896905022112}
   - component: {fileID: -4428195546526785708}
   - component: {fileID: -8272496806934883486}
+  - component: {fileID: 8848991823080951574}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -4960,6 +4961,18 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+--- !u!114 &8848991823080951574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358637981425055526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bd54dcf59de745b79521d6b5c890815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplosionSound
 --- !u!1 &5084589283769131857
 GameObject:
   m_ObjectHideFlags: 0
