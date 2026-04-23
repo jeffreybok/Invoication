@@ -72,13 +72,9 @@ public class SkillTreeManager : MonoBehaviour
 
         // 🔊 hook buttons AFTER they exist
         HookAllButtons();
-
-        Time.timeScale = 0f;
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        if (playerController != null) playerController.enabled = false;
-        if (raycastPickup != null) raycastPickup.enabled = false;
     }
 
     void CloseMenu()
@@ -92,9 +88,7 @@ public class SkillTreeManager : MonoBehaviour
         // Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        if (playerController != null) playerController.enabled = true;
-        if (raycastPickup != null) raycastPickup.enabled = true;
+        
     }
 
     void LoadCurrentTree()
