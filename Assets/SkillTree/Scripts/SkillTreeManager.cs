@@ -67,7 +67,7 @@ public class SkillTreeManager : MonoBehaviour
         skillTreePanel.SetActive(true);
         RefreshSkillPointsDisplay();
 
-        Time.timeScale = 0f;
+        // Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -83,7 +83,7 @@ public class SkillTreeManager : MonoBehaviour
         if (TooltipUI.Instance != null && TooltipUI.Instance.tooltipPanel.activeInHierarchy)
             TooltipUI.Instance.tooltipPanel.SetActive(false);
 
-        Time.timeScale = 1f;
+        // Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
