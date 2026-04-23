@@ -284,6 +284,25 @@ public class PlayerHealth : NetworkBehaviour
         var controller = GetComponent<PlayerController>();
         if (controller != null)
             controller.enabled = false;
+
+        int hiddenLayer = LayerMask.NameToLayer("DeadHidden");
+
+// change this player + all children
+        foreach (Transform t in GetComponentsInChildren<Transform>())
+        {
+            t.gameObject.layer = hiddenLayer;
+        }
+
+        Camera cam = GetComponentInChildren<Camera>();
+        if (cam != null)
+        {
+            int layer = LayerMask.NameToLayer("DeadHidden");
+            cam.cullingMask &= ~(1 << layer);
+        }
+
+        CameraFallOnDeath camFall = GetComponentInChildren<CameraFallOnDeath>();
+        camFall.EnableFall();
+
     }
 
     // =========================

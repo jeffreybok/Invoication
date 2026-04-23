@@ -20,7 +20,7 @@ public class GameManager : NetworkBehaviour
     public Text countdownTextWon;
 
     // =========================
-    // CHECK ALL DEAD
+    // INIT
     // =========================
     
     void Awake()
@@ -28,6 +28,10 @@ public class GameManager : NetworkBehaviour
         Application.targetFrameRate = Screen.currentResolution.refreshRate;
         QualitySettings.vSyncCount = 0;
     }
+
+    // =========================
+    // CHECK ALL DEAD
+    // =========================
 
     public void CheckAllPlayersDead()
     {
@@ -66,9 +70,8 @@ public class GameManager : NetworkBehaviour
             yield return new WaitForSeconds(1f);
             timer--;
         }
-        StopAllCoroutines();
 
-        // ✅ ONLY THIS
+        StopAllCoroutines();
         RPC_LoadLobby();
     }
 
@@ -148,14 +151,9 @@ public class GameManager : NetworkBehaviour
             yield return new WaitForSeconds(1f);
             time--;
         }
+
         StopAllCoroutines();
-
-        // 🔥 FIX: same as game over
         RPC_LoadLobby();
-
-        yield return new WaitForSeconds(0.5f);
-
-        SceneManager.LoadScene("StartScreenScene");
     }
 
     [ObserversRpc]
@@ -166,12 +164,30 @@ public class GameManager : NetworkBehaviour
     }
 
     // =========================
-    // LOBBY LOAD RPC
+    // LOBBY LOAD (FIXED)
     // =========================
 
     [ObserversRpc]
     void RPC_LoadLobby()
     {
+        // 🔥 STOP ALL SOUNDS FIRST
+        AudioSource[] allSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        foreach (var s in allSources)
+        {
+            if (s != null)
+                s.Stop();
+        }
+
+        // 🔥 disable camera physics
+        CameraFallOnDeath[] cams = FindObjectsByType<CameraFallOnDeath>(FindObjectsSortMode.None);
+        foreach (var c in cams)
+        {
+            if (c == null) continue;
+            c.DisableFall();
+        }
+
+        StopAllCoroutines();
+
         SceneManager.LoadScene("StartScreenScene");
     }
 }
