@@ -86,6 +86,9 @@ public class Fireball : NetworkBehaviour
             ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
             Destroy(explosion, ps != null ? ps.main.duration : 2f);
         }
+        
+        // Camera Shake
+        CameraShake.Instance?.ShakeFromPosition(pos, 20f);
     }
 
     [ObserversRpc]
