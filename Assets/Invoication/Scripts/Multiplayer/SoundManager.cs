@@ -1,15 +1,10 @@
 // ===============================
 // SoundManager.cs
 // ===============================
-// SIMPLE MULTIPLAYER SOUND MANAGER (PurrNet)
+// MULTIPLAYER SOUND MANAGER (PurrNet)
 //
-// HOW TO USE:
-// 1. Put this on a GameObject in scene (SoundManager)
-// 2. Drag your AudioClips into slots
-// 3. Call from ANY script:
-//      SoundManager.Instance.PlayFireball(position);
-//
-// MUST be called from SERVER (or call ServerRPC first)
+// - 3D GAMEPLAY SOUNDS → server → all players
+// - UI SOUNDS (book/select/purchase) → LOCAL ONLY (2D)
 //
 // ===============================
 
@@ -20,7 +15,7 @@ public class SoundManager : NetworkBehaviour
 {
     public static SoundManager Instance;
 
-    [Header("Audio Clips")]
+    [Header("Gameplay Audio Clips")]
     public AudioClip fireball;
     public AudioClip explosion;
     public AudioClip shockwave;
@@ -29,18 +24,31 @@ public class SoundManager : NetworkBehaviour
     public AudioClip iceball;
     public AudioClip firewall;
 
+    [Header("UI Audio Clips (LOCAL ONLY)")]
+    public AudioClip book;
+    public AudioClip select;
+    public AudioClip purchase;
+
     [Header("3D Sound Settings")]
     public float minDistance = 5f;
     public float maxDistance = 30f;
     public float volume = 1f;
 
+    private AudioSource uiSource;
+
     void Awake()
     {
         Instance = this;
+
+        // local UI audio source (2D)
+        uiSource = gameObject.AddComponent<AudioSource>();
+        uiSource.spatialBlend = 0f; // 2D
+        uiSource.playOnAwake = false;
+        uiSource.volume = 1f;
     }
 
     // ===============================
-    // PUBLIC PLAY FUNCTIONS
+    // GAMEPLAY (NETWORKED)
     // ===============================
 
     public void PlayFireball(Vector3 pos)
@@ -86,7 +94,36 @@ public class SoundManager : NetworkBehaviour
     }
 
     // ===============================
-    // NETWORK SYNC
+    // UI (LOCAL ONLY - NO RPC)
+    // ===============================
+
+    public void PlayBook()
+    {
+        PlayUISound(book);
+    }
+
+    public void PlaySelect()
+    {
+        PlayUISound(select);
+    }
+
+    public void PlayPurchase()
+    {
+        PlayUISound(purchase);
+    }
+
+    void PlayUISound(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        // stop previous to prevent stacking distortion
+        uiSource.Stop();
+
+        uiSource.PlayOneShot(clip);
+    }
+
+    // ===============================
+    // NETWORK SYNC (GAMEPLAY ONLY)
     // ===============================
 
     [ObserversRpc]
@@ -100,7 +137,7 @@ public class SoundManager : NetworkBehaviour
 
         AudioSource source = temp.AddComponent<AudioSource>();
         source.clip = clip;
-        source.spatialBlend = 1f; // 3D sound
+        source.spatialBlend = 1f; // 3D
         source.minDistance = minDistance;
         source.maxDistance = maxDistance;
         source.volume = volume;

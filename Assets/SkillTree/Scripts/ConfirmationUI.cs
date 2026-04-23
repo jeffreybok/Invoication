@@ -20,8 +20,13 @@ public class ConfirmationUI : MonoBehaviour
     {
         Instance = this;
         confirmationPanel.SetActive(false);
+
         confirmButton.onClick.AddListener(OnConfirm);
         cancelButton.onClick.AddListener(OnCancel);
+
+        // 🔊 sounds
+        confirmButton.onClick.AddListener(PlayPurchaseSound);
+        cancelButton.onClick.AddListener(PlaySelectSound);
     }
 
     public void Show(SkillNode node, SkillTreeData tree, SkillNodeUI caller)
@@ -58,5 +63,15 @@ public class ConfirmationUI : MonoBehaviour
     void OnCancel()
     {
         confirmationPanel.SetActive(false);
+    }
+    
+    void PlayPurchaseSound()
+    {
+        SoundManager.Instance.PlayPurchase();
+    }
+
+    void PlaySelectSound()
+    {
+        SoundManager.Instance.PlaySelect();
     }
 }
