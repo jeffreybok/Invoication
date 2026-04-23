@@ -1,13 +1,3 @@
-// ===============================
-// SoundManager.cs
-// ===============================
-// MULTIPLAYER SOUND MANAGER (PurrNet)
-//
-// - 3D GAMEPLAY SOUNDS → server → all players
-// - UI SOUNDS (book/select/purchase) → LOCAL ONLY (2D)
-//
-// ===============================
-
 using UnityEngine;
 using PurrNet;
 
@@ -36,15 +26,24 @@ public class SoundManager : NetworkBehaviour
 
     private AudioSource uiSource;
 
+    // 🔥 NEW: prevents spawning during scene unload
+    private bool isShuttingDown = false;
+
     void Awake()
     {
         Instance = this;
 
         // local UI audio source (2D)
         uiSource = gameObject.AddComponent<AudioSource>();
-        uiSource.spatialBlend = 0f; // 2D
+        uiSource.spatialBlend = 0f;
         uiSource.playOnAwake = false;
         uiSource.volume = 1f;
+    }
+
+    // 🔥 NEW: detect when object is being destroyed (scene change)
+    void OnDestroy()
+    {
+        isShuttingDown = true;
     }
 
     // ===============================
@@ -116,9 +115,7 @@ public class SoundManager : NetworkBehaviour
     {
         if (clip == null) return;
 
-        // stop previous to prevent stacking distortion
         uiSource.Stop();
-
         uiSource.PlayOneShot(clip);
     }
 
@@ -129,6 +126,14 @@ public class SoundManager : NetworkBehaviour
     [ObserversRpc]
     void PlaySound_ObserversRPC(Vector3 pos, string soundName)
     {
+        // 🔥 SUPER HARD BLOCK
+        if (!Application.isPlaying) return;
+        if (!gameObject.scene.isLoaded) return;
+        if (isShuttingDown) return;
+
+        // 🔥 NEW: also block if scene is changing
+        if (!enabled) return;
+
         AudioClip clip = GetClip(soundName);
         if (clip == null) return;
 
@@ -137,7 +142,7 @@ public class SoundManager : NetworkBehaviour
 
         AudioSource source = temp.AddComponent<AudioSource>();
         source.clip = clip;
-        source.spatialBlend = 1f; // 3D
+        source.spatialBlend = 1f;
         source.minDistance = minDistance;
         source.maxDistance = maxDistance;
         source.volume = volume;
