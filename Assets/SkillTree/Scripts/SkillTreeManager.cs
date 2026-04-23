@@ -67,7 +67,6 @@ public class SkillTreeManager : MonoBehaviour
         skillTreePanel.SetActive(true);
         RefreshSkillPointsDisplay();
 
-<<<<<<< HEAD
         // 🔊 play book sound
         SoundManager.Instance.PlayBook();
 
@@ -75,9 +74,6 @@ public class SkillTreeManager : MonoBehaviour
         HookAllButtons();
 
         Time.timeScale = 0f;
-=======
-        // Time.timeScale = 0f;
->>>>>>> de757f6451ce1a0a1667acad04e449346c41fe49
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
