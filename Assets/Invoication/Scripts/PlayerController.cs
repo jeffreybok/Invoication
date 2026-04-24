@@ -14,6 +14,8 @@ public class PlayerController : NetworkBehaviour
     public float upDownRange = 60f;
     public float mouseSmoothTime = 0.03f;
 
+    public bool lockCamera = false;
+
     private Vector2 currentMouseDelta = Vector2.zero;
     private Vector2 currentMouseDeltaVelocity = Vector2.zero;
     
@@ -35,7 +37,6 @@ public class PlayerController : NetworkBehaviour
         characterController = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
 
-        // ONLY lock cursor for local player
         if (isOwner)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -49,7 +50,11 @@ public class PlayerController : NetworkBehaviour
         if (PauseMenu.IsPaused) return;
 
         HandleMovement();
-        HandleMouseLook();
+
+        if (!lockCamera)
+            HandleMouseLook();
+        else
+            ResetMouseSmoothing();
     }
 
     void HandleMovement()
@@ -113,5 +118,11 @@ public class PlayerController : NetworkBehaviour
 
         if (playerCamera != null)
             playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+    }
+
+    void ResetMouseSmoothing()
+    {
+        currentMouseDelta = Vector2.zero;
+        currentMouseDeltaVelocity = Vector2.zero;
     }
 }

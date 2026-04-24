@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class SkillTreeManager : MonoBehaviour
 {
-
     [Header("References")]
     public GameObject skillTreePanel;
     public SkillTreeUI skillTreeUI;
@@ -25,8 +24,6 @@ public class SkillTreeManager : MonoBehaviour
     private PlayerXP xp;
 
     private bool isOpen = false;
-
-
 
     void Start()
     {
@@ -67,10 +64,11 @@ public class SkillTreeManager : MonoBehaviour
         skillTreePanel.SetActive(true);
         RefreshSkillPointsDisplay();
 
-        // 🔊 play book sound
+        if (playerController != null)
+            playerController.lockCamera = true;
+
         SoundManager.Instance.PlayBook();
 
-        // 🔊 hook buttons AFTER they exist
         HookAllButtons();
         
         Cursor.lockState = CursorLockMode.None;
@@ -82,13 +80,14 @@ public class SkillTreeManager : MonoBehaviour
         isOpen = false;
         skillTreePanel.SetActive(false);
 
+        if (playerController != null)
+            playerController.lockCamera = false;
+
         if (TooltipUI.Instance != null && TooltipUI.Instance.tooltipPanel.activeInHierarchy)
             TooltipUI.Instance.tooltipPanel.SetActive(false);
 
-        // Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
     }
 
     void LoadCurrentTree()
@@ -199,7 +198,6 @@ public class SkillTreeManager : MonoBehaviour
         }
     }
 
-    // DEBUG: find who disables stuff
     void OnDisable()
     {
         Debug.Log("[SkillTreeManager DISABLED]");
@@ -212,7 +210,6 @@ public class SkillTreeManager : MonoBehaviour
 
         foreach (Button btn in buttons)
         {
-            // skip confirmation buttons
             if (btn.name == "ConfirmationButton" || btn.name == "CancelButton")
                 continue;
 
@@ -225,6 +222,4 @@ public class SkillTreeManager : MonoBehaviour
     {
         SoundManager.Instance.PlaySelect();
     }
-
-
 }
