@@ -52,14 +52,14 @@ public class DevToolPanel : MonoBehaviour
         }
     }
 
-    void Update()
+    /* void Update()
     {
         if (Input.GetKeyDown(toggleKey))
         {
             if (isOpen) ClosePanel();
             else OpenPanel();
         }
-    }
+    } */
 
     void OpenPanel()
     {

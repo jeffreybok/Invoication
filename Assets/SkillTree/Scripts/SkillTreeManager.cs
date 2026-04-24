@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -55,6 +56,11 @@ public class SkillTreeManager : MonoBehaviour
         {
             if (isOpen) CloseMenu();
             else OpenMenu();
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            ResetSkillTree();
         }
     }
 
