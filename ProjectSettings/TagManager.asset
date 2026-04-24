@@ -7,6 +7,8 @@ TagManager:
   - HoldableObject
   - Pickup
   - Enemy
+  - Fireball
+  - Ground
   layers:
   - Default
   - TransparentFX

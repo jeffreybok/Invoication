@@ -1,9 +1,9 @@
 using UnityEngine;
+using System.Collections;
 
 public class CameraFallOnDeath : MonoBehaviour
 {
     private Rigidbody rb;
-    private bool isFalling = false;
 
     void Awake()
     {
@@ -18,41 +18,36 @@ public class CameraFallOnDeath : MonoBehaviour
 
     public void EnableFall()
     {
+        StartCoroutine(StopAfterTime(0.4f));
+        
         if (rb == null) return;
-
-        isFalling = true;
 
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        // 🔥 NO COLLISIONS EVER
+        // 🔥 keep this OFF so it doesn't freak out / clip / bounce
         rb.detectCollisions = false;
-
-        // 🔥 PREVENT WEIRD PHYSICS SPIKES
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
-
-    // 🔥 CRITICAL: kill physics EARLY
-    void LateUpdate()
+    
+    IEnumerator StopAfterTime(float t)
     {
-        if (!isFalling) return;
+        yield return new WaitForSeconds(t);
 
-        // if game is about to unload, stop everything instantly
-        if (!gameObject.scene.isLoaded)
-        {
-            DisableFall();
-        }
+        if (rb == null) yield break;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.useGravity = false;
     }
 
+    // 🔥 called before scene change
     public void DisableFall()
     {
         if (rb == null) return;
 
-        isFalling = false;
-
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+
         rb.isKinematic = true;
         rb.useGravity = false;
     }

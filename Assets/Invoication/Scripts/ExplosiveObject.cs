@@ -10,10 +10,10 @@ public class ExplosiveObject : NetworkBehaviour
     public GameObject explosionEffect;
 
     [Header("Trigger Settings")]
-    public bool explodeOnImpact = true;
+    public bool explodeOnImpact = false;
     public float impactThreshold = 5f;
     public bool explodeFromFireball = true;
-    public bool explodeFromPickup = true;
+    public bool explodeFromPickup = false;
 
     private bool hasExploded = false;
     private GameObject attacker;
@@ -27,18 +27,20 @@ public class ExplosiveObject : NetworkBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (hasExploded) return;
-        if (Time.time - spawnTime < 0.5f) return; // ignore collisions on spawn
+        if (Time.time - spawnTime < 0.5f) return;
 
         bool shouldExplode = false;
         GameObject detectedAttacker = null;
 
-        if (explodeFromPickup && collision.gameObject.CompareTag("Pickup"))
+        // 🔥 FIREBALL HIT (MAIN ONE YOU CARE ABOUT)
+        if (explodeFromFireball && collision.gameObject.CompareTag("Fireball"))
         {
             shouldExplode = true;
             detectedAttacker = collision.gameObject;
         }
 
-        if (explodeFromFireball && collision.gameObject.GetComponent<Fireball>() != null)
+        // optional (disabled anyway)
+        if (explodeFromPickup && collision.gameObject.CompareTag("Pickup"))
         {
             shouldExplode = true;
             detectedAttacker = collision.gameObject;
@@ -89,7 +91,7 @@ public class ExplosiveObject : NetworkBehaviour
 
         hasExploded = true;
         attacker = attackerObj;
-        
+
         SoundManager.Instance.PlayExplosion(transform.position);
 
 #if UNITY_EDITOR
@@ -109,10 +111,10 @@ public class ExplosiveObject : NetworkBehaviour
                 enemy.HitByExplosion();
             }
 
-            // Damage players in explosion radius (excludes attacker)
+            // 🔥 THIS IS YOUR PLAYER DAMAGE (SERVER ONLY)
             PlayerHealth playerHealth = hit.GetComponentInParent<PlayerHealth>();
             if (playerHealth != null && playerHealth.gameObject != attacker)
-                playerHealth.TakeDamage(explosionDamage);
+                playerHealth.TakeDamage(explosionDamage); // already server-side ✔
 
             ExplosiveObject other = hit.GetComponent<ExplosiveObject>();
             if (other != null && other != this && !other.hasExploded)
@@ -150,11 +152,5 @@ public class ExplosiveObject : NetworkBehaviour
         Rigidbody rb = target.GetComponent<Rigidbody>();
         if (rb != null && !rb.isKinematic)
             rb.AddExplosionForce(explosionForce, origin, explosionRadius, 1f, ForceMode.Impulse);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 }
