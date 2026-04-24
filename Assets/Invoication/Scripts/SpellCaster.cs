@@ -34,10 +34,15 @@ public class SpellCaster : NetworkBehaviour
     public LayerMask aimLayers = ~0;
 
     private RaycastPickup pickupScript;
+    private PlayerAnimationController anim;
+
+    public KeyCode castKey = KeyCode.Mouse0;
 
     void Start()
     {
         pickupScript = GetComponent<RaycastPickup>();
+        anim = GetComponent<PlayerAnimationController>();
+
         if (pickupScript == null)
             Debug.LogError("RaycastPickup script not found!");
     }
@@ -46,6 +51,7 @@ public class SpellCaster : NetworkBehaviour
     {
         if (!isOwner) return;
 
+        // Original staff cast
         if (Input.GetKeyDown(castKey) && IsHoldingStaff())
         {
             if (!SkillTreeBridge.IsUnlocked("IceSpike_0"))
@@ -56,9 +62,17 @@ public class SpellCaster : NetworkBehaviour
 
             CastIceball();
         }
-    }
 
-    public KeyCode castKey = KeyCode.Mouse0;
+        // Presentation / demo keybinds (no staff required)
+        if (Input.GetKeyDown(KeyCode.Alpha1)) CastFireball();
+        if (Input.GetKeyDown(KeyCode.Alpha2)) CastBlazingImpact();
+        if (Input.GetKeyDown(KeyCode.Alpha3)) CastEmberCircle();
+        if (Input.GetKeyDown(KeyCode.Alpha4)) CastFireWall();
+        if (Input.GetKeyDown(KeyCode.Alpha5)) CastIceball();
+        if (Input.GetKeyDown(KeyCode.Alpha6)) CastIceWall();
+        if (Input.GetKeyDown(KeyCode.Alpha7)) CastLightningStrike();
+        if (Input.GetKeyDown(KeyCode.Alpha8)) CastShockwave();
+    }
 
     bool IsHoldingStaff()
     {
@@ -71,12 +85,32 @@ public class SpellCaster : NetworkBehaviour
         return false;
     }
 
+    void PlayCastAnimation()
+    {
+        if (anim == null) return;
+
+        if (isServer)
+            anim.PlayAttack();
+        else
+            anim.PlayAttack_ServerRPC();
+    }
+
     void LaunchProjectile_Server(GameObject prefab, float speed, Vector3 spawnPos, Vector3 direction, GameObject player)
     {
         if (!isServer) return;
         if (prefab == null || player == null) return;
 
-        GameObject projectile = Instantiate(prefab, spawnPos, Quaternion.LookRotation(direction));
+        Quaternion spawnRotation = Quaternion.LookRotation(direction);
+
+        // Fix lightning orientation and height
+        SpellProjectile spCheck = prefab.GetComponent<SpellProjectile>();
+        if (spCheck != null && spCheck.spellType == SpellProjectile.SpellType.LightningStrike)
+        {
+            spawnRotation *= Quaternion.Euler(0f, -90f, 0f);
+            spawnPos += Vector3.down * 1.5f;
+        }
+
+        GameObject projectile = Instantiate(prefab, spawnPos, spawnRotation);
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
         if (rb != null)
@@ -99,7 +133,10 @@ public class SpellCaster : NetworkBehaviour
 
         SpellProjectile spellProjectile = projectile.GetComponent<SpellProjectile>();
         if (spellProjectile != null)
+        {
             spellProjectile.SetOwner(player);
+            spellProjectile.SetTravelDirection(direction);
+        }
 
         Fireball fireball = projectile.GetComponent<Fireball>();
         if (fireball != null)
@@ -144,9 +181,11 @@ public class SpellCaster : NetworkBehaviour
         if (forward == Vector3.zero)
             forward = player.transform.forward;
 
+        float spawnForwardOffset = (spellType == 4) ? 0.1f : 2f;
+
         Vector3 spawnPos = spawnPoint != null
-            ? spawnPoint.position + forward * 2f
-            : cam.transform.position + forward * 2f;
+            ? spawnPoint.position + forward * spawnForwardOffset
+            : cam.transform.position + forward * spawnForwardOffset;
 
         Ray aimRay = new Ray(cam.transform.position, forward);
         Vector3 targetPoint;
@@ -158,6 +197,12 @@ public class SpellCaster : NetworkBehaviour
 
         Vector3 shootDirection = (targetPoint - spawnPos).normalized;
         LaunchProjectile_Server(prefab, speed, spawnPos, shootDirection, player);
+
+        // Spell cast sounds
+        if (spellType == 0) SoundManager.Instance.PlayFireball(player.transform.position);
+        if (spellType == 1) SoundManager.Instance.PlayFireball(player.transform.position);
+        if (spellType == 2) SoundManager.Instance.PlayIceball(player.transform.position);
+        if (spellType == 4) SoundManager.Instance.PlayShockwave(player.transform.position);
     }
 
     [ServerRpc]
@@ -174,7 +219,7 @@ public class SpellCaster : NetworkBehaviour
         float speed = 0f;
 
         if (wallType == 0) { prefab = fireWallPrefab; speed = fireWallSpeed; }
-        else if (wallType == 1) { prefab = iceWallPrefab;  speed = iceWallSpeed;  }
+        else if (wallType == 1) { prefab = iceWallPrefab; speed = iceWallSpeed; }
 
         if (prefab == null) return;
 
@@ -202,6 +247,10 @@ public class SpellCaster : NetworkBehaviour
 
         GameObject wall = Instantiate(prefab, spawnPos, spawnRotation);
 
+        // Wall sounds
+        if (wallType == 0) SoundManager.Instance.PlayFirewall(spawnPos);
+        if (wallType == 1) SoundManager.Instance.PlayIceWall(spawnPos);
+
         Rigidbody rb = wall.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -218,7 +267,6 @@ public class SpellCaster : NetworkBehaviour
         Destroy(wall, 5f);
     }
 
-    // Server does the damage + VFX broadcast for shockwave
     [ServerRpc]
     void CastShockwave_ServerRPC(NetworkIdentity playerIdentity)
     {
@@ -229,9 +277,8 @@ public class SpellCaster : NetworkBehaviour
         SpellCaster caster = player.GetComponent<SpellCaster>();
         if (caster == null) return;
 
-        Vector3 origin = player.transform.position;
+        Vector3 origin = player.transform.position + Vector3.down * 1f;
 
-        // Damage all enemies in radius
         Collider[] hits = Physics.OverlapSphere(origin, caster.shockwaveRadius);
         foreach (Collider col in hits)
         {
@@ -242,7 +289,7 @@ public class SpellCaster : NetworkBehaviour
                 enemy.TakeDamage(caster.shockwaveDamage, player);
         }
 
-        // All clients play the VFX at caster's position
+        SoundManager.Instance.PlayShockwave(origin);
         PlayShockwaveVFX_ObserversRPC(origin);
     }
 
@@ -255,10 +302,12 @@ public class SpellCaster : NetworkBehaviour
         Destroy(vfx, shockwaveVFXDuration);
     }
 
-    // Public cast methods called by VoiceSpellCaster
+    // Public cast methods called by VoiceSpellCaster and keybinds
 
     public void CastFireball()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 0, cam.transform.forward);
@@ -266,6 +315,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastBlazingImpact()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 1, cam.transform.forward);
@@ -273,6 +324,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastIceball()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 2, cam.transform.forward);
@@ -280,13 +333,17 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastEmberCircle()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 3, cam.transform.forward);
     }
 
-    public void CastLightningBolt()
+    public void CastLightningStrike()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         LaunchProjectile_ServerRpc(GetComponent<NetworkIdentity>(), 4, cam.transform.forward);
@@ -294,11 +351,14 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastShockwave()
     {
+        PlayCastAnimation();
         CastShockwave_ServerRPC(GetComponent<NetworkIdentity>());
     }
 
     public void CastFireWall()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         CastWall_ServerRPC(GetComponent<NetworkIdentity>(), 0, cam.transform.forward);
@@ -306,6 +366,8 @@ public class SpellCaster : NetworkBehaviour
 
     public void CastIceWall()
     {
+        PlayCastAnimation();
+
         Camera cam = GetComponentInChildren<Camera>();
         if (cam == null) return;
         CastWall_ServerRPC(GetComponent<NetworkIdentity>(), 1, cam.transform.forward);

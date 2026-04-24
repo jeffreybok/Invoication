@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class SkillTreeManager : MonoBehaviour
 {
-
     [Header("References")]
     public GameObject skillTreePanel;
     public SkillTreeUI skillTreeUI;
@@ -25,8 +24,6 @@ public class SkillTreeManager : MonoBehaviour
     private PlayerXP xp;
 
     private bool isOpen = false;
-
-
 
     void Start()
     {
@@ -67,12 +64,15 @@ public class SkillTreeManager : MonoBehaviour
         skillTreePanel.SetActive(true);
         RefreshSkillPointsDisplay();
 
-        Time.timeScale = 0f;
+        if (playerController != null)
+            playerController.lockCamera = true;
+
+        SoundManager.Instance.PlayBook();
+
+        HookAllButtons();
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        if (playerController != null) playerController.enabled = false;
-        if (raycastPickup != null) raycastPickup.enabled = false;
     }
 
     void CloseMenu()
@@ -80,15 +80,14 @@ public class SkillTreeManager : MonoBehaviour
         isOpen = false;
         skillTreePanel.SetActive(false);
 
+        if (playerController != null)
+            playerController.lockCamera = false;
+
         if (TooltipUI.Instance != null && TooltipUI.Instance.tooltipPanel.activeInHierarchy)
             TooltipUI.Instance.tooltipPanel.SetActive(false);
 
-        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        if (playerController != null) playerController.enabled = true;
-        if (raycastPickup != null) raycastPickup.enabled = true;
     }
 
     void LoadCurrentTree()
@@ -199,10 +198,28 @@ public class SkillTreeManager : MonoBehaviour
         }
     }
 
-    // DEBUG: find who disables stuff
     void OnDisable()
     {
         Debug.Log("[SkillTreeManager DISABLED]");
         Debug.Log(System.Environment.StackTrace);
+    }
+    
+    void HookAllButtons()
+    {
+        Button[] buttons = skillTreePanel.GetComponentsInChildren<Button>(true);
+
+        foreach (Button btn in buttons)
+        {
+            if (btn.name == "ConfirmationButton" || btn.name == "CancelButton")
+                continue;
+
+            btn.onClick.RemoveListener(PlaySelectSound);
+            btn.onClick.AddListener(PlaySelectSound);
+        }
+    }
+
+    void PlaySelectSound()
+    {
+        SoundManager.Instance.PlaySelect();
     }
 }

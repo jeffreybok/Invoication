@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
+  m_Name: WinterCircle
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNode
+  nodeName: Winter Circle
+  nodeID: WinterCircle_0
+  nodeDescription: Removes negative effects inflicted on allies by enemies and reduces
+    incoming damage.
+  skillPointCost: 4
+  nodeIcon: {fileID: 21300000, guid: 6bbd0d42f53ec4b0f8d5a44145eddf8c, type: 3}
+  prerequisiteNodeIDs:
+  - CircleOfSnow_0
+  isUnlocked: 0

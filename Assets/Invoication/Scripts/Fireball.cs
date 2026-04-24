@@ -48,9 +48,13 @@ public class Fireball : NetworkBehaviour
         if (!isServer || hasExploded) return;
         hasExploded = true;
 
-        PlayExplosion_ObserversRPC(transform.position);
+        Vector3 pos = transform.position;
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
+
+        // ✅ SAME PATTERN AS BOX (VFX via RPC)
+        PlayExplosion_ObserversRPC(pos);
+
+        Collider[] hitColliders = Physics.OverlapSphere(pos, explosionRadius);
 
         foreach (Collider hit in hitColliders)
         {
@@ -65,7 +69,7 @@ public class Fireball : NetworkBehaviour
 
             Rigidbody rb = hit.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic)
-                ApplyForce_ObserversRPC(rb.gameObject, transform.position, explosionRadius);
+                ApplyForce_ObserversRPC(rb.gameObject, pos, explosionRadius);
         }
 
         Destroy(gameObject);
@@ -74,18 +78,25 @@ public class Fireball : NetworkBehaviour
     [ObserversRpc]
     void PlayExplosion_ObserversRPC(Vector3 pos)
     {
+        // ❌ REMOVED custom audio (THIS WAS YOUR BUG)
+
+        // ✅ ONLY VFX (like box)
         if (explosionEffect != null)
         {
             GameObject explosion = Instantiate(explosionEffect, pos, Quaternion.identity);
             ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
             Destroy(explosion, ps != null ? ps.main.duration : 2f);
         }
+
+        // camera shake still fine
+        CameraShake.Instance?.ShakeFromPosition(pos, 20f);
     }
 
     [ObserversRpc]
     void ApplyForce_ObserversRPC(GameObject target, Vector3 origin, float radius)
     {
         if (target == null) return;
+
         Rigidbody rb = target.GetComponent<Rigidbody>();
         if (rb != null && !rb.isKinematic)
             rb.AddExplosionForce(200f, origin, radius, 0.5f, ForceMode.Impulse);

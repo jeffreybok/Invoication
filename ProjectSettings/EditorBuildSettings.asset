@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TutorialLevel.unity
     guid: 3ad3fca1a32aa45ddb5fc404b83ac54f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EndScreenScene.unity
     guid: 8ae71b95bfd18449c86e8e3fe011a72a
   - enabled: 0
@@ -26,9 +26,21 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Level1.unity
     guid: 6700052ee32064c918237cf0b12ceb15
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level1_JEFFREYTEST.unity
     guid: d2d5b4672c5c17849acfff8079bd0360
+  - enabled: 0
+    path: Assets/Scenes/Level1_NOAHTESTING.unity
+    guid: 5a5041c3b307a4007b058ea8850cb3c3
+  - enabled: 0
+    path: Assets/Scenes/NoahStartScreen.unity
+    guid: f55f9eb6401d14523a17845607326c82
+  - enabled: 0
+    path: Assets/Scenes/TrailerScene.unity
+    guid: 5841a376c92e64c88b1ed6136bafd58c
+  - enabled: 1
+    path: Assets/Scenes/Presentation.unity
+    guid: c69d7c672e26f4a0d8b88c0ed77bfab7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

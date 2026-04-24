@@ -621,15 +621,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f4c90adf57504fc985d0cab597acf12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  baseMana: 100
+  currentMana: 0
   skillPoints: 14
-  baseDamage: 10
-  baseBurnDuration: 2
-  baseFireRate: 1
-  baseRange: 5
-  currentDamage: 0
-  currentBurnDuration: 0
-  currentFireRate: 0
-  currentRange: 0
 --- !u!4 &125482625 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1091693221749020353, guid: db7a499461d527d4e96086adb6cad60d, type: 3}
@@ -791,7 +785,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthUI
   nameText: {fileID: 1465266874}
-  healthText: {fileID: 276847664}
+  healthSlider: {fileID: 0}
+  fillImage: {fileID: 0}
   enemyName: Goblin
 --- !u!114 &127640447
 MonoBehaviour:
@@ -2285,7 +2280,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &323399157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3280,7 +3275,9 @@ MonoBehaviour:
   skillTreePanel: {fileID: 697638617}
   skillTreeUI: {fileID: 697638618}
   skillPointText: {fileID: 1080996050}
-  elementNameText: {fileID: 1179442749}
+  elementTitleImage: {fileID: 0}
+  leftArrowImage: {fileID: 0}
+  rightArrowImage: {fileID: 0}
   allTrees:
   - {fileID: 11400000, guid: 952980e6fde2542d3b5f2c256c2eab6a, type: 2}
   - {fileID: 11400000, guid: fa8f2f2cf39ac4ea9a53c124690bf8c9, type: 2}
@@ -3321,6 +3318,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52943ba0e1b754e59ad60929262423bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PotionShatter
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   effectPrefab: {fileID: 0}
   shatterVelocity: 2
   effectDuration: 3
@@ -4696,10 +4702,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af633be8270f3478db8e863cbca0deff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeUI
-  majorNodePrefab: {fileID: 6830393556413534374, guid: ab5e8c337d2654e36b0893ac3cc0eaed, type: 3}
-  minorNodePrefab: {fileID: 1132118721767817772, guid: 589b06d873d1e44e9ad238060a5b17a8, type: 3}
-  nodeContainer: {fileID: 212840290}
-  nodeSpacing: 250
+  nodePrefab: {fileID: 0}
+  tankContainer: {fileID: 0}
+  damageContainer: {fileID: 0}
+  supportContainer: {fileID: 0}
+  tankLineContainer: {fileID: 0}
+  damageLineContainer: {fileID: 0}
+  supportLineContainer: {fileID: 0}
+  tankIcon: {fileID: 0}
+  damageIcon: {fileID: 0}
+  supportIcon: {fileID: 0}
+  tier1Y: 100
+  tier2Y: 0
+  tier3Y: 0
+  tier2X: -80
+  tier3X: 80
 --- !u!114 &697638619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6399,16 +6416,25 @@ MonoBehaviour:
   fireballPrefab: {fileID: 9120452587942675995, guid: 18f1586b5341742578e6349a5a066100, type: 3}
   blazingImpactPrefab: {fileID: 0}
   iceballPrefab: {fileID: 0}
+  fireWallPrefab: {fileID: 0}
+  emberCirclePrefab: {fileID: 0}
+  iceWallPrefab: {fileID: 0}
+  lightningBoltPrefab: {fileID: 0}
+  shockwaveRadius: 6
+  shockwaveDamage: 40
+  shockwaveVFXPrefab: {fileID: 0}
+  shockwaveVFXDuration: 1.5
   fireballSpawnPoint: {fileID: 1480171841}
   fireballSpeed: 20
   iceballSpeed: 20
-  castKey: 102
-  aimLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  fireWallSpeed: 12
+  emberCircleSpeed: 15
+  iceWallSpeed: 12
+  lightningBoltSpeed: 50
   textPopupPrefab: {fileID: 0}
   textFloatSpeed: 1
   textFadeDuration: 2
+  castKey: 102
 --- !u!1 &1013133202
 GameObject:
   m_ObjectHideFlags: 0
@@ -7496,7 +7522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1130461899
 Transform:
   m_ObjectHideFlags: 0
@@ -10455,11 +10481,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e403ee45124fa4cad9bf3f5829a1e98a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NodeConnector
-  lineContainer: {fileID: 1106059810}
-  lineSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   lockedLineColor: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
   unlockedLineColor: {r: 1, g: 1, b: 1, a: 1}
   lineThickness: 16
+  fillDuration: 0.5
 --- !u!1001 &1453645573
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13383,6 +13408,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   maxHealth: 100000
   currentHealth: 100000
+  xpReward: 50
   player: {fileID: 123688389}
   detectionRadius: 10
   fieldOfViewAngle: 110
@@ -13394,6 +13420,8 @@ MonoBehaviour:
   attackDamage: 10
   attackCooldown: 1
   attackRange: 2
+  frozenColor: {r: 0.4, g: 0.9, b: 1, a: 1}
+  burningColor: {r: 1, g: 0.4, b: 0, a: 1}
 --- !u!114 &2071596574
 MonoBehaviour:
   m_ObjectHideFlags: 0

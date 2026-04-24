@@ -7,6 +7,8 @@ TagManager:
   - HoldableObject
   - Pickup
   - Enemy
+  - Fireball
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - UI
   - Ragdoll
   - Weapon
-  - 
+  - DeadHidden
   - 
   - 
   - 

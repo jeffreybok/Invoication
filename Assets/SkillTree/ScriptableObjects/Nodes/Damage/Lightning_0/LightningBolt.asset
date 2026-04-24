@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c9478a117924db9b033e6dcbca77d8, type: 3}
+  m_Name: LightningBolt
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNode
+  nodeName: Lightning Bolt
+  nodeID: LightningBolt_0
+  nodeDescription: Shock multiple enemies with just one strike.
+  skillPointCost: 4
+  nodeIcon: {fileID: 21300000, guid: 3110f3a4f3a564acd9c96f93e22b3bd9, type: 3}
+  prerequisiteNodeIDs: []
+  isUnlocked: 0

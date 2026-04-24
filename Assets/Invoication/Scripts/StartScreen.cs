@@ -13,7 +13,7 @@ public class StartScreen : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("Level1_JEFFREYTEST");
+        SceneManager.LoadScene("Presentation");
     }
 
     public void Options()

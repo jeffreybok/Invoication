@@ -94,9 +94,13 @@ public class VoiceSpellCaster : MonoBehaviour
         {
             CastIce();
         }
-        else if (spellSaid.Contains("lightning"))
+        else if (spellSaid.Contains("lightning") || spellSaid.Contains("lightning bolt") || spellSaid.Contains("lightning strike") || spellSaid.Contains("lighting") || spellSaid.Contains("lately"))
         {
-            CastLightning();
+            CastLightningStrike();
+        }
+        else if (spellSaid.Contains("shockwave") || spellSaid.Contains("shock") || spellSaid.Contains("shook"))
+        {
+            CastShockwave();
         }
         else if (spellSaid.Contains("heal"))
         {
@@ -225,9 +229,16 @@ public class VoiceSpellCaster : MonoBehaviour
         else Debug.LogError("SpellCaster not found!");
     }
 
-    void CastLightning()
+    void CastLightningStrike()
     {
         Debug.Log("LIGHTNING SPELL CAST!");
+        spellCaster.CastLightningStrike();
+    }
+
+    void CastShockwave()
+    {
+        Debug.Log("Shockwave SPELL CAST!");
+        spellCaster.CastShockwave();
     }
 
     void CastHeal()
