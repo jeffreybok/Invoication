@@ -95,7 +95,7 @@ public class SoundManager : NetworkBehaviour
     public void PlayExplosion(Vector3 pos)
     {
         if (!isServer) return;
-        PlaySoundWithVolume_ObserversRPC(pos, "explosion", 1.35f);
+        PlaySoundWithVolume_ObserversRPC(pos, "explosion", 1.15f);
     }
 
     public void PlayShockwave(Vector3 pos)
