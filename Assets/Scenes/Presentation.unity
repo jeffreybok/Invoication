@@ -43041,7 +43041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4872678228248915580, guid: 0ee22e3bc954e49429ccad663624f478, type: 3}
       propertyPath: _startServerFlags
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8052800360771919329, guid: 0ee22e3bc954e49429ccad663624f478, type: 3}
       propertyPath: _address
