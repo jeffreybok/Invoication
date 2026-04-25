@@ -39,46 +39,40 @@ public class EnemyHealthUI : MonoBehaviour
     
     void LateUpdate()
     {
-        // Follow ragdoll pelvis position if it exists, otherwise follow main transform
-        Vector3 targetPosition;
-        
-        if (pelvisBone != null)
-        {
-            targetPosition = pelvisBone.position;
-        }
-        else
-        {
-            targetPosition = enemyTransform.position;
-        }
-        
-        targetPosition.y += 5f;
+        if (enemy == null) return;
+
+        // 🔥 Get accurate height of the model
+        Renderer rend = enemy.GetComponentInChildren<Renderer>();
+        float height = 2f; // fallback
+
+        if (rend != null)
+            height = rend.bounds.size.y;
+
+        // 🔥 Position above head (tweak this multiplier if needed)
+        Vector3 targetPosition = enemyTransform.position;
+        targetPosition.y += height + 0.7f;
+
         transform.position = targetPosition;
-        
+
         // Always face camera
         if (mainCamera != null)
         {
             transform.LookAt(transform.position + mainCamera.transform.forward);
         }
-        
-        // Update health display
-        if (enemy != null /* && healthText != null */)
+
+        // Health update
+        float healthPercent = enemy.GetHealthPercent();
+        healthSlider.value = healthPercent;
+
+        if (fillImage != null)
         {
-            // healthText.text = Mathf.CeilToInt(enemy.currentHealth) + " / " + (int)enemy.maxHealth;
-            
-            float healthPercent = enemy.GetHealthPercent();
-            healthSlider.value = healthPercent;
-            
-            // Color change
-            if (fillImage != null)
-            {
-                if (healthPercent > 0.6f)
-                    fillImage.color = Color.green;
-                else if (healthPercent > 0.3f)
-                    fillImage.color = Color.yellow;
-                else
-                    fillImage.color = Color.red;
-            }
-            
+            if (healthPercent > 0.6f)
+                fillImage.color = Color.green;
+            else if (healthPercent > 0.3f)
+                fillImage.color = Color.yellow;
+            else
+                fillImage.color = Color.red;
+
             if (healthPercent <= 0)
                 fillImage.gameObject.SetActive(false);
         }
