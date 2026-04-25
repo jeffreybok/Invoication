@@ -1,29 +1,28 @@
-using System;
 using UnityEngine;
 using TMPro;
 
 public class TooltipUI : MonoBehaviour
 {
-    public static TooltipUI Instance;
-    
-    [Header("References")]
     public GameObject tooltipPanel;
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI infoText;
     public TextMeshProUGUI costText;
 
     private Vector3 offset = new Vector3(160f, 120f, 0f);
-    private Vector3 originalPosition = new Vector3(1141f, -370f, 0);
+    private Vector3 originalPosition;
     
     void Awake()
     {
-        Instance = this;
+        originalPosition = transform.position;
         tooltipPanel.SetActive(false);
     }
 
-    private void Update()
+    void Update()
     {
-        transform.position = Input.mousePosition + offset;
+        if (tooltipPanel.activeSelf)
+        {
+            transform.position = Input.mousePosition + offset;
+        }
     }
 
     public void Show(string title, string desc, int cost)
@@ -31,6 +30,8 @@ public class TooltipUI : MonoBehaviour
         titleText.text = title;
         infoText.text = desc;
         costText.text = cost.ToString();
+        
+        transform.position = Input.mousePosition + offset;
         tooltipPanel.SetActive(true);
     }
 
