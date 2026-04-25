@@ -2076,6 +2076,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeManager
   skillTreePanel: {fileID: 7774512881081930214}
   skillTreeUI: {fileID: 694910837429877652}
+  tooltipUI: {fileID: 6566020666585196506}
+  confirmationUI: {fileID: 8122206180086596200}
   skillPointText: {fileID: 3745404621639964669}
   elementTitleImage: {fileID: 6725032245101059059}
   leftArrowImage: {fileID: 4182525542516399461}
@@ -2312,7 +2314,8 @@ MonoBehaviour:
   tier3Y: -85
   tier2X: -95
   tier3X: 95
-  nodeConnector: {fileID: 0}
+  nodeConnector: {fileID: 4471306347179382052}
+  manager: {fileID: 1449150449023343662}
 --- !u!1 &8007657823012797304
 GameObject:
   m_ObjectHideFlags: 0

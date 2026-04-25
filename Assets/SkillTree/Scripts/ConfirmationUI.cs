@@ -39,6 +39,10 @@ public class ConfirmationUI : MonoBehaviour
 
     void OnConfirm()
     {
+        // 🔥 PLAY PURCHASE SOUND FIRST
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayPurchase();
+
         manager.UnlockNode(pendingTree, pendingNode);
         manager.RefreshSkillPointsDisplay();
 

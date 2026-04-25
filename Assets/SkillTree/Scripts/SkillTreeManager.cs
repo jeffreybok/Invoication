@@ -30,27 +30,52 @@ public class SkillTreeManager : MonoBehaviour
 
     void Start()
     {
-        skillTreePanel.SetActive(false);
+        if (skillTreePanel != null)
+            skillTreePanel.SetActive(false);
+
         StartCoroutine(InitializeAfterDelay());
     }
 
     private System.Collections.IEnumerator InitializeAfterDelay()
     {
-        yield return new WaitForSeconds(1f);
+        // wait for PurrNet player spawn
+        yield return new WaitForSeconds(2f);
 
         if (!FindOwnedPlayer())
         {
             Debug.Log("[SkillTreeManager] Not owner → disabling UI");
-            skillTreePanel.SetActive(false);
+            if (skillTreePanel != null)
+                skillTreePanel.SetActive(false);
             enabled = false;
             yield break;
         }
 
-        SkillTreeSaveSystem.LoadAll(allTrees, stats, xp);
+        // 🔥 ALWAYS re-fetch UI from player (handles inactive + prefab cases)
+        skillTreeUI = playerController.GetComponentInChildren<SkillTreeUI>(true);
+        tooltipUI = playerController.GetComponentInChildren<TooltipUI>(true);
+        confirmationUI = playerController.GetComponentInChildren<ConfirmationUI>(true);
 
-        // 🔥 Inject manager into UI
-        skillTreeUI.manager = this;
-        confirmationUI.Initialize(this);
+        // 🔥 assign manager safely
+        if (skillTreeUI != null)
+        {
+            skillTreeUI.manager = this;
+        }
+        else
+        {
+            Debug.LogError("SkillTreeUI NULL");
+        }
+
+        if (confirmationUI != null)
+        {
+            confirmationUI.Initialize(this);
+        }
+        else
+        {
+            Debug.LogError("ConfirmationUI NULL AFTER SPAWN");
+        }
+
+        // load data
+        SkillTreeSaveSystem.LoadAll(allTrees, stats, xp);
 
         LoadCurrentTree();
     }
@@ -93,13 +118,20 @@ public class SkillTreeManager : MonoBehaviour
     void OpenMenu()
     {
         isOpen = true;
-        skillTreePanel.SetActive(true);
+
+        if (skillTreePanel != null)
+            skillTreePanel.SetActive(true);
+
         RefreshSkillPointsDisplay();
 
         if (playerController != null)
             playerController.lockCamera = true;
 
         HookAllButtons();
+
+        // 🔥 ADD THIS LINE
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayBook();
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -108,12 +140,16 @@ public class SkillTreeManager : MonoBehaviour
     void CloseMenu()
     {
         isOpen = false;
-        skillTreePanel.SetActive(false);
+
+        if (skillTreePanel != null)
+            skillTreePanel.SetActive(false);
 
         if (playerController != null)
             playerController.lockCamera = false;
 
-        tooltipUI.Hide();
+        // 🔥 SAFE CALL
+        if (tooltipUI != null)
+            tooltipUI.Hide();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -121,8 +157,8 @@ public class SkillTreeManager : MonoBehaviour
 
     void LoadCurrentTree()
     {
-        if (allTrees == null || allTrees.Length == 0)
-            return;
+        if (allTrees == null || allTrees.Length == 0) return;
+        if (skillTreeUI == null) return;
 
         skillTreeUI.LoadTree(allTrees[currentTreeIndex]);
 
@@ -134,7 +170,7 @@ public class SkillTreeManager : MonoBehaviour
 
     public void RefreshSkillPointsDisplay()
     {
-        if (stats != null)
+        if (stats != null && skillPointText != null)
             skillPointText.text = $"{stats.skillPoints}";
     }
 
@@ -189,10 +225,16 @@ public class SkillTreeManager : MonoBehaviour
 
     void HookAllButtons()
     {
+        if (skillTreePanel == null) return;
+
         Button[] buttons = skillTreePanel.GetComponentsInChildren<Button>(true);
 
         foreach (Button btn in buttons)
         {
+            // ❌ SKIP confirm button (it has its own sound)
+            if (btn.name.Contains("Confirm"))
+                continue;
+
             btn.onClick.RemoveListener(PlaySelectSound);
             btn.onClick.AddListener(PlaySelectSound);
         }
@@ -212,6 +254,7 @@ public class SkillTreeManager : MonoBehaviour
 
     void PlaySelectSound()
     {
-        SoundManager.Instance.PlaySelect();
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySelect();
     }
 }
