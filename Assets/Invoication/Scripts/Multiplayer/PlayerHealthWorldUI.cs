@@ -33,6 +33,11 @@ public class PlayerHealthWorldUI : NetworkBehaviour
             if (rend != null)
                 cachedHeight = rend.bounds.size.y;
         }
+
+        if (isOwner)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     void LateUpdate()
