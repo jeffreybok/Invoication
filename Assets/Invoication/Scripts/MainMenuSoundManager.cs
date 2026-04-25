@@ -26,7 +26,7 @@ public class MainMenuSoundManager : MonoBehaviour
         musicSource.clip = backgroundMusic;
         musicSource.loop = true;
         musicSource.playOnAwake = true;
-        musicSource.volume = 0.5f;
+        musicSource.volume = 0.35f;
         musicSource.Play();
 
         // SFX source

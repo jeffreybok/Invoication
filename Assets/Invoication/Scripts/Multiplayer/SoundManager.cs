@@ -95,7 +95,7 @@ public class SoundManager : NetworkBehaviour
     public void PlayExplosion(Vector3 pos)
     {
         if (!isServer) return;
-        PlaySound_ObserversRPC(pos, "explosion");
+        PlaySoundWithVolume_ObserversRPC(pos, "explosion", 1.35f);
     }
 
     public void PlayShockwave(Vector3 pos)
@@ -208,5 +208,31 @@ public class SoundManager : NetworkBehaviour
             case "iceWall": return iceWall;
         }
         return null;
+    }
+    [ObserversRpc]
+    void PlaySoundWithVolume_ObserversRPC(Vector3 pos, string soundName, float volumeMultiplier)
+    {
+        if (!Application.isPlaying) return;
+        if (!enabled) return;
+        if (isShuttingDown) return;
+
+        AudioClip clip = GetClip(soundName);
+        if (clip == null) return;
+
+        GameObject temp = new GameObject("Sound_" + soundName);
+        temp.transform.position = pos;
+
+        AudioSource source = temp.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.spatialBlend = 1f;
+        source.minDistance = minDistance;
+        source.maxDistance = maxDistance;
+
+        // 🔥 ONLY difference
+        source.volume = volume * volumeMultiplier;
+
+        source.Play();
+
+        StartCoroutine(DestroyAfterTime(temp, clip.length));
     }
 }
