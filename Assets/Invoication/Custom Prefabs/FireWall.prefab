@@ -88,7 +88,7 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   lifetime: 6
-  burnDamagePerTick: 5
+  burnDamagePerTick: 20
   burnDuration: 3
   tickRate: 1
 --- !u!114 &7825633892918371189
