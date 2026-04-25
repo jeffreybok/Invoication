@@ -33,6 +33,7 @@ public class SkillTreeUI : MonoBehaviour
     private Dictionary<string, RectTransform> nodeRectMap = new Dictionary<string, RectTransform>();
     
     [SerializeField] private NodeConnector nodeConnector;
+    public SkillTreeManager manager;
     
     void Start()
     {
@@ -110,7 +111,7 @@ public class SkillTreeUI : MonoBehaviour
         rt.anchoredPosition = position;
 
         SkillNodeUI nodeUI = spawned.GetComponent<SkillNodeUI>();
-        nodeUI.Initialize(node, tree);
+        nodeUI.Initialize(node, tree, manager);
         spawnedNodes.Add(nodeUI);
         nodeRectMap[node.nodeID] = rt;
     }

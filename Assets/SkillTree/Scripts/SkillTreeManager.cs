@@ -10,6 +10,9 @@ public class SkillTreeManager : MonoBehaviour
     [Header("References")]
     public GameObject skillTreePanel;
     public SkillTreeUI skillTreeUI;
+    public TooltipUI tooltipUI;
+    public ConfirmationUI confirmationUI;
+
     public TextMeshProUGUI skillPointText;
     public Image elementTitleImage;
     public Image leftArrowImage;
@@ -20,7 +23,6 @@ public class SkillTreeManager : MonoBehaviour
     private int currentTreeIndex = 0;
 
     private PlayerController playerController;
-    private RaycastPickup raycastPickup;
     private PlayerStats stats;
     private PlayerXP xp;
 
@@ -36,16 +38,40 @@ public class SkillTreeManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        FindOwnedPlayer();
-
-        if (stats == null)
+        if (!FindOwnedPlayer())
         {
-            Debug.Log("[SkillTreeManager] No local player found, skipping init");
+            Debug.Log("[SkillTreeManager] Not owner → disabling UI");
+            skillTreePanel.SetActive(false);
+            enabled = false;
             yield break;
         }
 
         SkillTreeSaveSystem.LoadAll(allTrees, stats, xp);
+
+        // 🔥 Inject manager into UI
+        skillTreeUI.manager = this;
+        confirmationUI.Initialize(this);
+
         LoadCurrentTree();
+    }
+
+    bool FindOwnedPlayer()
+    {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            var id = player.GetComponent<NetworkIdentity>();
+
+            if (id != null && id.isOwner)
+            {
+                stats = player.GetComponent<PlayerStats>();
+                xp = player.GetComponent<PlayerXP>();
+                playerController = player.GetComponent<PlayerController>();
+
+                Debug.Log("[SkillTreeManager] Found local player");
+                return true;
+            }
+        }
+        return false;
     }
 
     void Update()
@@ -73,10 +99,8 @@ public class SkillTreeManager : MonoBehaviour
         if (playerController != null)
             playerController.lockCamera = true;
 
-        SoundManager.Instance.PlayBook();
-
         HookAllButtons();
-        
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -89,8 +113,7 @@ public class SkillTreeManager : MonoBehaviour
         if (playerController != null)
             playerController.lockCamera = false;
 
-        if (TooltipUI.Instance != null && TooltipUI.Instance.tooltipPanel.activeInHierarchy)
-            TooltipUI.Instance.tooltipPanel.SetActive(false);
+        tooltipUI.Hide();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -105,12 +128,6 @@ public class SkillTreeManager : MonoBehaviour
 
         if (elementTitleImage != null && allTrees[currentTreeIndex].elementIcon != null)
             elementTitleImage.sprite = allTrees[currentTreeIndex].elementIcon;
-        
-        if (leftArrowImage != null && allTrees[currentTreeIndex].leftArrowIcon != null)
-            leftArrowImage.sprite = allTrees[currentTreeIndex].leftArrowIcon;
-        
-        if (rightArrowImage != null && allTrees[currentTreeIndex].rightArrowIcon != null)
-            rightArrowImage.sprite = allTrees[currentTreeIndex].rightArrowIcon;
 
         RefreshSkillPointsDisplay();
     }
@@ -121,24 +138,10 @@ public class SkillTreeManager : MonoBehaviour
             skillPointText.text = $"{stats.skillPoints}";
     }
 
-    public void NextTree()
-    {
-        currentTreeIndex = (currentTreeIndex + 1) % allTrees.Length;
-        LoadCurrentTree();
-    }
-
-    public void PreviousTree()
-    {
-        currentTreeIndex = (currentTreeIndex - 1 + allTrees.Length) % allTrees.Length;
-        LoadCurrentTree();
-    }
-
     public bool CanUnlock(SkillTreeData tree, SkillNode node)
     {
         if (node.isUnlocked) return false;
-
-        if (stats.skillPoints < node.skillPointCost)
-            return false;
+        if (stats.skillPoints < node.skillPointCost) return false;
 
         if (node.prerequisiteNodeIDs == null || node.prerequisiteNodeIDs.Count == 0)
             return true;
@@ -178,50 +181,33 @@ public class SkillTreeManager : MonoBehaviour
         int newTotal = stats.skillPoints + refund;
 
         SkillTreeSaveSystem.ResetAll(allTrees, newTotal, stats, xp);
-
         stats.ResetToBase();
 
         LoadCurrentTree();
         RefreshSkillPointsDisplay();
     }
 
-    void FindOwnedPlayer()
-    {
-        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-        {
-            var id = player.GetComponent<NetworkIdentity>();
-
-            if (id != null && id.isOwner)
-            {
-                stats = player.GetComponent<PlayerStats>();
-                xp = player.GetComponent<PlayerXP>();
-                playerController = player.GetComponent<PlayerController>();
-                raycastPickup = player.GetComponentInChildren<RaycastPickup>();
-
-                Debug.Log("[SkillTreeManager] Found local player");
-                break;
-            }
-        }
-    }
-
-    void OnDisable()
-    {
-        Debug.Log("[SkillTreeManager DISABLED]");
-        Debug.Log(System.Environment.StackTrace);
-    }
-    
     void HookAllButtons()
     {
         Button[] buttons = skillTreePanel.GetComponentsInChildren<Button>(true);
 
         foreach (Button btn in buttons)
         {
-            if (btn.name == "ConfirmationButton" || btn.name == "CancelButton")
-                continue;
-
             btn.onClick.RemoveListener(PlaySelectSound);
             btn.onClick.AddListener(PlaySelectSound);
         }
+    }
+    
+    public void NextTree()
+    {
+        currentTreeIndex = (currentTreeIndex + 1) % allTrees.Length;
+        LoadCurrentTree();
+    }
+
+    public void PreviousTree()
+    {
+        currentTreeIndex = (currentTreeIndex - 1 + allTrees.Length) % allTrees.Length;
+        LoadCurrentTree();
     }
 
     void PlaySelectSound()

@@ -2222,6 +2222,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreeManager
   skillTreePanel: {fileID: 8882919489863921447}
   skillTreeUI: {fileID: 5413024820966136199}
+  tooltipUI: {fileID: 0}
+  confirmationUI: {fileID: 0}
   skillPointText: {fileID: 8160634075521512942}
   elementTitleImage: {fileID: 0}
   leftArrowImage: {fileID: 0}
@@ -5183,6 +5185,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: tooltipUI
+      value: 
+      objectReference: {fileID: 1847898472094860745}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+      propertyPath: confirmationUI
+      value: 
+      objectReference: {fileID: 3606789154758189179}
+    - target: {fileID: 1449150449023343662, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
       propertyPath: allTrees.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -5435,11 +5445,33 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 9016495366616467124}
   m_SourcePrefab: {fileID: 100100000, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+--- !u!114 &1847898472094860745 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6566020666585196506, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+  m_PrefabInstance: {fileID: 4808222470473294355}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2566cc39e85344d6e83b1be5e7cd1ebf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TooltipUI
 --- !u!4 &2801549174164371907 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7231416498286730192, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
   m_PrefabInstance: {fileID: 4808222470473294355}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3606789154758189179 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8122206180086596200, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}
+  m_PrefabInstance: {fileID: 4808222470473294355}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a573ba8fe1534d1396be7ec582c848e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ConfirmationUI
 --- !u!114 &5413024820966136199 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 694910837429877652, guid: e0ff7b9a1ed1542178d45e542965241a, type: 3}

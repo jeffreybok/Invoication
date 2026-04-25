@@ -1,16 +1,25 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SkillTreeButtonHook : MonoBehaviour
 {
     public bool isNext;
 
+    private SkillTreeManager manager;
+
     void Start()
     {
-        var manager = FindFirstObjectByType<SkillTreeManager>();
+        var ui = GetComponentInParent<SkillTreeUI>();
 
-        if (manager == null) return;
+        if (ui == null || ui.manager == null)
+        {
+            Debug.LogError("[SkillTreeButtonHook] SkillTreeUI or manager missing!");
+            return;
+        }
 
-        var button = GetComponent<UnityEngine.UI.Button>();
+        manager = ui.manager;
+
+        var button = GetComponent<Button>();
 
         if (isNext)
             button.onClick.AddListener(manager.NextTree);
