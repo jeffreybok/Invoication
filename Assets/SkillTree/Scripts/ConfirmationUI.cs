@@ -4,9 +4,6 @@ using TMPro;
 
 public class ConfirmationUI : MonoBehaviour
 {
-    public static ConfirmationUI Instance;
-
-    [Header("References")]
     public GameObject confirmationPanel;
     public TextMeshProUGUI messageText;
     public Button confirmButton;
@@ -15,18 +12,19 @@ public class ConfirmationUI : MonoBehaviour
     private SkillNode pendingNode;
     private SkillTreeData pendingTree;
     private SkillNodeUI pendingCaller;
+    private SkillTreeManager manager;
+
+    public void Initialize(SkillTreeManager mgr)
+    {
+        manager = mgr;
+    }
 
     void Awake()
     {
-        Instance = this;
         confirmationPanel.SetActive(false);
 
         confirmButton.onClick.AddListener(OnConfirm);
         cancelButton.onClick.AddListener(OnCancel);
-
-        // 🔊 sounds
-        confirmButton.onClick.AddListener(PlayPurchaseSound);
-        cancelButton.onClick.AddListener(PlaySelectSound);
     }
 
     public void Show(SkillNode node, SkillTreeData tree, SkillNodeUI caller)
@@ -34,28 +32,25 @@ public class ConfirmationUI : MonoBehaviour
         pendingNode = node;
         pendingTree = tree;
         pendingCaller = caller;
+
         messageText.text = $"Unlock {node.nodeName} for {node.skillPointCost} SP?";
         confirmationPanel.SetActive(true);
     }
 
     void OnConfirm()
     {
-        var manager = FindFirstObjectByType<SkillTreeManager>();
-        if (manager != null)
-        {
-            manager.UnlockNode(pendingTree, pendingNode);
-            manager.RefreshSkillPointsDisplay();
-        }
+        // 🔥 PLAY PURCHASE SOUND FIRST
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayPurchase();
+
+        manager.UnlockNode(pendingTree, pendingNode);
+        manager.RefreshSkillPointsDisplay();
 
         pendingCaller.UpdateVisual();
 
-        var treeUI = FindFirstObjectByType<SkillTreeUI>();
-        if (treeUI != null)
-        {
-            treeUI.RefreshAllNodes();
-            // Only animate the line for the node just unlocked
-            treeUI.AnimateNodeLines(pendingNode, pendingTree);
-        }
+        var treeUI = manager.skillTreeUI;
+        treeUI.RefreshAllNodes();
+        treeUI.AnimateNodeLines(pendingNode, pendingTree);
 
         confirmationPanel.SetActive(false);
     }
@@ -63,15 +58,5 @@ public class ConfirmationUI : MonoBehaviour
     void OnCancel()
     {
         confirmationPanel.SetActive(false);
-    }
-    
-    void PlayPurchaseSound()
-    {
-        SoundManager.Instance.PlayPurchase();
-    }
-
-    void PlaySelectSound()
-    {
-        SoundManager.Instance.PlaySelect();
     }
 }
