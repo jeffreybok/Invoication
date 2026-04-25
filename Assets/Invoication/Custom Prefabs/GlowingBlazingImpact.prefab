@@ -167,7 +167,7 @@ MonoBehaviour:
   directDamage: 15
   splashRadius: 5
   splashDamageMult: 0.5
-  burnDamagePerTick: 5
+  burnDamagePerTick: 15
   burnDuration: 3
   freezeDuration: 3
   fireWallPrefab: {fileID: 0}
@@ -181,6 +181,9 @@ MonoBehaviour:
   iceWallLifetime: 6
   iceWallFreezeDuration: 3
   iceWallTickRate: 0.5
+  lightningChainRadius: 6
+  lightningImpactVFX: {fileID: 0}
+  lightningChainVFX: {fileID: 0}
   impactVFX: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
   vfxDuration: 2
 --- !u!114 &4429113450028650521

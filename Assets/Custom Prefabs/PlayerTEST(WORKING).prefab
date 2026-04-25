@@ -3493,11 +3493,11 @@ MonoBehaviour:
   iceWallPrefab: {fileID: 8336497525705530155, guid: de3ea497563c5104882f8051b176648f, type: 3}
   lightningBoltPrefab: {fileID: 6343847663724987583, guid: febc22ba99d1d4f52b77c59b6368d22a, type: 3}
   shockwaveRadius: 6
-  shockwaveDamage: 40
+  shockwaveDamage: 60
   shockwaveVFXPrefab: {fileID: 1419433412524400228, guid: 94e3a60dfabad3147915787b43e09075, type: 3}
   shockwaveVFXDuration: 1.5
   fireballSpawnPoint: {fileID: 0}
-  fireballSpeed: 15
+  fireballSpeed: 20
   iceballSpeed: 20
   fireWallSpeed: 12
   emberCircleSpeed: 15
